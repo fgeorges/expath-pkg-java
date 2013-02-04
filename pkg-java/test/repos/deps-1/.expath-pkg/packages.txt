@@ -1,0 +1,6 @@
+app-1.0.0 http://example.com/my-app 1.0.0
+lib-a-2.3.0 http://example.org/lib-a 2.3.0
+lib-b-0.1.0 http://example.org/lib-b 0.1.0
+lib-x-12.9.0 http://example.org/lib-x 12.9.0
+lib-y-1.3.0 http://example.org/lib-y 1.3.0
+lib-y-1.19.18 http://example.org/lib-y 1.19.18

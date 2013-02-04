@@ -1,0 +1,5 @@
+<packages xmlns="http://expath.org/ns/repo/packages">
+   <package name="http://www.example.org/lib/hello"
+            dir="hello-1.1.1"
+            version="1.1.1"/>
+</packages>

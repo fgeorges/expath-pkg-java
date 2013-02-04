@@ -1,0 +1,8 @@
+<packages xmlns="http://expath.org/ns/repo/packages">
+   <package name="http://example.com/my-app" dir="app-1.0.0"     version="1.0.0"/>
+   <package name="http://example.org/lib-a"  dir="lib-a-2.3.0"   version="2.3.0"/>
+   <package name="http://example.org/lib-b"  dir="lib-b-0.1.0"   version="0.1.0"/>
+   <package name="http://example.org/lib-x"  dir="lib-x-12.9.0"  version="12.9.0"/>
+   <package name="http://example.org/lib-y"  dir="lib-y-1.3.0"   version="1.3.0"/>
+   <package name="http://example.org/lib-y"  dir="lib-y-1.19.18" version="1.19.18"/>
+</packages>

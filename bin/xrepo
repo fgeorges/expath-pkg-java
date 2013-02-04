@@ -1,0 +1,19 @@
+#! /bin/bash
+
+if test -z "${JAVA_HOME}"; then
+    JAVA=java
+else
+    JAVA="${JAVA_HOME}/bin/java"
+fi
+
+INSTALL_DIR=`dirname $0`/..
+if test \! -d "${INSTALL_DIR}"; then
+    echo "INTERNAL ERROR: The install directory is not a directory?!?" 1>&2;
+    exit 1;
+fi
+if test \! -f "${INSTALL_DIR}/expath/pkg-repo.jar"; then
+    echo "INTERNAL ERROR: The install directory does not contain expath/pkg-repo.jar?!?" 1>&2;
+    exit 1;
+fi
+
+"$JAVA" -jar "${INSTALL_DIR}/expath/pkg-repo.jar" "$@"

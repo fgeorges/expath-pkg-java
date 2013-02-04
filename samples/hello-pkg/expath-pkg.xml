@@ -1,0 +1,18 @@
+<package xmlns="http://expath.org/ns/pkg"
+         name="http://www.example.org/lib/hello"
+         version="1.1"
+         abbrev="hello"
+         spec="1.0">
+
+   <title>Test package</title>
+
+   <xquery>
+      <namespace>http://www.example.org/hello</namespace>
+      <file>hello.xq</file>
+   </xquery>
+   <xslt>
+      <import-uri>http://www.example.org/hello.xsl</import-uri>
+      <file>hello.xsl</file>
+   </xslt>
+
+</package>
