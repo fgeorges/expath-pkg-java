@@ -1,6 +1,7 @@
 # EXPath Packaging for Java
 
-Implementation of the EXPath Packaging System for Java, Saxon and Calabash.
+Implementation of the EXPath [Packaging System](http://expath.org/modules/pkg/)
+for Java, Saxon and Calabash.
 
 
 ## Installation
