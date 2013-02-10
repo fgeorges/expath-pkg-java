@@ -1,3 +1,9 @@
 /pkg-calabash/nbproject/private/
 /pkg-java/nbproject/private/
 /pkg-saxon/nbproject/private/
+/pkg-java/build/
+/pkg-java/dist/
+/pkg-saxon/build/
+/pkg-saxon/dist/
+/pkg-calabash/build/
+/pkg-calabash/dist/
