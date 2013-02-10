@@ -21,9 +21,9 @@ import static org.junit.Assert.fail;
  */
 public class FunctionalTest
 {
-    public static final String HELLO_XAR_OLD = "../../misc/hello-pkg/hello-1.1.xar";
-    public static final String HELLO_XAR_NEW = "../../misc/hello-pkg/hello-1.2.xar";
-    public static final String TMP_REPO_DIR  = "../../tmp/repo";
+    public static final String HELLO_XAR_OLD = "../samples/hello-pkg/hello-1.1.xar";
+    public static final String HELLO_XAR_NEW = "../samples/hello-pkg/hello-1.2.xar";
+    public static final String TMP_REPO_DIR  = "../tmp/repo";
 
     @Test
     public void runFunctionalTests()
