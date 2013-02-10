@@ -14,8 +14,7 @@ import javax.xml.transform.Source;
 import java.net.URI;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.Storage;
@@ -39,7 +38,7 @@ public class DescriptorParserTest
     {
         // the SUT
         DescriptorParser sut = new DescriptorParser();
-        InputStream desc = new FileInputStream(PKG_DIR + "expath-pkg.xml");
+        Source desc = new StreamSource(PKG_DIR + "expath-pkg.xml");
         Storage storage = new FileSystemStorage(new File("test/repos/simple"));
         // get the package
         Package pkg = sut.parse(desc, "hello-1.1.1", storage, null);

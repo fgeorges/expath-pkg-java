@@ -9,7 +9,7 @@
 
 package org.expath.pkg.repo;
 
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 
 /**
  * Represent the universe to use to compile a component.
@@ -18,10 +18,10 @@ import javax.xml.transform.stream.StreamSource;
  * concept is similar to Java's classpath, Perl's {@code INC} list or Python's
  * module search path.
  *
- * TODO: Returning a {@link StreamSource} in return of {@link #resolve()} is
- * probably not what we want.  What for instance if the matched component is an
- * extension written in, say, Java. It makes not sense to return a stream source
- * then.  We should rather use a listener mechanism.
+ * TODO: Returning a {@link Source} in return of {@link #resolve()} is probably
+ * not what we want.  What for instance if the matched component is an extension
+ * written in, say, Java. It makes not sense to return a stream source then.
+ * We should rather use a listener mechanism.
  *
  * @author Florent Georges
  * @date   2011-01-26
@@ -34,7 +34,7 @@ public interface Universe
      * Whether package dependencies are used to resolve the href has to be
      * defined by each implementation of this interface.
      */
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException;
 
     /**
@@ -43,7 +43,7 @@ public interface Universe
      * Whether package dependencies are used to resolve the href is set by
      * {@code transitive}.
      */
-    public StreamSource resolve(String href, URISpace space, boolean transitive)
+    public Source resolve(String href, URISpace space, boolean transitive)
             throws PackageException;
 }
 

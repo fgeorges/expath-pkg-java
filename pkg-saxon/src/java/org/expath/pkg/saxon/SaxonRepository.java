@@ -14,8 +14,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.transform.Source;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamSource;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ModuleURIResolver;
 import org.expath.pkg.repo.Package;
@@ -97,7 +97,7 @@ public class SaxonRepository
      * TODO: Regarding versionning, see comments of {@link Repository#resolve(String,URISpace)}
      * (AKA we don't always want the latest version).
      */
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         return myParent.resolve(href, space);

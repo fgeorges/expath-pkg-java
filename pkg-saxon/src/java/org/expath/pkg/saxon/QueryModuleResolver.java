@@ -1,6 +1,7 @@
 package org.expath.pkg.saxon;
 
 import java.io.File;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.saxon.lib.ModuleURIResolver;
 
@@ -31,6 +32,7 @@ public class QueryModuleResolver
         myRepo = new Repository(storage);
     }
 
+    @Override
     public StreamSource[] resolve(String module_uri, String base_uri, String[] locations)
             throws XPathException
     {
@@ -41,7 +43,7 @@ public class QueryModuleResolver
             return null;
         }
 
-        StreamSource result = null;
+        Source result = null;
         try {
             result = myRepo.resolve(module_uri, URISpace.XQUERY);
         }
@@ -52,7 +54,11 @@ public class QueryModuleResolver
         if ( result == null ) {
             return null;
         }
-        return new StreamSource[]{ result };
+        // TODO: Why requiring a StreamSource here...?
+        if ( ! (result instanceof StreamSource) ) {
+            throw new XPathException("The Source is not a StreamSource");
+        }
+        return new StreamSource[]{ (StreamSource) result };
     }
 
     /** The underlying catalog */

@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.saxon.lib.ModuleURIResolver;
 import net.sf.saxon.trans.XPathException;
@@ -67,14 +68,22 @@ public class PkgModuleResolver
                 return source;
             }
             // try a Saxon-specific stuff
-            StreamSource s = myRepo.resolve(module_uri, URISpace.XQUERY);
+            Source s = myRepo.resolve(module_uri, URISpace.XQUERY);
             if ( s != null ) {
-                return new StreamSource[]{ s };
+                // TODO: Why requiring a StreamSource here...?
+                if ( ! (s instanceof StreamSource) ) {
+                    throw new XPathException("The Source is not a StreamSource");
+                }
+                return new StreamSource[]{ (StreamSource) s };
             }
             // delegate to pkg-repo's repository
             s = myParent.resolve(module_uri, URISpace.XQUERY);
             if ( s != null ) {
-                return new StreamSource[]{ s };
+                // TODO: Why requiring a StreamSource here...?
+                if ( ! (s instanceof StreamSource) ) {
+                    throw new XPathException("The Source is not a StreamSource");
+                }
+                return new StreamSource[]{ (StreamSource) s };
             }
         }
         catch ( PackageException ex ) {

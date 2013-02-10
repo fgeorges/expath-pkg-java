@@ -9,12 +9,12 @@
 
 package org.expath.pkg.repo.parser;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Storage;
@@ -32,7 +32,7 @@ public class DescriptorParser
     /**
      * Parse a package descriptor and build the corresponding {@link Package} object.
      */
-    public Package parse(InputStream desc, String rsrc_name, Storage storage, Repository repo)
+    public Package parse(Source desc, String rsrc_name, Storage storage, Repository repo)
             throws PackageException
     {
         // parse the pkg descriptor

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import org.expath.pkg.repo.parser.DescriptorParser;
 import org.expath.pkg.repo.util.Logger;
@@ -305,13 +305,13 @@ public class Repository
      * comments for SaxonRepository.
      */
     @Override
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         LOG.fine("Repository, resolve in {0}: ''{1}''", space, href);
         for ( Packages pp : myPackages.values() ) {
             Package p = pp.latest();
-            StreamSource src = p.resolve(href, space);
+            Source src = p.resolve(href, space);
             if ( src != null ) {
                 return src;
             }
@@ -320,7 +320,7 @@ public class Repository
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space, boolean transitive)
+    public Source resolve(String href, URISpace space, boolean transitive)
             throws PackageException
     {
         // transitive or not is meaningless, as anyway the universe is the whole
@@ -341,14 +341,14 @@ public class Repository
         // loop over the packages
         for ( String p : packages ) {
             PackageResolver res = myStorage.makePackageResolver(p, null);
-            StreamSource desc;
+            Source desc;
             try {
                 desc = res.resolveResource("expath-pkg.xml");
             }
             catch ( Storage.NotExistException ex ) {
                 throw new PackageException("Package descriptor does NOT exist in: " + p, ex);
             }
-            Package pkg = parser.parse(desc.getInputStream(), p, myStorage, this);
+            Package pkg = parser.parse(desc, p, myStorage, this);
             addPackage(pkg);
             for ( Extension ext : myExtensions.values() ) {
                 ext.init(this, pkg);

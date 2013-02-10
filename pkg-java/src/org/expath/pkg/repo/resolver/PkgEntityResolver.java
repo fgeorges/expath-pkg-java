@@ -10,11 +10,24 @@
 
 package org.expath.pkg.repo.resolver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.URISpace;
 import org.expath.pkg.repo.Universe;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -43,7 +56,7 @@ public class PkgEntityResolver
                  , IOException
     {
         // try to resolve the system ID as a file in the repo
-        StreamSource resolved;
+        Source resolved;
         try {
             resolved = myUniverse.resolve(systemId, mySpace);
         }
@@ -57,9 +70,63 @@ public class PkgEntityResolver
         if ( resolved == null ) {
             return null;
         }
-        InputSource src = new InputSource(resolved.getInputStream());
+        InputSource src = sourceToInputSource(resolved);
         src.setSystemId(resolved.getSystemId());
         return src;
+    }
+
+    /**
+     * Return the InputSource from a Source.
+     * 
+     * From http://www.java2s.com/Code/Java/XML/SourceToInputSource.htm.
+     */
+    private InputSource sourceToInputSource(Source src)
+            throws IOException
+    {
+        if (src instanceof SAXSource ) {
+            SAXSource sax = (SAXSource) src;
+            return sax.getInputSource();
+        }
+        else if ( src instanceof DOMSource ) {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            DOMSource dom = (DOMSource) src;
+            Node node = dom.getNode();
+            if ( node instanceof Document ) {
+                Document doc = (Document) node;
+                node = doc.getDocumentElement();
+            }
+            Element root = (Element) node;
+            serialize(root, buffer);
+            InputSource result = new InputSource(src.getSystemId());
+            result.setByteStream(new ByteArrayInputStream(buffer.toByteArray()));
+            return result;
+        }
+        else if ( src instanceof StreamSource ) {
+            StreamSource ss = (StreamSource) src;
+            InputSource result = new InputSource(ss.getSystemId());
+            result.setByteStream(ss.getInputStream());
+            result.setCharacterStream(ss.getReader());
+            result.setPublicId(ss.getPublicId());
+            return result;
+        }
+        else {
+            return new InputSource(src.getSystemId());
+        }
+    }
+
+    private void serialize(Element element, OutputStream out)
+            throws IOException
+    {
+        try {
+            DOMSource source = new DOMSource(element);
+            StreamResult result = new StreamResult(out);
+            TransformerFactory transFactory = TransformerFactory.newInstance();
+            Transformer transformer = transFactory.newTransformer();
+            transformer.transform(source, result);
+        }
+        catch ( TransformerException ex ) {
+            throw new IOException("Error serializing in memory...", ex);
+        }
     }
 
     private Universe myUniverse;

@@ -9,10 +9,10 @@
 
 package org.expath.pkg.repo;
 
-import java.io.InputStream;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.parser.DescriptorParser;
+import org.expath.pkg.repo.parser.XMLStreamHelper;
 
 /**
  * An extension that is based on a dedicated descriptor (e.g. saxon.xml or exist.xml).
@@ -33,7 +33,7 @@ public abstract class DescriptorExtension
     public void init(Repository repo, Package pkg)
             throws PackageException
     {
-        StreamSource desc;
+        Source desc;
         try {
             desc = pkg.getResolver().resolveResource(myDescriptorName);
         }
@@ -42,10 +42,10 @@ public abstract class DescriptorExtension
             return;
         }
         // parse the pkg descriptor
-        InputStream desc_in = desc.getInputStream();
-        XMLStreamReader parser = DescriptorParser.XS_HELPER.makeDescriptorParser(desc_in);
+        XMLStreamHelper helper = DescriptorParser.XS_HELPER;
+        XMLStreamReader parser = helper.makeDescriptorParser(desc);
         // go to the module element
-        DescriptorParser.XS_HELPER.ensureDocument(parser);
+        helper.ensureDocument(parser);
         // actually parse the descriptor (in the derived class)
         parseDescriptor(parser, pkg);
         // TODO: ensure end document, terminate parsing, etc...

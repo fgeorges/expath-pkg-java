@@ -11,7 +11,7 @@ package org.expath.pkg.repo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.util.Logger;
 
 /**
@@ -37,14 +37,14 @@ public class CompositeUniverse
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         return resolve(href, space, myTransitive);
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space, boolean transitive)
+    public Source resolve(String href, URISpace space, boolean transitive)
             throws PackageException
     {
         LOG.fine("Composite universe, resolve in {0}: ''{1}'' ({2})", space, href, transitive);
@@ -52,7 +52,7 @@ public class CompositeUniverse
             // TODO: Because this composite universe has been created explicitly
             // to be transitive or not, maybe we should actually pass down this
             // property instead, i.e. 'myTransitive' instead of 'transitive'.
-            StreamSource src = sub.resolve(href, space, transitive);
+            Source src = sub.resolve(href, space, transitive);
             if ( src != null ) {
                 return src;
             }

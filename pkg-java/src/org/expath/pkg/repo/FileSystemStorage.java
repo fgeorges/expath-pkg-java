@@ -393,7 +393,7 @@ public class FileSystemStorage
         interact.logInfo("Package unziped to " + tmp_dir);
 
         // parse the package
-        InputStream desc = resolveInPackageRoot(tmp_dir, "expath-pkg.xml");
+        Source desc = resolveInPackageRoot(tmp_dir, "expath-pkg.xml");
         if ( desc == null ) {
             throw new PackageException("Package descriptor does NOT exist in: " + tmp_dir);
         }
@@ -629,19 +629,14 @@ public class FileSystemStorage
         }
     }
 
-    private InputStream resolveInPackageRoot(File root, String path)
+    private Source resolveInPackageRoot(File root, String path)
             throws PackageException
     {
         File f = new File(root, path);
         if ( ! f.exists() ) {
             return null;
         }
-        try {
-            return new FileInputStream(f);
-        }
-        catch( FileNotFoundException ex ) {
-            throw new PackageException("File exists but is not found", ex);
-        }
+        return new StreamSource(f);
     }
 
     private static final String ADD_PACKAGE_XSL    = "org/expath/pkg/repo/rsrc/add-package.xsl";

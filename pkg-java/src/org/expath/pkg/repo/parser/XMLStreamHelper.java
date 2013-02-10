@@ -10,13 +10,13 @@
 
 package org.expath.pkg.repo.parser;
 
-import java.io.InputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.PackageException;
 
 /**
@@ -37,7 +37,7 @@ public class XMLStreamHelper
         return myTargetNS;
     }
 
-    public XMLStreamReader makeDescriptorParser(InputStream desc)
+    public XMLStreamReader makeDescriptorParser(Source desc)
             throws PackageException
     {
         try {
