@@ -12,6 +12,9 @@
 ## CALABASH_HOME        the home dir of the Calabash install; must contain a
 ##                      file named calabash.jar
 ## 
+## CALABASH_JAR         alternatively, instead of CALABASH_HOME, you can
+##                      directly set the JAR file path
+## 
 ## SAXON_HOME           the home dir of the Saxon install; must contain a file
 ##                      named saxon9ee.jar, saxon9pe.jar or saxon9he.jar (if
 ##                      several exist, it will pick them in that order)
@@ -82,7 +85,9 @@ if test -z "$CALABASH_HOME"; then
     fi
 fi
 # Calabash JAR and main class
-CALABASH_JAR="${CALABASH_HOME}/calabash.jar"
+if test -z "$CALABASH_JAR"; then
+    CALABASH_JAR="${CALABASH_HOME}/calabash.jar"
+fi
 if test -z "$CALABASH_MAIN"; then
     CALABASH_MAIN=com.xmlcalabash.drivers.Main
 fi
