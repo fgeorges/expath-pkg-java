@@ -1,9 +1,9 @@
 IZPACK=/Applications/IzPack/bin/compile
 
-VERSION=0.11.1
+VERSION=0.12.0dev
 # TODO: Check whether REVISION ends with an 'M' (then it should be an
 # error: everything has to be checked in before a release)
-REVISION=$(shell svnversion)
+REVISION=$(shell git describe --always)
 NAME=expath-repo-$(VERSION)
 
 pkg-java=../pkg-java
