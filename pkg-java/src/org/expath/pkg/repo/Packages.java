@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.util.Logger;
 
 /**
@@ -88,7 +88,7 @@ public class Packages
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         // by default, look into the declared dependencies
@@ -96,7 +96,7 @@ public class Packages
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space, boolean transitive)
+    public Source resolve(String href, URISpace space, boolean transitive)
             throws PackageException
     {
         LOG.fine("Package, resolve in {0}: ''{1}'' ({2})", space, href, transitive);

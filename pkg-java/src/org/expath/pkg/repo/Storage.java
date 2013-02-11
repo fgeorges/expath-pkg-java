@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 
 /**
  * Abstract the physical storage of a repository.
@@ -40,13 +40,13 @@ public abstract class Storage
         /**
          * Resolve a resource within the package "root dir".
          */
-        public abstract StreamSource resolveResource(String path)
+        public abstract Source resolveResource(String path)
                 throws PackageException
                      , NotExistException;
         /**
          * Resolve a resource within the package "module dir".
          */
-        public abstract StreamSource resolveComponent(String path)
+        public abstract Source resolveComponent(String path)
                 throws PackageException
                      , NotExistException;
         /**

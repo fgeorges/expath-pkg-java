@@ -9,7 +9,7 @@
 
 package org.expath.pkg.repo;
 
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 
 /**
  * TODO: ...
@@ -35,7 +35,7 @@ public abstract class PackageInfo
         return myPkg;
     }
 
-    public abstract StreamSource resolve(String href, URISpace space)
+    public abstract Source resolve(String href, URISpace space)
             throws PackageException;
 
     private String myName;

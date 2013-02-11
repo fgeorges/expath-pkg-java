@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
@@ -90,7 +91,7 @@ public class SaxonPkgInfo
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         PackageResolver resolver = getPackage().getResolver();
@@ -142,7 +143,7 @@ public class SaxonPkgInfo
     /**
      * Must resolve to the empty wrapper.
      */
-    private StreamSource resolveXsltWrapper(String href)
+    private Source resolveXsltWrapper(String href)
     {
         Reader r = new StringReader(EMPTY_STYLESHEET);
         return new StreamSource(r);
@@ -151,12 +152,12 @@ public class SaxonPkgInfo
     /**
      * Must resolve to an empty wrapper, generated with the correct module URI.
      */
-    private StreamSource resolveXqueryWrapper(String href)
+    private Source resolveXqueryWrapper(String href)
             throws XPathException
     {
         String module = "module namespace tns = '" + href + "';\n";
         Reader r = new StringReader(module);
-        StreamSource src = new StreamSource(r);
+        Source src = new StreamSource(r);
         src.setSystemId("http://expath.org/pkg/saxon/xquery#empty");
         return src;
     }
@@ -172,7 +173,7 @@ public class SaxonPkgInfo
         PackageResolver resolver = pkg.getResolver();
         for ( String j : jars ) {
             try {
-                StreamSource src = resolver.resolveComponent(j);
+                Source src = resolver.resolveComponent(j);
                 String sysid = src.getSystemId();
                 cp.add(new URL(sysid));
             }

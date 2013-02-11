@@ -18,7 +18,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.util.Logger;
 
 /**
@@ -76,12 +76,12 @@ public class Package
      *
      * Do not "recurse" into the declared dependencies.
      */
-    private StreamSource resolveInThisPackage(String href, URISpace space)
+    private Source resolveInThisPackage(String href, URISpace space)
             throws PackageException
     {
         // first, try to resolve in the extensions
         for ( PackageInfo info : myInfos.values() ) {
-            StreamSource res = info.resolve(href, space);
+            Source res = info.resolve(href, space);
             if ( res != null ) {
                 return res;
             }
@@ -109,7 +109,7 @@ public class Package
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space)
+    public Source resolve(String href, URISpace space)
             throws PackageException
     {
         // by default, look into the declared dependencies
@@ -117,11 +117,11 @@ public class Package
     }
 
     @Override
-    public StreamSource resolve(String href, URISpace space, boolean transitive)
+    public Source resolve(String href, URISpace space, boolean transitive)
             throws PackageException
     {
         LOG.fine("Package ''{0}'', resolve in {1}: ''{2}'' ({3})", myName, space, href, transitive);
-        StreamSource src = resolveInThisPackage(href, space);
+        Source src = resolveInThisPackage(href, space);
         if ( src != null ) {
             return src;
         }
