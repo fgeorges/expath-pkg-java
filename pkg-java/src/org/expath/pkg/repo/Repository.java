@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import org.expath.pkg.repo.parser.DescriptorParser;
 import org.expath.pkg.repo.util.Logger;
@@ -170,24 +171,10 @@ public class Repository
     }
 
     /**
-     * Install a XAR package into this repository.
+     * ...
      *
-     * If force is false, this is an error if the same package has already
-     * been installed in the repository.  If it is true, it is first deleted
-     * if existing.
-     *
-     * Return the directory where the package has been installed, within the
-     * repository.
+     * TODO: Anything to delegate to the storage?
      */
-    public Package installPackage(File pkg, boolean force, UserInteractionStrategy interact)
-            throws PackageException
-    {
-        if ( myStorage.isReadOnly() ) {
-            throw new PackageException("The storage is read-only, package install not supported");
-        }
-        return doInstall(pkg, force, interact);
-    }
-
     public Package installPackage(URI pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
@@ -221,28 +208,103 @@ public class Repository
         catch ( IOException ex ) {
             throw new PackageException("Error downloading the package", ex);
         }
-        return doInstall(downloaded, force, interact);
+        return installPackage(downloaded, force, interact);
     }
 
     /**
-     * TODO: Rely on the FileSystemStorage!  Change that!
+     * Install a XAR package into this repository.
+     *
+     * If force is false, this is an error if the same package has already
+     * been installed in the repository.  If it is true, it is first deleted
+     * if existing.
+     *
+     * Return the freshly installed package.
+     * 
+     * TODO: In case of exception, the temporary dir is not removed, solve that.
      */
-    private Package doInstall(File xar_file, boolean force, UserInteractionStrategy interact)
+    public Package installPackage(File xar_file, boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
-        if ( ! ( myStorage instanceof FileSystemStorage ) ) {
-            throw new PackageException("Install not supported for the storage " + myStorage.getClass());
+        // preconditions
+        if ( ! xar_file.exists() ) {
+            throw new PackageException("Package file does not exist (" + xar_file + ")");
         }
-        FileSystemStorage filesystem = (FileSystemStorage) myStorage;
-        Package pkg = filesystem.install(xar_file, force, interact, this, myPackages);
+        myStorage.beforeInstall(force, interact);
+
+        // the temporary dir, to unzip the package
+        File tmp_dir = myStorage.makeTempDir("install");
+
+        // unzip in the package in destination dir
+        try {
+            ZipHelper zip = new ZipHelper(xar_file);
+            zip.unzip(tmp_dir);
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error unziping the package", ex);
+        }
+        interact.logInfo("Package unziped to " + tmp_dir);
+
+        // parse the package
+        File desc_f = new File(tmp_dir, "expath-pkg.xml");
+        if ( desc_f == null ) {
+            throw new PackageException("Package descriptor does NOT exist in: " + tmp_dir);
+        }
+        Source desc = new StreamSource(desc_f);
+        // parse the descriptor
+        DescriptorParser parser = new DescriptorParser();
+        Package pkg = parser.parse(desc, null, myStorage, this);
+
+        // is the package already in the repo?
+        String name = pkg.getName();
+        String version = pkg.getVersion();
+        Packages pp = myPackages.get(name);
+        if ( pp != null ) {
+            Package p2 = pp.version(version);
+            if ( p2 != null ) {
+                if ( force || interact.ask("Force override " + name + " - " + version + "?", false) ) {
+                    myStorage.remove(p2);
+                    pp.remove(p2);
+                    if ( pp.latest() == null ) {
+                        myPackages.remove(name);
+                    }
+                }
+                else {
+                    throw new PackageException("Same version of the package is already installed");
+                }
+            }
+        }
+
+        // where to move the temporary dir? (where within the repo)
+        String key = pkg.getAbbrev() + "-" + version;
+        for ( int i = 1; myStorage.packageKeyExists(key) && i < 100 ; ++i ) {
+            key = pkg.getAbbrev() + "-" + version + "__" + i;
+        }
+        if ( myStorage.packageKeyExists(key) ) {
+            String msg = "Impossible to find a non-existing package key in the repo, stopped at: ";
+            throw new PackageException(msg + key);
+        }
+
+        myStorage.storeInstallDir(tmp_dir, key, pkg);
+        if ( pp == null ) {
+            pp = new Packages(name);
+            myPackages.put(name, pp);
+        }
+        pp.add(pkg);
+
+        myStorage.updatePackageLists(pkg);
+
         for ( Extension ext : myExtensions.values() ) {
             ext.init(this, pkg);
         }
+
         return pkg;
     }
 
     /**
-     * TODO: ...
+     * Remove a repository by name.
+     * 
+     * If a package with that name does not exist, or if there are several
+     * versions installed, this is an error.
      */
     public void removePackage(String pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -258,13 +320,16 @@ public class Repository
         if ( pp.packages().size() != 1 ) {
             throw new PackageException("The package has several versions installed: " + pkg);
         }
-        pp.latest().removeContent();
+        myStorage.remove(pp.latest());
         // remove the package from the list
         myPackages.remove(pkg);
     }
 
-    /**
-     * TODO: ...
+    /*$
+     * Remove a repository by name and version.
+     * 
+     * If a package with that name and that version does not exist, this is an
+     * error.
      */
     public void removePackage(String pkg, String version, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -281,7 +346,7 @@ public class Repository
         if ( p == null ) {
             throw new PackageException("The version " + version + " does not exist for the package: " + pkg);
         }
-        p.removeContent();
+        myStorage.remove(p);
         pp.remove(p);
         // remove the package from the list if it was the only version
         if ( pp.latest() == null ) {

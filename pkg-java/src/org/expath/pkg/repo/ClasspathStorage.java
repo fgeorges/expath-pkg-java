@@ -9,10 +9,13 @@
 
 package org.expath.pkg.repo;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.util.PackageTxt;
 
 /**
  * Storage using the classpath.
@@ -46,14 +49,58 @@ public class ClasspathStorage
     }
 
     @Override
-    public InputStream resolveRsrc(String path)
+    public Set<String> listPackageDirectories()
             throws PackageException
     {
-        String rsrc = myRoot.replace('.', '/') + "/" + path;
+        InputStream pkg_txt = null;
+        String rsrc = myRoot.replace('.', '/') + "/" + ".expath-pkg/packages.txt";
         ClassLoader loader = ClasspathStorage.class.getClassLoader();
         InputStream res = loader.getResourceAsStream(rsrc);
-        LOG.fine("Resolve resource ''{0}'' to: {1}", path, res);
-        return res;
+        LOG.fine("Resolve resource .expath-pkg/packages.txt to ''{0}''", res);
+        return PackageTxt.parseDirectories(pkg_txt);
+    }
+
+    @Override
+    public void beforeInstall(boolean force, UserInteractionStrategy interact)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException("Classpath storage is read only.");
+    }
+
+    @Override
+    public File makeTempDir(String prefix)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException("Classpath storage is read only.");
+    }
+
+    @Override
+    public boolean packageKeyExists(String key)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException(
+                "Could be impemented on classpath storage, but is only used to install...");
+    }
+
+    @Override
+    public void storeInstallDir(File dir, String key, Package pkg)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException("Classpath storage is read only.");
+    }
+
+    @Override
+    public void updatePackageLists(Package pkg)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException("Classpath storage is read only.");
+    }
+
+    @Override
+    public void remove(Package pkg)
+            throws PackageException
+    {
+        throw new UnsupportedOperationException("Classpath storage is read only.");
     }
 
     @Override
@@ -144,13 +191,6 @@ public class ClasspathStorage
             StreamSource src = new StreamSource(in);
             src.setSystemId(sysid.toString());
             return src;
-        }
-
-        @Override
-        public void removePackage()
-                throws PackageException
-        {
-            throw new PackageException("Remove operation not supported on the classpath storage");
         }
 
         private String myPkgRoot;

@@ -72,6 +72,7 @@ public class UniverseTest
         public TestSource(String str) {
             myStr = str;
         }
+        @Override
         public String toString() {
             return myStr;
         }
@@ -95,10 +96,6 @@ public class UniverseTest
         @Override
         public StreamSource resolveComponent(String path) throws PackageException {
             return new TestSource(myPkg + " | component | " + path);
-        }
-        @Override
-        public void removePackage() throws PackageException {
-            throw new UnsupportedOperationException("Not supported in tests.");
         }
         private String myPkg;
     }

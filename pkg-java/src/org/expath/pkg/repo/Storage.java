@@ -9,11 +9,7 @@
 
 package org.expath.pkg.repo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.io.File;
 import java.util.Set;
 import javax.xml.transform.Source;
 
@@ -30,49 +26,6 @@ import javax.xml.transform.Source;
  */
 public abstract class Storage
 {
-    public static abstract class PackageResolver
-    {
-        /**
-         * Return the package ID within the repository (i.e. its subdirectory name).
-         */
-        public abstract String getResourceName();
-
-        /**
-         * Resolve a resource within the package "root dir".
-         */
-        public abstract Source resolveResource(String path)
-                throws PackageException
-                     , NotExistException;
-        /**
-         * Resolve a resource within the package "module dir".
-         */
-        public abstract Source resolveComponent(String path)
-                throws PackageException
-                     , NotExistException;
-        /**
-         * Delete a package resources from the repository storage.
-         *
-         * Throw an exception when this is not supported on a particular
-         * storage type.
-         */
-        public abstract void removePackage()
-                throws PackageException;
-    }
-
-    public static class NotExistException
-            extends Exception
-    {
-        public NotExistException(String msg)
-        {
-            super(msg);
-        }
-
-        public NotExistException(String msg, Throwable ex)
-        {
-            super(msg, ex);
-        }
-    }
-
     /**
      * Return whether this storage is read-only.
      */
@@ -92,39 +45,104 @@ public abstract class Storage
     public abstract PackageResolver makePackageResolver(String rsrc_name, String abbrev)
             throws PackageException;
 
-    public abstract InputStream resolveRsrc(String path)
-            throws PackageException;
-
     /**
      * Return the list of installed packages.
      *
      * The returned list is the list of the package directories within the
      * repository.
-     *
-     * TODO: Cache the list.
      */
-    public Set<String> listPackageDirectories()
-            throws PackageException
+    public abstract Set<String> listPackageDirectories()
+            throws PackageException;
+
+    /**
+     * The opportunity to do anything before the install of a package.
+     * 
+     * If installation is not supported (because the storage is read-only),
+     * this method must throw an exception.
+     */
+    public abstract void beforeInstall(boolean force, UserInteractionStrategy interact)
+            throws PackageException;
+
+    /**
+     * TODO: ...
+     */
+    public abstract File makeTempDir(String prefix)
+            throws PackageException;
+
+    /**
+     * Each package in a repository can be identified by a unique key.
+     * 
+     * The key is computed based on the package abbrev, and is unique.
+     * Typically it is used to create a directory or a collection, which
+     * requires to have a unique string without '/'.
+     */
+    public abstract boolean packageKeyExists(String key)
+            throws PackageException;
+
+    /**
+     * Actually store the package in the storage.
+     * 
+     * During install, the package is unzipped in a temporary directory on the
+     * file system.  This method receives that directory and the package key to
+     * use, and actually take control over the temporary directory.
+     * 
+     * It can rename the directory to its final place (does not need to copy
+     * it). If it is not using the temporary directory anymore, it must delete
+     * it.
+     */
+    public abstract void storeInstallDir(File dir, String key, Package pkg)
+            throws PackageException;
+
+    /**
+     * The package has just been install, record the information if needed.
+     */
+    public abstract void updatePackageLists(Package pkg)
+            throws PackageException;
+
+    /**
+     * TODO: ...
+     */
+    public abstract void remove(Package pkg)
+            throws PackageException;
+
+    /**
+     * TODO: ...
+     */
+    public static abstract class PackageResolver
     {
-        Set<String> result = new HashSet<String>();
-        try {
-            InputStream stream = resolveRsrc(".expath-pkg/packages.txt");
-            if ( stream == null ) {
-                // return an empty set if the list does not exist
-                // that can be the case for instance when the repo is still empty
-                return result;
-            }
-            BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-            String line;
-            while ( (line = in.readLine()) != null ) {
-                int pos = line.indexOf(' ');
-                String dir = line.substring(0, pos);
-                result.add(dir);
-            }
-            return result;
+        /**
+         * Return the package ID within the repository (i.e. its subdirectory name).
+         */
+        public abstract String getResourceName();
+
+        /**
+         * Resolve a resource within the package "root dir".
+         */
+        public abstract Source resolveResource(String path)
+                throws PackageException
+                     , NotExistException;
+        /**
+         * Resolve a resource within the package "module dir".
+         */
+        public abstract Source resolveComponent(String path)
+                throws PackageException
+                     , NotExistException;
+    }
+
+    /**
+     * TODO: ...
+     */
+    public static class NotExistException
+            extends Exception
+    {
+        public NotExistException(String msg)
+        {
+            super(msg);
         }
-        catch ( IOException ex ) {
-            throw new PackageException("Error reading the package list", ex);
+
+        public NotExistException(String msg, Throwable ex)
+        {
+            super(msg, ex);
         }
     }
 }

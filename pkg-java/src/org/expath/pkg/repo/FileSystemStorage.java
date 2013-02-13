@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
+import java.util.Set;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -31,8 +31,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.expath.pkg.repo.parser.DescriptorParser;
 import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.util.PackageTxt;
 
 /**
  * Storage using the file system.
@@ -76,19 +76,20 @@ public class FileSystemStorage
     }
 
     @Override
-    public InputStream resolveRsrc(String path)
+    public Set<String> listPackageDirectories()
             throws PackageException
     {
-        File f = new File(myRoot, path);
-        if ( ! f.exists() ) {
-            return null;
+        File f = new File(myRoot, ".expath-pkg/packages.txt");
+        InputStream pkg_txt = null;
+        if ( f.exists() ) {
+            try {
+                pkg_txt = new FileInputStream(f);
+            }
+            catch ( FileNotFoundException ex ) {
+                throw new PackageException("File exists but is not found: " + f, ex);
+            }
         }
-        try {
-            return new FileInputStream(f);
-        }
-        catch ( FileNotFoundException ex ) {
-            throw new PackageException("File exists but is not found: " + f, ex);
-        }
+        return PackageTxt.parseDirectories(pkg_txt);
     }
 
     @Override
@@ -240,104 +241,6 @@ public class FileSystemStorage
             }
         }
 
-        @Override
-        public void removePackage()
-                throws PackageException
-        {
-            ensurePrivateDir();
-            // remove the entries from the packages.* files
-            String dir = getDirName();
-            File xml_file = new File(myPrivate, "packages.xml");
-            removePackageInXml(xml_file, dir);
-            File txt_file = new File(myPrivate, "packages.txt");
-            removePackageInTxt(txt_file, dir);
-            // actually delete the files
-            deleteDirRecurse(myPkgDir);
-        }
-
-        private void removePackageInXml(File file, String dir)
-                throws PackageException
-        {
-            try {
-                // cache the compiled stylesheet?
-                ClassLoader loader = FileSystemStorage.class.getClassLoader();
-                InputStream style_in = loader.getResourceAsStream(REMOVE_PACKAGE_XSL);
-                if ( style_in == null ) {
-                    throw new PackageException("Resource not found: " + REMOVE_PACKAGE_XSL);
-                }
-                Source style_src = new StreamSource(style_in);
-                style_src.setSystemId(REMOVE_PACKAGE_XSL);
-                Templates style = TransformerFactory.newInstance().newTemplates(style_src);
-                Source src = new StreamSource(file);
-                StringWriter res_out = new StringWriter();
-                Result res = new StreamResult(res_out);
-                Transformer trans = style.newTransformer();
-                trans.setParameter("dir", dir);
-                trans.transform(src, res);
-                OutputStream out = new FileOutputStream(file);
-                out.write(res_out.getBuffer().toString().getBytes());
-                out.close();
-            }
-            catch ( TransformerConfigurationException ex ) {
-                throw new PackageException("Impossible to compile the stylesheet: " + ADD_PACKAGE_XSL, ex);
-            }
-            catch ( TransformerException ex ) {
-                throw new PackageException("Error transforming packages.xml", ex);
-            }
-            catch ( FileNotFoundException ex ) {
-                throw new PackageException("File not found (wtf? - I just transformed it): " + file, ex);
-            }
-            catch ( IOException ex ) {
-                throw new PackageException("Error writing the file: " + file, ex);
-            }
-        }
-
-        private void removePackageInTxt(File file, String dir)
-                throws PackageException
-        {
-            try {
-                BufferedReader in = new BufferedReader(new FileReader(file));
-                StringWriter buffer = new StringWriter();
-                String line;
-                while ( (line = in.readLine()) != null ) {
-                    int pos = line.indexOf(' ');
-                    String d = line.substring(0, pos);
-                    // we don't write the line of the dir of the package to remove
-                    if ( ! d.equals(dir) ) {
-                        buffer.write(line);
-                        buffer.write("\n");
-                    }
-                }
-                in.close();
-                Writer out = new FileWriter(file);
-                out.write(buffer.getBuffer().toString());
-                out.close();
-            }
-            catch ( FileNotFoundException ex ) {
-                throw new PackageException("File not found: " + file, ex);
-            }
-            catch ( IOException ex ) {
-                throw new PackageException("Error writing the file: " + file, ex);
-            }
-        }
-
-        /**
-         * Delete a complete directory (with its descendants).
-         */
-        private void deleteDirRecurse(File dir)
-                throws PackageException
-        {
-            File[] children = dir.listFiles();
-            if ( children != null ) {
-                for ( File child : children ) {
-                    deleteDirRecurse(child);
-                }
-            }
-            if ( ! dir.delete() ) {
-                throw new PackageException("Error deleting a dir: " + dir);
-            }
-        }
-
         private String getDirName()
         {
             return myPkgDir.getName();
@@ -349,108 +252,42 @@ public class FileSystemStorage
         private String myPkgAbbrev;
     }
 
-    /**
-     * Install a package.
-     *
-     * TODO: Crap interface, so not on the Storage class for now.
-     *
-     * TODO: Re-introduce the fact we ask the user confirmation for the install,
-     * as well as the name of the target directory within the repository (with
-     * default value).  The initial code that did that was:
-     *
-     *   if ( interact.ask("Install module " + title + "?", true) ) {
-     *       name = interact.ask("Install it to dir", name);
-     *       if ( name == null ) {
-     *           interact.logInfo("Install dir is null, abort install of " + title);
-     *       }
-     *       else {
-     *           ...
-     */
-    public Package install(File xar_file,
-                           boolean force,
-                           UserInteractionStrategy interact,
-                           Repository repo,
-                           Map<String, Packages> packages)
+    @Override
+    public void beforeInstall(boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
-        // preconditions
-        if ( ! xar_file.exists() ) {
-            throw new PackageException("Package file does not exist (" + xar_file + ")");
-        }
-
-        // the temporary dir, to unzip the package
-        File priv_dir = ensurePrivateDir();
-        File tmp_dir  = FileHelper.makeTempDir("install", priv_dir);
-
-        // unzip in the package in destination dir
-        try {
-            ZipHelper zip = new ZipHelper(xar_file);
-            zip.unzip(tmp_dir);
-        }
-        catch ( IOException ex ) {
-            throw new PackageException("Error unziping the package", ex);
-        }
-        interact.logInfo("Package unziped to " + tmp_dir);
-
-        // parse the package
-        Source desc = resolveInPackageRoot(tmp_dir, "expath-pkg.xml");
-        if ( desc == null ) {
-            throw new PackageException("Package descriptor does NOT exist in: " + tmp_dir);
-        }
-        // parse the descriptor
-        DescriptorParser parser = new DescriptorParser();
-        Package pkg = parser.parse(desc, null, this, repo);
-
-        // where to move the temporary dir? (where within the repo)
-        File dest = null;
-
-        // is the package already in the repo?
-        String name = pkg.getName();
-        String version = pkg.getVersion();
-        Packages pp = packages.get(name);
-        if ( pp != null ) {
-            Package p2 = pp.version(version);
-            if ( p2 != null ) {
-                if ( force || interact.ask("Force override " + name + " - " + version + "?", false) ) {
-                    p2.removeContent();
-                    pp.remove(p2);
-                    if ( pp.latest() == null ) {
-                        packages.remove(name);
-                    }
-                }
-                else {
-                    throw new PackageException("Same version of the package is already installed");
-                }
-            }
-        }
-
-        // compute a name for the destination dir
-        if ( dest == null ) {
-            dest = new File(myRoot, pkg.getAbbrev() + "-" + version);
-            for ( int i = 1; dest.exists() && i < 100 ; ++i ) {
-                dest = new File(myRoot, pkg.getAbbrev() + "-" + version + "__" + i);
-            }
-            if ( dest.exists() ) {
-                String msg = "Impossible to find a non-existing dir in the repo, stopped at: ";
-                throw new PackageException(msg + dest);
-            }
-        }
-
-        // move the temporary dir content to the repository
-        FileHelper.renameTmpDir(tmp_dir, dest);
-        ((FileSystemResolver) pkg.getResolver()).setPkgDir(dest);
-        if ( pp == null ) {
-            pp = new Packages(name);
-            packages.put(name, pp);
-        }
-        pp.add(pkg);
-
-        updatePackageLists(pkg);
-
-        return pkg;
+        // nothing
     }
 
-    private void updatePackageLists(Package pkg)
+    @Override
+    public File makeTempDir(String prefix)
+            throws PackageException
+    {
+        File priv_dir = ensurePrivateDir();
+        return FileHelper.makeTempDir(prefix, priv_dir);
+    }
+
+    @Override
+    public boolean packageKeyExists(String key)
+            throws PackageException
+    {
+        File f = new File(myRoot, key);
+        return f.exists();
+    }
+
+    @Override
+    public void storeInstallDir(File dir, String key, Package pkg)
+            throws PackageException
+    {
+        // move the temporary dir content to the repository
+        File dest = new File(myRoot, key);
+        FileHelper.renameTmpDir(dir, dest);
+        FileSystemResolver resolver = getResolver(pkg);
+        resolver.setPkgDir(dest);
+    }
+
+    @Override
+    public void updatePackageLists(Package pkg)
             throws PackageException
     {
         File dir = ensurePrivateDir();
@@ -467,6 +304,114 @@ public class FileSystemStorage
         }
         else {
             updatePackagesTxt(txt_file, pkg);
+        }
+    }
+
+    @Override
+    public void remove(Package pkg)
+            throws PackageException
+    {
+        FileSystemResolver resolver = getResolver(pkg);
+        // remove the entries from the packages.* files
+        String dir = resolver.getDirName();
+        File xml_file = new File(myPrivate, "packages.xml");
+        removePackageInXml(xml_file, dir);
+        File txt_file = new File(myPrivate, "packages.txt");
+        removePackageInTxt(txt_file, dir);
+        // actually delete the files
+        deleteDirRecurse(resolver.myPkgDir);
+    }
+
+    private FileSystemResolver getResolver(Package pkg)
+            throws PackageException
+    {
+        Storage.PackageResolver base_resolver = pkg.getResolver();
+        if ( ! (base_resolver instanceof FileSystemResolver) ) {
+            throw new PackageException("The package has not been installed in this storage.");
+        }
+        return (FileSystemResolver) base_resolver;
+    }
+
+    private void removePackageInXml(File file, String dir)
+            throws PackageException
+    {
+        try {
+            // cache the compiled stylesheet?
+            ClassLoader loader = FileSystemStorage.class.getClassLoader();
+            InputStream style_in = loader.getResourceAsStream(REMOVE_PACKAGE_XSL);
+            if ( style_in == null ) {
+                throw new PackageException("Resource not found: " + REMOVE_PACKAGE_XSL);
+            }
+            Source style_src = new StreamSource(style_in);
+            style_src.setSystemId(REMOVE_PACKAGE_XSL);
+            Templates style = TransformerFactory.newInstance().newTemplates(style_src);
+            Source src = new StreamSource(file);
+            StringWriter res_out = new StringWriter();
+            Result res = new StreamResult(res_out);
+            Transformer trans = style.newTransformer();
+            trans.setParameter("dir", dir);
+            trans.transform(src, res);
+            OutputStream out = new FileOutputStream(file);
+            out.write(res_out.getBuffer().toString().getBytes());
+            out.close();
+        }
+        catch ( TransformerConfigurationException ex ) {
+            throw new PackageException("Impossible to compile the stylesheet: " + ADD_PACKAGE_XSL, ex);
+        }
+        catch ( TransformerException ex ) {
+            throw new PackageException("Error transforming packages.xml", ex);
+        }
+        catch ( FileNotFoundException ex ) {
+            throw new PackageException("File not found (wtf? - I just transformed it): " + file, ex);
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error writing the file: " + file, ex);
+        }
+    }
+
+    private void removePackageInTxt(File file, String dir)
+            throws PackageException
+    {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
+            StringWriter buffer = new StringWriter();
+            String line;
+            while ( (line = in.readLine()) != null ) {
+                int pos = line.indexOf(' ');
+                String d = line.substring(0, pos);
+                // we don't write the line of the dir of the package to remove
+                if ( ! d.equals(dir) ) {
+                    buffer.write(line);
+                    buffer.write("\n");
+                }
+            }
+            in.close();
+            Writer out = new FileWriter(file);
+            out.write(buffer.getBuffer().toString());
+            out.close();
+        }
+        catch ( FileNotFoundException ex ) {
+            throw new PackageException("File not found: " + file, ex);
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error writing the file: " + file, ex);
+        }
+    }
+
+    /**
+     * Delete a complete directory (with its descendants).
+     */
+    private void deleteDirRecurse(File dir)
+            throws PackageException
+    {
+        File[] children = dir.listFiles();
+        if ( children != null ) {
+            for ( File child : children ) {
+                deleteDirRecurse(child);
+            }
+        }
+        if ( ! dir.delete() ) {
+            throw new PackageException("Error deleting a dir: " + dir);
         }
     }
 
@@ -490,13 +435,14 @@ public class FileSystemStorage
             throws PackageException
     {
         try {
+            FileSystemResolver resolver = getResolver(pkg);
             Writer out = new FileWriter(file);
             out.write("<packages xmlns=\"http://expath.org/ns/repo/packages\">\n");
             out.write("   <package name=\"");
             out.write(pkg.getName());
             out.write("\"\n");
             out.write("            dir=\"");
-            out.write(((FileSystemResolver) pkg.getResolver()).getDirName());
+            out.write(resolver.getDirName());
             out.write("\"\n");
             out.write("            version=\"");
             out.write(pkg.getVersion());
@@ -538,8 +484,9 @@ public class FileSystemStorage
             StringWriter res_out = new StringWriter();
             Result res = new StreamResult(res_out);
             Transformer trans = style.newTransformer();
+            FileSystemResolver resolver = getResolver(pkg);
             trans.setParameter("name", pkg.getName());
-            trans.setParameter("dir", ((FileSystemResolver) pkg.getResolver()).getDirName());
+            trans.setParameter("dir", resolver.getDirName());
             trans.setParameter("version", pkg.getVersion());
             trans.transform(src, res);
             OutputStream out = new FileOutputStream(file);
@@ -564,8 +511,9 @@ public class FileSystemStorage
             throws PackageException
     {
         try {
+            FileSystemResolver resolver = getResolver(pkg);
             Writer out = new FileWriter(file);
-            out.write(((FileSystemResolver) pkg.getResolver()).getDirName());
+            out.write(resolver.getDirName());
             out.write(" ");
             out.write(pkg.getName());
             out.write(" ");
@@ -587,8 +535,9 @@ public class FileSystemStorage
     private void updatePackagesTxt(File file, Package pkg)
             throws PackageException
     {
+        FileSystemResolver resolver = getResolver(pkg);
         String pkg_name = pkg.getName();
-        String pkg_dir = ((FileSystemResolver) pkg.getResolver()).getDirName();
+        String pkg_dir = resolver.getDirName();
         String pkg_version = pkg.getVersion();
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
@@ -627,16 +576,6 @@ public class FileSystemStorage
         catch ( IOException ex ) {
             throw new PackageException("Error writing the file: " + file, ex);
         }
-    }
-
-    private Source resolveInPackageRoot(File root, String path)
-            throws PackageException
-    {
-        File f = new File(root, path);
-        if ( ! f.exists() ) {
-            return null;
-        }
-        return new StreamSource(f);
     }
 
     private static final String ADD_PACKAGE_XSL    = "org/expath/pkg/repo/rsrc/add-package.xsl";

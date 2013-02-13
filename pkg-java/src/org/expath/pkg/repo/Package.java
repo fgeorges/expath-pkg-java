@@ -44,15 +44,6 @@ public class Package
     }
 
     /**
-     * Actually remove the package from the storage layer.
-     */
-    public void removeContent()
-            throws PackageException
-    {
-        myResolver.removePackage();
-    }
-
-    /**
      * {@code relative} is the filename relative to the module dir.
      */
     public void addPublicUri(URISpace space, String href, String relative)
