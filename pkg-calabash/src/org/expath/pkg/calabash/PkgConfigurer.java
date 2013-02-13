@@ -10,13 +10,13 @@
 
 package org.expath.pkg.calabash;
 
-import com.xmlcalabash.core.XProcRuntime;
 import com.xmlcalabash.config.XMLCalabashConfigurer;
 import com.xmlcalabash.config.JaxpConfigurer;
 import com.xmlcalabash.config.JingConfigurer;
 import com.xmlcalabash.config.SaxonConfigurer;
 import com.xmlcalabash.config.XProcConfigurer;
 import com.xmlcalabash.core.XProcException;
+import com.xmlcalabash.core.XProcProcessor;
 import java.io.File;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
@@ -33,9 +33,9 @@ import org.expath.pkg.repo.util.Logger;
 public class PkgConfigurer
         implements XProcConfigurer
 {
-    public PkgConfigurer(XProcRuntime runtime)
+    public PkgConfigurer(XProcProcessor proc)
     {
-        myRuntime = runtime;
+        myCalabash = proc;
         String repo_value = System.getProperty("org.expath.pkg.calabash.repo");
         LOG.fine("org.expath.pkg.calabash.repo: {0}", repo_value);
         if ( repo_value == null ) {
@@ -56,19 +56,19 @@ public class PkgConfigurer
         }
     }
 
-    public PkgConfigurer(XProcRuntime runtime, Repository repo)
+    public PkgConfigurer(XProcProcessor proc, Repository repo)
     {
-        myRuntime = runtime;
-        myRepo    = repo;
+        myCalabash = proc;
+        myRepo     = repo;
     }
 
     @Override
     public XMLCalabashConfigurer getXMLCalabashConfigurer()
     {
-        if ( myCalabash == null ) {
-            myCalabash = new PkgCalabashConfigurer(myRuntime, myRepo);
+        if ( myConfigurer == null ) {
+            myConfigurer = new PkgCalabashConfigurer(myCalabash, myRepo);
         }
-        return myCalabash;
+        return myConfigurer;
     }
 
     @Override
@@ -104,12 +104,12 @@ public class PkgConfigurer
         return mySaxon;
     }
 
-    private XProcRuntime          myRuntime;
+    private XProcProcessor        myCalabash;
     private Repository            myRepo;
-    private XMLCalabashConfigurer myCalabash = null;
-    private JaxpConfigurer        myJaxp     = null;
-    private JingConfigurer        myJing     = null;
-    private SaxonConfigurer       mySaxon    = null;
+    private XMLCalabashConfigurer myConfigurer = null;
+    private JaxpConfigurer        myJaxp       = null;
+    private JingConfigurer        myJing       = null;
+    private SaxonConfigurer       mySaxon      = null;
     private static final Logger LOG = Logger.getLogger(PkgConfigurer.class);
 }
 

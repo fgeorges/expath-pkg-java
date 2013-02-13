@@ -18,6 +18,7 @@ import com.xmlcalabash.io.WritableDocument;
 import com.xmlcalabash.model.Serialization;
 import com.xmlcalabash.runtime.XPipeline;
 import com.xmlcalabash.config.XProcConfigurer;
+import com.xmlcalabash.core.XProcProcessor;
 import java.io.File;
 import net.sf.saxon.s9api.SaxonApiException;
 import org.expath.pkg.calabash.PkgConfigurer;
@@ -175,50 +176,51 @@ public class RunCalabash
     private void runPlainPipeline(String name)
             throws SaxonApiException
     {
-        XProcRuntime runtime = makePlainRuntime();
-        runPipeline(name, runtime);
+        XProcProcessor proc = makePlainProcessor();
+        runPipeline(name, proc);
     }
 
     private void runConfiguredPipeline(String name)
             throws SaxonApiException
                  , PackageException
     {
-        XProcRuntime runtime = makeConfiguredRuntime();
-        runPipeline(name, runtime);
+        XProcProcessor proc = makeConfiguredProcessor();
+        runPipeline(name, proc);
     }
 
-    private void runPipeline(String name, XProcRuntime runtime)
+    private void runPipeline(String name, XProcProcessor proc)
             throws SaxonApiException
     {
         System.err.println(" ------------ ");
         System.err.println("I AM GONNA RUN " + name);
-        XPipeline pipe = runtime.load(PIPE_DIR + name);
+        XProcRuntime runtime = proc.load(PIPE_DIR + name);
+        XPipeline pipe = runtime.getPipeline();
         pipe.run();
         copyPortToStdout(pipe, "result", runtime);
     }
 
-    private XProcRuntime makePlainRuntime()
+    private XProcProcessor makePlainProcessor()
     {
         XProcConfiguration conf = new XProcConfiguration();
-        return new XProcRuntime(conf);
+        return new XProcProcessor(conf);
     }
 
-    private XProcRuntime makeConfiguredRuntime()
+    private XProcProcessor makeConfiguredProcessor()
             throws PackageException
     {
-        XProcRuntime runtime = makePlainRuntime();
-        XProcConfigurer configurer = makeConfigurer(runtime);
-        runtime.setConfigurer(configurer);
-        return runtime;
+        XProcProcessor proc = makePlainProcessor();
+        XProcConfigurer configurer = makeConfigurer(proc);
+        proc.setConfigurer(configurer);
+        return proc;
     }
 
-    private XProcConfigurer makeConfigurer(XProcRuntime runtime)
+    private XProcConfigurer makeConfigurer(XProcProcessor proc)
             throws PackageException
     {
         File dir = new File(REPO);
         Storage storage = new FileSystemStorage(dir);
         Repository repo = new Repository(storage);
-        return new PkgConfigurer(runtime, repo);
+        return new PkgConfigurer(proc, repo);
     }
 
     private void copyPortToStdout(XPipeline pipe, String port, XProcRuntime runtime)

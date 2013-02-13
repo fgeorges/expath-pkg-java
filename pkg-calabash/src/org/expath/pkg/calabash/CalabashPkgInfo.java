@@ -10,7 +10,7 @@
 package org.expath.pkg.calabash;
 
 import com.xmlcalabash.core.XProcConfiguration;
-import com.xmlcalabash.core.XProcRuntime;
+import com.xmlcalabash.core.XProcProcessor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,10 +36,10 @@ public class CalabashPkgInfo
         super("calabash", pkg);
     }
 
-    public void registerExtensionSteps(XProcRuntime runtime)
+    public void registerExtensionSteps(XProcProcessor proc)
             throws PackageException
     {
-        XProcConfiguration config = runtime.getConfiguration();
+        XProcConfiguration config = proc.getConfiguration();
         for ( Map.Entry<QName, String> e : mySteps.entrySet() ) {
             config.implementations.put(e.getKey(), e.getValue());
         }

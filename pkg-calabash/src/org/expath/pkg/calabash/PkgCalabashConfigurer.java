@@ -11,12 +11,14 @@
 package org.expath.pkg.calabash;
 
 import com.xmlcalabash.core.XProcException;
+import com.xmlcalabash.core.XProcProcessor;
 import com.xmlcalabash.core.XProcRuntime;
 import com.xmlcalabash.io.ReadablePipe;
 import com.xmlcalabash.library.Load;
 import com.xmlcalabash.model.DataBinding;
 import com.xmlcalabash.model.DocumentBinding;
 import com.xmlcalabash.util.DefaultXMLCalabashConfigurer;
+import com.xmlcalabash.util.XProcURIResolver;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -42,9 +44,9 @@ import org.xml.sax.EntityResolver;
 public class PkgCalabashConfigurer
         extends DefaultXMLCalabashConfigurer
 {
-    public PkgCalabashConfigurer(XProcRuntime runtime, Repository repo)
+    public PkgCalabashConfigurer(XProcProcessor proc, Repository repo)
     {
-        super(runtime);
+        super(proc);
         myRepo = repo;
     }
 
@@ -55,15 +57,17 @@ public class PkgCalabashConfigurer
     public void configRuntime(XProcRuntime runtime)
     {
         // set the URI resolver
-        URIResolver resolver = new PkgURIResolver(myRepo, URISpace.XPROC);
-        runtime.setURIResolver(resolver);
+        XProcURIResolver resolver = new XProcURIResolver(xproc);
+        resolver.setUnderlyingURIResolver(new PkgURIResolver(myRepo, URISpace.XPROC));
+        resolver.setUnderlyingEntityResolver(new PkgEntityResolver(myRepo, URISpace.XPROC));
+        xproc.setURIResolver(resolver);
         // register the extension steps (recorded into Calabash's info on packages)
         for ( Packages pp : myRepo.listPackages() ) {
             Package pkg = pp.latest();
             CalabashPkgInfo info = (CalabashPkgInfo) pkg.getInfo("calabash");
             if ( info != null ) {
                 try {
-                    info.registerExtensionSteps(runtime);
+                    info.registerExtensionSteps(xproc);
                 }
                 catch ( PackageException ex ) {
                     String msg = "Error registering extension steps for ";
@@ -111,7 +115,7 @@ public class PkgCalabashConfigurer
         }
         else {
             URIResolver resolver = getURIResolver(kind);
-            return new PkgReadableDocument(b.getHref(), resolver, r);
+            return new PkgReadableDocument(b.getHref(), resolver, xproc, r);
         }
     }
 
@@ -123,7 +127,7 @@ public class PkgCalabashConfigurer
             if ( src == null ) {
                 return null;
             }
-            DocumentBuilder builder = runtime.getProcessor().newDocumentBuilder();
+            DocumentBuilder builder = xproc.getProcessor().newDocumentBuilder();
             builder.setDTDValidation(validate);
             builder.setLineNumbering(true);
             return builder.build(src);

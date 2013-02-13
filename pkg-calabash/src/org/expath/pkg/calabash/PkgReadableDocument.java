@@ -11,6 +11,7 @@
 package org.expath.pkg.calabash;
 
 import com.xmlcalabash.core.XProcException;
+import com.xmlcalabash.core.XProcProcessor;
 import com.xmlcalabash.core.XProcRuntime;
 import com.xmlcalabash.io.DocumentSequence;
 import com.xmlcalabash.io.ReadablePipe;
@@ -33,11 +34,12 @@ import net.sf.saxon.s9api.XdmNode;
 public class PkgReadableDocument
         implements ReadablePipe
 {
-    public PkgReadableDocument(String href, URIResolver resolver, XProcRuntime runtime)
+    public PkgReadableDocument(String href, URIResolver resolver, XProcProcessor proc, XProcRuntime runtime)
     {
         myHref     = href;
         myResolver = resolver;
         myRuntime  = runtime;
+        myCalabash = proc;
         myDocs     = new DocumentSequence(myRuntime);
     }
 
@@ -111,7 +113,7 @@ public class PkgReadableDocument
         catch ( TransformerException ex ) {
             throw new XProcException("Error resolving '" + myHref + "'", ex);
         }
-        DocumentBuilder builder = myRuntime.getProcessor().newDocumentBuilder();
+        DocumentBuilder builder = myCalabash.getProcessor().newDocumentBuilder();
         builder.setLineNumbering(true);
         try {
             myDocs.add(builder.build(src));
@@ -125,6 +127,7 @@ public class PkgReadableDocument
 
     private String myHref;
     private URIResolver myResolver;
+    private XProcProcessor myCalabash;
     private XProcRuntime myRuntime;
     private int myPos = 0;
     private DocumentSequence myDocs = null;
