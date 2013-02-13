@@ -79,7 +79,9 @@ public class PkgModuleResolver
             // delegate to pkg-repo's repository
             s = myParent.resolve(module_uri, URISpace.XQUERY);
             if ( s != null ) {
-                // TODO: Why requiring a StreamSource here...?
+                // TODO: Needs a better abstraction.  Even if it is not a StreamSource
+                // it could succeed...  But a Source is not suitable for an XQuery
+                // module source.
                 if ( ! (s instanceof StreamSource) ) {
                     throw new XPathException("The Source is not a StreamSource");
                 }
