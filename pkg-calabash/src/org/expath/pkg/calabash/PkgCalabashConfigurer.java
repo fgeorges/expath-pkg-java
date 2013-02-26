@@ -60,7 +60,7 @@ public class PkgCalabashConfigurer
         XProcURIResolver resolver = new XProcURIResolver(xproc);
         resolver.setUnderlyingURIResolver(new PkgURIResolver(myRepo, URISpace.XPROC));
         resolver.setUnderlyingEntityResolver(new PkgEntityResolver(myRepo, URISpace.XPROC));
-        xproc.setURIResolver(resolver);
+        runtime.setURIResolver(resolver);
         // register the extension steps (recorded into Calabash's info on packages)
         for ( Packages pp : myRepo.listPackages() ) {
             Package pkg = pp.latest();
