@@ -35,6 +35,9 @@ import org.junit.Test;
  */
 public class RunCalabash
 {
+    private static final String PIPE_DIR = "src/test/resources/functional/run/";
+    private static final String REPO     = PIPE_DIR + "repo/";
+    
     // DEBUG: To be able to use the debugger...
 //    public static void main(String[] args)
 //            throws SaxonApiException
@@ -172,18 +175,18 @@ public class RunCalabash
         runConfiguredPipeline("xslt-java.xpl");
     }
 
-    private void runPlainPipeline(String name)
+    private void runPlainPipeline(final String name)
             throws SaxonApiException
     {
-        XProcRuntime runtime = makePlainRuntime();
+        final XProcRuntime runtime = makePlainRuntime();
         runPipeline(name, runtime);
     }
 
-    private void runConfiguredPipeline(String name)
+    private void runConfiguredPipeline(final String name)
             throws SaxonApiException
                  , PackageException
     {
-        XProcRuntime runtime = makeConfiguredRuntime();
+        final XProcRuntime runtime = makeConfiguredRuntime();
         runPipeline(name, runtime);
     }
 
@@ -192,48 +195,45 @@ public class RunCalabash
     {
         System.err.println(" ------------ ");
         System.err.println("I AM GONNA RUN " + name);
-        XPipeline pipe = runtime.load(PIPE_DIR + name);
+        final XPipeline pipe = runtime.load(PIPE_DIR + name);
         pipe.run();
         copyPortToStdout(pipe, "result", runtime);
     }
 
     private XProcRuntime makePlainRuntime()
     {
-        XProcConfiguration conf = new XProcConfiguration();
+        final XProcConfiguration conf = new XProcConfiguration();
         return new XProcRuntime(conf);
     }
 
     private XProcRuntime makeConfiguredRuntime()
             throws PackageException
     {
-        XProcRuntime runtime = makePlainRuntime();
-        XProcConfigurer configurer = makeConfigurer(runtime);
+        final XProcRuntime runtime = makePlainRuntime();
+        final XProcConfigurer configurer = makeConfigurer(runtime);
         runtime.setConfigurer(configurer);
         return runtime;
     }
 
-    private XProcConfigurer makeConfigurer(XProcRuntime runtime)
+    private XProcConfigurer makeConfigurer(final XProcRuntime runtime)
             throws PackageException
     {
-        File dir = new File(REPO);
-        Storage storage = new FileSystemStorage(dir);
-        Repository repo = new Repository(storage);
+        final File dir = new File(REPO);
+        final Storage storage = new FileSystemStorage(dir);
+        final Repository repo = new Repository(storage);
         return new PkgConfigurer(runtime, repo);
     }
 
-    private void copyPortToStdout(XPipeline pipe, String port, XProcRuntime runtime)
+    private void copyPortToStdout(final XPipeline pipe, final String port, final XProcRuntime runtime)
             throws SaxonApiException
     {
-        Serialization    serial = pipe.getSerialization(port);
-        WritableDocument wdoc   = new WritableDocument(runtime, null, serial);
-        ReadablePipe     rpipe  = pipe.readFrom(port);
+        final Serialization    serial = pipe.getSerialization(port);
+        final WritableDocument wdoc   = new WritableDocument(runtime, null, serial);
+        final ReadablePipe     rpipe  = pipe.readFrom(port);
         while ( rpipe.moreDocuments() ) {
             wdoc.write(rpipe.read());
         }
     }
-
-    private static final String PIPE_DIR = "test/functional/run/";
-    private static final String REPO     = "test/functional/run/repo/";
 }
 
 
@@ -254,5 +254,5 @@ public class RunCalabash
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */
