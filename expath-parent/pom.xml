@@ -83,8 +83,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.daisy.libs</groupId>
-                <artifactId>saxon-he</artifactId>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
                 <version>${saxon.version}</version>
             </dependency>
             <dependency>
