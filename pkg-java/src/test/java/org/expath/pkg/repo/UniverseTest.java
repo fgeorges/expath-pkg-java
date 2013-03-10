@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.expath.pkg.repo.TestConstants.REPOS_LOCATION;
 
 /**
  * Test the {@code Universe}, especially its resolve mechanism.
@@ -27,40 +28,41 @@ import static org.junit.Assert.*;
  */
 public class UniverseTest
 {
-    private File pkgComponentFile(String repo, String lib, String version, String component)
+    private File pkgComponentFile(final String repo, final String lib, final String version, final String component)
     {
-        System.err.println("test/repos/" + repo + "/" + lib + "-" + version + "/" + lib + "/" + component);
-        return new File("test/repos/" + repo + "/" + lib + "-" + version + "/" + lib + "/" + component);
+        final File f = new File(REPOS_LOCATION,  repo + "/" + lib + "-" + version + "/" + lib + "/" + component);
+        System.err.println(f.getPath());
+        return f;
     }
 
-    private File sourceFile(Source src)
+    private File sourceFile(final Source src)
             throws URISyntaxException
     {
         assertNotNull(src);
-        String sysid = src.getSystemId();
-        URI uri = new URI(sysid);
+        final String sysid = src.getSystemId();
+        final URI uri = new URI(sysid);
         return new File(uri);
     }
 
-    private void assertComponent(String repo, String lib, String version, String component, Source src)
+    private void assertComponent(final String repo, final String lib, final String version, final String component, final Source src)
             throws URISyntaxException, IOException
     {
-        File expected = pkgComponentFile(repo, lib, version, component);
-        File actual   = sourceFile(src);
-        String exp_path = expected.getCanonicalPath();
-        String act_path = actual.getCanonicalPath();
+        final File expected = pkgComponentFile(repo, lib, version, component);
+        final File actual   = sourceFile(src);
+        final String exp_path = expected.getCanonicalPath();
+        final String act_path = actual.getCanonicalPath();
         assertEquals(exp_path, act_path);
     }
 
-    private Repository getRepository(String repo)
+    private Repository getRepository(final String repo)
             throws PackageException
     {
-        File repo_dir = new File("test/repos/" + repo);
-        Storage storage = new FileSystemStorage(repo_dir);
+        final File repo_dir = new File(REPOS_LOCATION, repo);
+        final Storage storage = new FileSystemStorage(repo_dir);
         return new Repository(storage);
     }
 
-    private Package latestPackage(Repository repo, String name)
+    private Package latestPackage(final Repository repo, final String name)
     {
         Packages pp = repo.getPackages(name);
         return pp.latest();
@@ -69,7 +71,7 @@ public class UniverseTest
     private static class TestSource
             extends StreamSource
     {
-        public TestSource(String str) {
+        public TestSource(final String str) {
             myStr = str;
         }
         @Override
@@ -82,7 +84,7 @@ public class UniverseTest
     private static class TestResolver
             extends Storage.PackageResolver
     {
-        public TestResolver(String pkg) {
+        public TestResolver(final String pkg) {
             myPkg = pkg;
         }
         @Override
@@ -90,20 +92,17 @@ public class UniverseTest
             throw new UnsupportedOperationException("Not supported in tests.");
         }
         @Override
-        public StreamSource resolveResource(String path) throws PackageException {
+        public StreamSource resolveResource(final String path) throws PackageException {
             throw new UnsupportedOperationException("Not supported in tests.");
         }
         @Override
-        public StreamSource resolveComponent(String path) throws PackageException {
+        public StreamSource resolveComponent(final String path) throws PackageException {
             return new TestSource(myPkg + " | component | " + path);
         }
         private String myPkg;
     }
 
     private static final String APP_PKG_NAME   = "http://example.com/my-app";
-    private static final String LIB_A_PKG_NAME = "http://example.org/lib-a";
-    private static final String LIB_B_PKG_NAME = "http://example.org/lib-b";
-    private static final String LIB_X_PKG_NAME = "http://example.org/lib-x";
     private static final String LIB_Y_PKG_NAME = "http://example.org/lib-y";
 
     /**
@@ -116,21 +115,21 @@ public class UniverseTest
             throws PackageException
     {
         // the fixture (the repository and packages)
-        Repository repo = new Repository();
-        Package p1 = new Package(repo, new TestResolver("pkg 1"), "urn:test:1", "p1", "1.0", "title 1", "http://home/1");
+        final Repository repo = new Repository();
+        final Package p1 = new Package(repo, new TestResolver("pkg 1"), "urn:test:1", "p1", "1.0", "title 1", "http://home/1");
         p1.addPublicUri(URISpace.XSLT, "urn:test:1:some.xsl", "dir/some.xsl");
         p1.addPublicUri(URISpace.XSLT, "urn:test:1:other.xsl", "dir/other.xsl");
         repo.addPackage(p1);
-        Package p2 = new Package(repo, new TestResolver("pkg 2"), "urn:test:2", "p2", "1.0", "title 2", "http://home/2");
+        final Package p2 = new Package(repo, new TestResolver("pkg 2"), "urn:test:2", "p2", "1.0", "title 2", "http://home/2");
         p2.addPublicUri(URISpace.XSLT, "urn:test:2:some.xsl", "dir/some.xsl");
         p2.addPublicUri(URISpace.XSLT, "urn:test:2:other.xsl", "dir/other.xsl");
         repo.addPackage(p2);
         // the SUT
-        CompositeUniverse sut = new CompositeUniverse(true);
+        final CompositeUniverse sut = new CompositeUniverse(true);
         sut.addUniverse(p1);
         sut.addUniverse(p2);
         // do it
-        Source src = sut.resolve("urn:test:1:some.xsl", URISpace.XSLT);
+        final Source src = sut.resolve("urn:test:1:some.xsl", URISpace.XSLT);
         // assert
         assertEquals("the resolved component", "pkg 1 | component | dir/some.xsl", src.toString());
     }
@@ -143,11 +142,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Package sut = latestPackage(repo, APP_PKG_NAME);
+        final Package sut = latestPackage(repo, APP_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-x/query", URISpace.XQUERY);
+        final Source src = sut.resolve("http://example.org/lib-x/query", URISpace.XQUERY);
         // assertions
         assertComponent("deps-1", "lib-x", "12.9.0", "query.xql", src);
     }
@@ -157,11 +156,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Packages sut = repo.getPackages(LIB_Y_PKG_NAME);
+        final Packages sut = repo.getPackages(LIB_Y_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-y/query", URISpace.XQUERY);
+        final Source src = sut.resolve("http://example.org/lib-y/query", URISpace.XQUERY);
         // assertions
         assertComponent("deps-1", "lib-y", "1.19.18", "query.xql", src);
     }
@@ -171,11 +170,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Package sut = latestPackage(repo, APP_PKG_NAME);
+        final Package sut = latestPackage(repo, APP_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, true);
+        final Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, true);
         // assertions
         assertComponent("deps-1", "lib-y", "1.19.18", "style.xsl", src);
     }
@@ -185,11 +184,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Packages sut = repo.getPackages(APP_PKG_NAME);
+        final Packages sut = repo.getPackages(APP_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, true);
+        final Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, true);
         // assertions
         assertComponent("deps-1", "lib-y", "1.19.18", "style.xsl", src);
     }
@@ -199,11 +198,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Package sut = latestPackage(repo, APP_PKG_NAME);
+        final Package sut = latestPackage(repo, APP_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, false);
+        final Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, false);
         // assertions
         assertNull(src);
     }
@@ -213,11 +212,11 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the fixture
-        Repository repo = getRepository("deps-1");
+        final Repository repo = getRepository("deps-1");
         // the sut
-        Packages sut = repo.getPackages(APP_PKG_NAME);
+        final Packages sut = repo.getPackages(APP_PKG_NAME);
         // do it
-        Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, false);
+        final Source src = sut.resolve("http://example.org/lib-y/style.xsl", URISpace.XSLT, false);
         // assertions
         assertNull(src);
     }
@@ -227,9 +226,9 @@ public class UniverseTest
             throws PackageException, URISyntaxException, IOException
     {
         // the sut
-        Repository sut = getRepository("deps-1");
+        final Repository sut = getRepository("deps-1");
         // do it
-        Source src = sut.resolve("http://example.org/lib-b/query", URISpace.XQUERY);
+        final Source src = sut.resolve("http://example.org/lib-b/query", URISpace.XQUERY);
         // assertions
         assertComponent("deps-1", "lib-b", "0.1.0", "query.xql", src);
     }
@@ -253,5 +252,5 @@ public class UniverseTest
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */

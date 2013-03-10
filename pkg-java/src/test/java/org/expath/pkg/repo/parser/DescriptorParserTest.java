@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.expath.pkg.repo.TestConstants.REPOS_LOCATION;
 
 /**
  * TODO: ...
@@ -37,17 +38,17 @@ public class DescriptorParserTest
             throws Exception
     {
         // the SUT
-        DescriptorParser sut = new DescriptorParser();
-        Source desc = new StreamSource(PKG_DIR + "expath-pkg.xml");
-        Storage storage = new FileSystemStorage(new File("test/repos/simple"));
+        final DescriptorParser sut = new DescriptorParser();
+        final Source desc = new StreamSource(PKG_DIR + "expath-pkg.xml");
+        final Storage storage = new FileSystemStorage(new File(REPOS_LOCATION, "simple"));
         // get the package
-        Package pkg = sut.parse(desc, "hello-1.1.1", storage, null);
+        final Package pkg = sut.parse(desc, "hello-1.1.1", storage, null);
         // the simple properties
         assertEquals("the abbrev", "hello", pkg.getAbbrev());
         assertEquals("the name", "http://www.example.org/lib/hello", pkg.getName());
         assertEquals("the version", "1.1.1", pkg.getVersion());
         // the resolver
-        PackageResolver resolver = pkg.getResolver();
+        final PackageResolver resolver = pkg.getResolver();
         assertEquals("the resource (dir) name", "hello-1.1.1", resolver.getResourceName());
         assertSourceIsFile("the resource",                "expath-pkg.xml",  resolver.resolveResource("expath-pkg.xml"));
         assertSourceIsFile("the component as a resource", "hello/hello.xq",  resolver.resolveResource("hello/hello.xq"));
@@ -61,15 +62,15 @@ public class DescriptorParserTest
         assertNull("resolve XSLT within XQuery", pkg.resolve("http://www.example.org/hello.xsl", URISpace.XQUERY));
     }
 
-    static private void assertSourceIsFile(String msg, String relative_file, Source src)
+    static private void assertSourceIsFile(final String msg, final String relative_file, final Source src)
             throws URISyntaxException
     {
-        File f = new File(PKG_DIR + relative_file);
-        URI uri = new URI(src.getSystemId());
+        final File f = new File(PKG_DIR, relative_file);
+        final URI uri = new URI(src.getSystemId());
         assertEquals(msg, f.getAbsolutePath(), new File(uri).getAbsolutePath());
     }
 
-    static private final String PKG_DIR = "test/repos/simple/hello-1.1.1/";
+    static private final String PKG_DIR = REPOS_LOCATION + "/simple/hello-1.1.1/";
 }
 
 
@@ -90,5 +91,5 @@ public class DescriptorParserTest
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */

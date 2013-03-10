@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.expath.pkg.repo.TestConstants.REPOS_LOCATION;
 
 /**
  * TODO: ...
@@ -30,11 +31,11 @@ public class RepositoryTest
     public void testConstructor()
             throws Exception
     {
-        Storage storage = new FileSystemStorage(new File("test/repos/simple"));
-        Repository sut = new Repository(storage);
-        Collection<Packages> packages_list = sut.listPackages();
+        final Storage storage = new FileSystemStorage(new File(REPOS_LOCATION, "simple"));
+        final Repository sut = new Repository(storage);
+        final Collection<Packages> packages_list = sut.listPackages();
         assertEquals("number of packages", 1, packages_list.size());
-        Packages packages = packages_list.iterator().next();
+        final Packages packages = packages_list.iterator().next();
         assertNotNull("packages not null", packages);
         assertEquals("packages name", HELLO_NAME, packages.name());
         assertNotNull("latest not null", packages.latest());
@@ -43,9 +44,9 @@ public class RepositoryTest
         assertNull("get 1 null", packages.version("1"));
         assertSame("latest =is= get 1.1", packages.latest(), packages.version("1.1.1"));
         assertEquals("get 1.1.1 version", "1.1.1", packages.version("1.1.1").getVersion());
-        Collection<Package> package_list = packages.packages();
+        final Collection<Package> package_list = packages.packages();
         assertEquals("number of package versions", 1, package_list.size());
-        Package pkg = package_list.iterator().next();
+        final Package pkg = package_list.iterator().next();
         assertNotNull("package not null", pkg);
         assertEquals("version", "1.1.1", pkg.getVersion());
         assertEquals("name", HELLO_NAME, pkg.getName());
@@ -72,5 +73,5 @@ public class RepositoryTest
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */

@@ -19,7 +19,10 @@ import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.Storage;
 import org.expath.pkg.repo.UserInteractionStrategy;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Functional tests for package install.
@@ -29,42 +32,82 @@ import static org.junit.Assert.*;
  */
 public class InstallPackage
 {
+    public static final String HELLO_XAR_OLD = "../samples/hello-pkg/hello-1.1.xar";
+    public static final String HELLO_XAR_NEW = "../samples/hello-pkg/hello-1.2.xar";
+    public static final String TMP_REPO_DIR  = "target/tmp/repo";
+
+    
+    @BeforeClass
+    public static void setupRepo()
+            throws Throwable
+    {
+        // Initialize a new temporary repo.
+        final File repo_dir = new File(TMP_REPO_DIR);
+        if ( repo_dir.exists() ) {
+            fail("The directory exists: " + TMP_REPO_DIR);
+        }
+        if ( ! repo_dir.mkdirs() ) {
+            fail("Error creating the directory: " + TMP_REPO_DIR);
+        }
+    }
+
+    @AfterClass
+    public static void removeRepo() {
+        final File repo_dir = new File(TMP_REPO_DIR);
+        recursiveDelete(repo_dir);
+    }
+    
+    private static void recursiveDelete(final File file) {
+        if ( file.isDirectory() ) {
+            for ( final File child : file.listFiles() ) {
+                recursiveDelete(child);
+            }
+        }
+        if ( ! file.delete() ) {
+            fail("Error deleting the file/dir: " + file);
+        }
+    }
+    
+    
+    
+    
+    @Test
     public void testInstall()
             throws Exception
     {
-        testOne(FunctionalTest.HELLO_XAR_OLD, PACKAGES_TXT_CONTENT_OLD, PACKAGES_XML_CONTENT_OLD, "hello-1.1/hello");
-        testOne(FunctionalTest.HELLO_XAR_NEW, PACKAGES_TXT_CONTENT_NEW, PACKAGES_XML_CONTENT_NEW, "hello-1.2/content");
+        testOne(HELLO_XAR_OLD, PACKAGES_TXT_CONTENT_OLD, PACKAGES_XML_CONTENT_OLD, "hello-1.1/hello");
+        testOne(HELLO_XAR_NEW, PACKAGES_TXT_CONTENT_NEW, PACKAGES_XML_CONTENT_NEW, "hello-1.2/content");
     }
 
-    private void testOne(String xar, String txt_content, String xml_content, String content_dir)
+    private void testOne(final String xar, final String txt_content, final String xml_content, final String content_dir)
             throws Exception
     {
         // the SUT
-        File       repo_dir = new File(FunctionalTest.TMP_REPO_DIR);
-        Storage    storage  = new FileSystemStorage(repo_dir);
-        Repository repo     = new Repository(storage);
-        File       pkg      = new File(xar);
+        final File       repo_dir = new File(TMP_REPO_DIR);
+        final Storage    storage  = new FileSystemStorage(repo_dir);
+        final Repository repo     = new Repository(storage);
+        final File       pkg      = new File(xar);
         // do it
         repo.installPackage(pkg, true, new FakeInteract());
         // .expath-pkg/packages.txt
-        File packages_txt = new File(repo_dir, ".expath-pkg/packages.txt");
+        final File packages_txt = new File(repo_dir, ".expath-pkg/packages.txt");
         assertTrue("the file .expath-pkg/packages.txt exist", packages_txt.exists());
         assertEquals("the file .expath-pkg/packages.txt content", txt_content, readFile(packages_txt));
         // .expath-pkg/packages.xml
-        File packages_xml = new File(repo_dir, ".expath-pkg/packages.xml");
+        final File packages_xml = new File(repo_dir, ".expath-pkg/packages.xml");
         assertTrue("the file .expath-pkg/packages.xml exist", packages_xml.exists());
         assertEquals("the file .expath-pkg/packages.xml content", xml_content, readFile(packages_xml));
         // content dir
-        File c_dir = new File(repo_dir, content_dir);
+        final File c_dir = new File(repo_dir, content_dir);
         assertTrue("the content dir exist", c_dir.exists());
         // TODO: Write more assertions...
     }
 
-    private String readFile(File f)
+    private String readFile(final File f)
             throws IOException
     {
-        BufferedReader reader = new BufferedReader(new FileReader(f));
-        StringBuilder buffer = new StringBuilder();
+        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final StringBuilder buffer = new StringBuilder();
         String s;
         while ( (s = reader.readLine()) != null ) {
             buffer.append(s);
@@ -94,20 +137,25 @@ public class InstallPackage
     private static class FakeInteract
             implements UserInteractionStrategy
     {
-        public void messageInfo(String msg) throws PackageException {
+        @Override
+        public void messageInfo(final String msg) throws PackageException {
             System.out.println("INFO: " + msg);
         }
-        public void messageError(String msg) throws PackageException {
+        @Override
+        public void messageError(final String msg) throws PackageException {
             System.out.println("ERROR: " + msg);
         }
-        public void logInfo(String msg) throws PackageException {
+        @Override
+        public void logInfo(final String msg) throws PackageException {
             System.out.println("LOG: " + msg);
         }
-        public boolean ask(String prompt, boolean dflt) throws PackageException {
+        @Override
+        public boolean ask(final String prompt, final boolean dflt) throws PackageException {
             System.out.println("ASK: " + prompt + " / " + dflt);
             return dflt;
         }
-        public String ask(String prompt, String dflt) throws PackageException {
+        @Override
+        public String ask(final String prompt, final String dflt) throws PackageException {
             System.out.println("ASK: " + prompt + " / " + dflt);
             return dflt;
         }
@@ -132,5 +180,5 @@ public class InstallPackage
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */
