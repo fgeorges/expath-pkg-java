@@ -6,11 +6,14 @@ if [[ -z "$FG_JAVA_LIBS" ]]; then
     exit 1;
 fi
 
+transform_dir="../src/test/resources/transform"
+repo_dir="${transform_dir}/repo"
+
 # the test stylesheets and queries
-xslt_std=java/transform/style.xsl
-xslt_java=java/transform/using-java.xsl
-xquery_std=java/transform/query.xq
-xquery_java=java/transform/using-java.xq
+xslt_std="${transform_dir}/style.xsl"
+xslt_java="${transform_dir}/using-java.xsl"
+xquery_std="${transform_dir}/query.xq"
+xquery_java="${transform_dir}/using-java.xq"
 
 # pkg-repo.jar and pkg-saxon.jar
 repo_jar=../../../repo/pkg-repo/dist/pkg-repo.jar
@@ -23,19 +26,19 @@ run_version() {
         echo "[**] Saxon $2 is gonna be tested...";
         SAXON_HOME="$1" SAXON_CP="" \
             EXPATH_PKG_REPO_JAR="${repo_jar}" EXPATH_PKG_SAXON_JAR="${saxon_jar}" \
-            saxon --repo java/transform/repo/ -it main ${xslt_std};
+            saxon --repo ${repo_dir} -it main ${xslt_std};
         echo;
         SAXON_HOME="$1" SAXON_CP="" \
             EXPATH_PKG_REPO_JAR="${repo_jar}" EXPATH_PKG_SAXON_JAR="${saxon_jar}" \
-            saxon --repo java/transform/repo/ -it main ${xslt_java};
+            saxon --repo ${repo_dir} -it main ${xslt_java};
         echo;
         SAXON_HOME="$1" SAXON_CP="" \
             EXPATH_PKG_REPO_JAR="${repo_jar}" EXPATH_PKG_SAXON_JAR="${saxon_jar}" \
-            saxon --repo java/transform/repo/ --xq ${xquery_std} \!omit-xml-declaration=yes;
+            saxon --repo ${repo_dir} --xq ${xquery_std} \!omit-xml-declaration=yes;
         echo;
         SAXON_HOME="$1" SAXON_CP="" \
             EXPATH_PKG_REPO_JAR="${repo_jar}" EXPATH_PKG_SAXON_JAR="${saxon_jar}" \
-            saxon --repo java/transform/repo/ --xq ${xquery_java} \!omit-xml-declaration=yes;
+            saxon --repo ${repo_dir} --xq ${xquery_java} \!omit-xml-declaration=yes;
         echo;
     else
         echo "[**] Saxon $2 is not installed, it won't be tested...";
