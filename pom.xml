@@ -19,6 +19,7 @@
     
     <modules>
         <module>pkg-java</module>
+        <module>pkg-saxon</module>
     </modules>
     
 </project>

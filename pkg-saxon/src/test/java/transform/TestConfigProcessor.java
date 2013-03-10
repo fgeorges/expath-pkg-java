@@ -48,10 +48,11 @@ import net.sf.saxon.xqj.SaxonXQDataSource;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Storage;
-import org.expath.pkg.repo.URISpace;
 import org.expath.pkg.saxon.ConfigHelper;
 import org.expath.pkg.saxon.SaxonRepository;
 import org.junit.Test;
+import static transform.TestConstants.REPO_LOCATION;
+import static transform.TestConstants.TRANSFORM_LOCATION;
 
 /**
  * ...
@@ -61,10 +62,19 @@ import org.junit.Test;
  */
 public class TestConfigProcessor
 {
+    private static final String STYLE_STD  = TRANSFORM_LOCATION + "/style.xsl";
+    private static final String STYLE_JAVA = TRANSFORM_LOCATION + "/using-java.xsl";
+    private static final String QUERY_STD  = TRANSFORM_LOCATION + "/query.xq";
+    private static final String QUERY_JAVA = TRANSFORM_LOCATION + "/using-java.xq";
+    // private static final OutputStream OUT  = System.err;
+    private static final OutputStream OUT  = new DevNullOutputStream();
+    
+    private final SaxonRepository REPO;
+    
     public TestConfigProcessor()
             throws PackageException
     {
-        Storage storage = new FileSystemStorage(new File("test/java/transform/repo"));
+        final Storage storage = new FileSystemStorage(new File(REPO_LOCATION));
         REPO = new SaxonRepository(storage);
     }
 
@@ -78,15 +88,15 @@ public class TestConfigProcessor
                  , IOException
     {
         System.err.println("configProcessor_fail");
-        Processor proc = new Processor(false);
+        final Processor proc = new Processor(false);
 
-        XsltCompiler compiler = proc.newXsltCompiler();
-        Source style = new StreamSource(STYLE_STD);
-        XsltExecutable exec = compiler.compile(style);
+        final XsltCompiler compiler = proc.newXsltCompiler();
+        final Source style = new StreamSource(STYLE_STD);
+        final XsltExecutable exec = compiler.compile(style);
 
-        XsltTransformer trans = exec.load();
+        final XsltTransformer trans = exec.load();
         trans.setInitialTemplate(new QName("main"));
-        Serializer serial = new Serializer();
+        final Serializer serial = new Serializer();
         serial.setOutputStream(OUT);
         trans.setDestination(serial);
         trans.transform();
@@ -102,17 +112,17 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("configProcessor_successful");
-        Processor proc = new Processor(false);
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Processor proc = new Processor(false);
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(proc.getUnderlyingConfiguration());
 
-        XsltCompiler compiler = proc.newXsltCompiler();
-        Source style = new StreamSource(STYLE_STD);
-        XsltExecutable exec = compiler.compile(style);
+        final XsltCompiler compiler = proc.newXsltCompiler();
+        final Source style = new StreamSource(STYLE_STD);
+        final XsltExecutable exec = compiler.compile(style);
 
-        XsltTransformer trans = exec.load();
+        final XsltTransformer trans = exec.load();
         trans.setInitialTemplate(new QName("main"));
-        Serializer serial = new Serializer();
+        final Serializer serial = new Serializer();
         serial.setOutputStream(OUT);
         trans.setDestination(serial);
         trans.transform();
@@ -129,10 +139,10 @@ public class TestConfigProcessor
                  , IOException
     {
         System.err.println("configFactory_fail");
-        TransformerFactoryImpl factory = new TransformerFactoryImpl();
-        Source style = new StreamSource(STYLE_STD);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl();
+        final Source style = new StreamSource(STYLE_STD);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -146,13 +156,13 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("configFactory_successful");
-        TransformerFactoryImpl factory = new TransformerFactoryImpl();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(factory.getConfiguration());
 
-        Source style = new StreamSource(STYLE_STD);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final Source style = new StreamSource(STYLE_STD);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -167,11 +177,11 @@ public class TestConfigProcessor
                  , IOException
     {
         System.err.println("configConfiguration_fail");
-        Configuration config = new Configuration();
-        TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
-        Source style = new StreamSource(STYLE_STD);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final Configuration config = new Configuration();
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
+        final Source style = new StreamSource(STYLE_STD);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -185,14 +195,14 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("configConfiguration_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Configuration config = new Configuration();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(config);
 
-        TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
-        Source style = new StreamSource(STYLE_STD);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
+        final Source style = new StreamSource(STYLE_STD);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -207,11 +217,11 @@ public class TestConfigProcessor
                  , IOException
     {
         System.err.println("usingJava_fail");
-        Configuration config = new Configuration();
-        TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
-        Source style = new StreamSource(STYLE_JAVA);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final Configuration config = new Configuration();
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
+        final Source style = new StreamSource(STYLE_JAVA);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -225,14 +235,14 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("usingJava_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Configuration config = new Configuration();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(config);
 
-        TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
-        Source style = new StreamSource(STYLE_JAVA);
-        Transformer trans = factory.newTransformer(style);
-        Result res = new StreamResult(OUT);
+        final TransformerFactoryImpl factory = new TransformerFactoryImpl(config);
+        final Source style = new StreamSource(STYLE_JAVA);
+        final Transformer trans = factory.newTransformer(style);
+        final Result res = new StreamResult(OUT);
         trans.transform(style, res);
         OUT.flush();
     }
@@ -247,12 +257,12 @@ public class TestConfigProcessor
                  , IOException
     {
         System.err.println("queryProcessor_fail");
-        Processor proc = new Processor(false);
-        XQueryCompiler compiler = proc.newXQueryCompiler();
-        XQueryExecutable exec = compiler.compile(new File(QUERY_STD));
+        final Processor proc = new Processor(false);
+        final XQueryCompiler compiler = proc.newXQueryCompiler();
+        final XQueryExecutable exec = compiler.compile(new File(QUERY_STD));
 
-        XQueryEvaluator eval = exec.load();
-        Serializer serial = new Serializer();
+        final XQueryEvaluator eval = exec.load();
+        final Serializer serial = new Serializer();
         serial.setOutputStream(OUT);
         eval.evaluate();
         OUT.flush();
@@ -267,15 +277,15 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("queryProcessor_successful");
-        Processor proc = new Processor(false);
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Processor proc = new Processor(false);
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(proc.getUnderlyingConfiguration());
 
-        XQueryCompiler compiler = proc.newXQueryCompiler();
-        XQueryExecutable exec = compiler.compile(new File(QUERY_STD));
+        final XQueryCompiler compiler = proc.newXQueryCompiler();
+        final XQueryExecutable exec = compiler.compile(new File(QUERY_STD));
 
-        XQueryEvaluator eval = exec.load();
-        Serializer serial = new Serializer();
+        final XQueryEvaluator eval = exec.load();
+        final Serializer serial = new Serializer();
         serial.setOutputStream(OUT);
         eval.evaluate();
         OUT.flush();
@@ -293,10 +303,10 @@ public class TestConfigProcessor
         System.err.println("queryConfiguration_fail");
         Configuration config = new Configuration();
         //StaticQueryContext static_ctxt = config.newStaticQueryContext();
-        StaticQueryContext static_ctxt = new StaticQueryContext(config);
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQueryExpression expr = static_ctxt.compileQuery(query);
-        DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
+        final StaticQueryContext static_ctxt = new StaticQueryContext(config);
+        final Reader query = new FileReader(new File(QUERY_STD));
+        final XQueryExpression expr = static_ctxt.compileQuery(query);
+        final DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
         expr.run(dyn_ctxt, new StreamResult(OUT), null);
         OUT.flush();
     }
@@ -310,15 +320,15 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("queryConfiguration_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Configuration config = new Configuration();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(config);
 
         //StaticQueryContext static_ctxt = config.newStaticQueryContext();
-        StaticQueryContext static_ctxt = new StaticQueryContext(config);
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQueryExpression expr = static_ctxt.compileQuery(query);
-        DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
+        final StaticQueryContext static_ctxt = new StaticQueryContext(config);
+        final Reader query = new FileReader(new File(QUERY_STD));
+        final XQueryExpression expr = static_ctxt.compileQuery(query);
+        final DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
         expr.run(dyn_ctxt, new StreamResult(OUT), null);
         OUT.flush();
     }
@@ -335,10 +345,10 @@ public class TestConfigProcessor
         System.err.println("queryUsingJava_fail");
         Configuration config = new Configuration();
         //StaticQueryContext static_ctxt = config.newStaticQueryContext();
-        StaticQueryContext static_ctxt = new StaticQueryContext(config);
-        Reader query = new FileReader(new File(QUERY_JAVA));
-        XQueryExpression expr = static_ctxt.compileQuery(query);
-        DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
+        final StaticQueryContext static_ctxt = new StaticQueryContext(config);
+        final Reader query = new FileReader(new File(QUERY_JAVA));
+        final XQueryExpression expr = static_ctxt.compileQuery(query);
+        final DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
         expr.run(dyn_ctxt, new StreamResult(OUT), null);
         OUT.flush();
     }
@@ -352,15 +362,15 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("queryUsingJava_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Configuration config = new Configuration();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(config);
 
         //StaticQueryContext static_ctxt = config.newStaticQueryContext();
-        StaticQueryContext static_ctxt = new StaticQueryContext(config);
-        Reader query = new FileReader(new File(QUERY_JAVA));
-        XQueryExpression expr = static_ctxt.compileQuery(query);
-        DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
+        final StaticQueryContext static_ctxt = new StaticQueryContext(config);
+        final Reader query = new FileReader(new File(QUERY_JAVA));
+        final XQueryExpression expr = static_ctxt.compileQuery(query);
+        final DynamicQueryContext dyn_ctxt = new DynamicQueryContext(config);
         expr.run(dyn_ctxt, new StreamResult(OUT), null);
         OUT.flush();
     }
@@ -374,11 +384,11 @@ public class TestConfigProcessor
                  , FileNotFoundException
     {
         System.err.println("queryXQJ_fail");
-        XQDataSource ds = new SaxonXQDataSource();
-        XQConnection conn = ds.getConnection();
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQPreparedExpression expr = conn.prepareExpression(query);
-        XQResultSequence result = expr.executeQuery();
+        final XQDataSource ds = new SaxonXQDataSource();
+        final XQConnection conn = ds.getConnection();
+        final Reader query = new FileReader(new File(QUERY_STD));
+        final XQPreparedExpression expr = conn.prepareExpression(query);
+        final XQResultSequence result = expr.executeQuery();
         while ( result.next() ) {
             // System.out.println(result.getItemAsString(null));
         }
@@ -393,52 +403,19 @@ public class TestConfigProcessor
                  , PackageException
     {
         System.err.println("queryXQJ_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
+        final Configuration config = new Configuration();
+        final ConfigHelper helper = new ConfigHelper(REPO);
         helper.config(config);
 
-        XQDataSource ds = new SaxonXQDataSource(config);
-        XQConnection conn = ds.getConnection();
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQPreparedExpression expr = conn.prepareExpression(query);
-        XQResultSequence result = expr.executeQuery();
+        final XQDataSource ds = new SaxonXQDataSource(config);
+        final XQConnection conn = ds.getConnection();
+        final Reader query = new FileReader(new File(QUERY_STD));
+        final XQPreparedExpression expr = conn.prepareExpression(query);
+        final XQResultSequence result = expr.executeQuery();
         while ( result.next() ) {
             // System.out.println(result.getItemAsString(null));
         }
         System.out.flush();
-    }
-
-    private SaxonRepository REPO;
-    private static final String STYLE_STD  = "test/java/transform/style.xsl";
-    private static final String STYLE_JAVA = "test/java/transform/using-java.xsl";
-    private static final String QUERY_STD  = "test/java/transform/query.xq";
-    private static final String QUERY_JAVA = "test/java/transform/using-java.xq";
-    // private static final OutputStream OUT  = System.err;
-    private static final OutputStream OUT  = new DevNull();
-
-    private static class DevNull
-            extends OutputStream
-    {
-        @Override
-        public void close() throws IOException {
-            // nothing
-        }
-        @Override
-        public void flush() throws IOException {
-            // nothing
-        }
-        @Override
-        public void write(byte[] b) throws IOException {
-            // nothing
-        }
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-            // nothing
-        }
-        @Override
-        public void write(int b) throws IOException {
-            // nothing
-        }
     }
 }
 
@@ -460,5 +437,5 @@ public class TestConfigProcessor
 /*                                                                          */
 /*  The Initial Developer of the Original Code is Florent Georges.          */
 /*                                                                          */
-/*  Contributor(s): none.                                                   */
+/*  Contributor(s): Adam Retter                                             */
 /* ------------------------------------------------------------------------ */
