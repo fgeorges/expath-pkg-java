@@ -39,7 +39,16 @@ public abstract class Extension
         }
     }
 
+    /**
+     * Called once per package when the repository is initialised.
+     */
     public abstract void init(Repository repo, Package pkg)
+            throws PackageException;
+
+    /**
+     * Called after a new package has been installed into the repository.
+     */
+    public abstract void install(Repository repo, Package pkg)
             throws PackageException;
 
     private String myName;

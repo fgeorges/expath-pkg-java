@@ -294,7 +294,7 @@ public class Repository
         myStorage.updatePackageLists(pkg);
 
         for ( Extension ext : myExtensions.values() ) {
-            ext.init(this, pkg);
+            ext.install(this, pkg);
         }
 
         return pkg;

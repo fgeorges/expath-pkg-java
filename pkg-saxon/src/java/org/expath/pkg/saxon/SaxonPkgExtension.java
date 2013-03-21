@@ -13,20 +13,50 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Set;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 import org.expath.pkg.repo.DescriptorExtension;
 import org.expath.pkg.repo.FileSystemStorage.FileSystemResolver;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
+import org.expath.pkg.repo.PackageInfo;
+import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.Storage;
 import org.expath.pkg.repo.parser.XMLStreamHelper;
 
 /**
- * TODO: ...
+ * Represent the extension "saxon", configured with "saxon.xml".
+ * 
+ * The extension descriptor "saxon.xml" must be at the root of the package.  Its
+ * format is as following:
+ * 
+ * <pre>
+ * &lt;package xmlns="http://saxon.sf.net/ns/expath-pkg">
+ *    &lt;jar>dir/file.jar&lt;/jar>
+ *    &lt;function>org.example.extension.MyFunction&lt;/function>
+ *    &lt;xslt>
+ *       &lt;import-uri>http://example.org/ns/project/style.xsl&lt;/import-uri>
+ *       &lt;file>stylesheet.xsl&lt;/file>
+ *    &lt;/xslt>
+ *    &lt;xquery>
+ *       &lt;namespace>http://example.org/ns/project/lib&lt;/namespace>
+ *       &lt;file>query-lib.xql&lt;/file>
+ *    &lt;/xquery>
+ * &lt;/package>
+ * </pre>
+ * 
+ * The elements "jar", "function", "xslt" and "xquery" are optional, repeatable,
+ * and can appear in any order.  The element "jar" links to the JAR files, in
+ * the content directory, to be included in the classpath.  The element "function"
+ * register an extension function by using its fully qualified class name.  The
+ * class must extends the Saxon class ExtensionFunctionDefinition.  If it extends
+ * the EXPath class EXPathFunctionDefinition, the method setConfiguration() will
+ * be called after it has been instantiated.  The elements "xslt" and "xquery"
+ * add XSLT stylesheets and XQuery libraries to the package component list.  They
+ * are useful when the components are depending on Saxon, like using some Saxon
+ * extension instruction or attribute.
  *
  * @author Florent Georges
  * @date   2010-09-19
@@ -49,7 +79,7 @@ public class SaxonPkgExtension
             parser.next();
             while ( parser.getEventType() == XMLStreamConstants.START_ELEMENT ) {
                 if ( SAXON_PKG_NS.equals(parser.getNamespaceURI()) ) {
-                    handleElement(parser, pkg, info);
+                    handleElement(parser, info);
                 }
                 else {
                     // ignore elements not in the Saxon Pkg namespace
@@ -65,23 +95,9 @@ public class SaxonPkgExtension
             throw new PackageException("Error reading the saxon descriptor", ex);
         }
         pkg.addInfo(getName(), info);
-        // if the package has never been installed, install it now
-        // TODO: This is not an ideal solution, but this should work in most of
-        // the cases, and does not need xrepo to depend on any processor-specific
-        // stuff.  We need to find a proper way to make that at the real install
-        // phase though (during the "xrepo install").
-        if ( ! info.getJars().isEmpty() ) {
-            try {
-                pkg.getResolver().resolveResource(".saxon/classpath.txt");
-            }
-            catch ( Storage.NotExistException ex ) {
-                // only if classpath.txt does not exist...
-                setupPackage(pkg, info);
-            }
-        }
     }
 
-    private void handleElement(XMLStreamReader parser, Package pkg, SaxonPkgInfo info)
+    private void handleElement(XMLStreamReader parser, SaxonPkgInfo info)
             throws PackageException
                  , XMLStreamException
     {
@@ -95,20 +111,23 @@ public class SaxonPkgExtension
             info.addFunction(fun);
         }
         else if ( "xslt".equals(local) ) {
-            Mapping m = handleMapping(parser, "import-uri", pkg);
+            Mapping m = handleMapping(parser, "import-uri");
             info.addXslt(m.href, m.file);
         }
-        // TODO: Handle main modules (with pkg:import-uri instead of pkg:namespace).
         else if ( "xquery".equals(local) ) {
-            Mapping m = handleMapping(parser, "namespace", pkg);
+            // TODO: Handle main modules as well (with "import-uri" instead of
+            // "namespace").
+            Mapping m = handleMapping(parser, "namespace");
             info.addXQuery(m.href, m.file);
         }
         else if ( "xslt-wrapper".equals(local) ) {
-            Mapping m = handleMapping(parser, "import-uri", pkg);
+            Mapping m = handleMapping(parser, "import-uri");
             info.addXsltWrapper(m.href, m.file);
         }
         else if ( "xquery-wrapper".equals(local) ) {
-            Mapping m = handleMapping(parser, "namespace", pkg);
+            // TODO: Handle main modules as well (with "import-uri" instead of
+            // "namespace").
+            Mapping m = handleMapping(parser, "namespace");
             info.addXQueryWrapper(m.href, m.file);
         }
         else {
@@ -116,7 +135,7 @@ public class SaxonPkgExtension
         }
     }
 
-    private Mapping handleMapping(XMLStreamReader parser, String uri_name, Package pkg)
+    private Mapping handleMapping(XMLStreamReader parser, String uri_name)
             throws PackageException, XMLStreamException
     {
         myXSHelper.ensureNextElement(parser, uri_name);
@@ -128,26 +147,44 @@ public class SaxonPkgExtension
         return new Mapping(href, file);
     }
 
-    // TODO: Must not be here (in the parsing class).  See the comment at the
-    // end of parseDescriptor().
-    private void setupPackage(Package pkg, SaxonPkgInfo info)
+    @Override
+    public void install(Repository repo, Package pkg)
             throws PackageException
     {
-        // TODO: FIXME: Bad, BAD design!  But will be resolved naturally by moving the
-        // install code within the storage class (because we are writing on disk)...
-        FileSystemResolver res = (FileSystemResolver) pkg.getResolver();
-        File classpath = res.resolveResourceAsFile(".saxon/classpath.txt");
-
-        // create [pkg_dir]/.saxon/classpath.txt
-        File saxon = classpath.getParentFile();
-        if ( ! saxon.exists() && ! saxon.mkdir() ) {
-            throw new PackageException("Impossible to create directory: " + saxon);
+        // first init and parse the descriptor
+        init(repo, pkg);
+        // get the freshly created info object
+        PackageInfo info = pkg.getInfo(getName());
+        if ( info == null ) {
+            // not a Saxon extension
+            return;
         }
-        Set<String> jars = info.getJars();
+        // the info must be info object for Saxon
+        if ( ! (info instanceof SaxonPkgInfo) ) {
+            throw new PackageException("Package info for Saxon of wrong type: " + info.getName());
+        }
+        SaxonPkgInfo saxon_info = (SaxonPkgInfo) info;
+        // if there is some JAR, crete the classpath file
+        if ( ! saxon_info.getJars().isEmpty() ) {
+            try {
+                pkg.getResolver().resolveResource(".saxon/classpath.txt");
+            }
+            catch ( Storage.NotExistException ex ) {
+                // only if classpath.txt does not exist...
+                setupClasspath(pkg, saxon_info);
+            }
+        }
+    }
+
+    private void setupClasspath(Package pkg, SaxonPkgInfo info)
+            throws PackageException
+    {
+        File classpath = createClasspathFile(pkg);
+        Storage.PackageResolver res = pkg.getResolver();
         try {
             FileWriter out = new FileWriter(classpath);
-            for ( String jar : jars ) {
-                StreamSource jar_src = res.resolveComponent(jar);
+            for ( String jar : info.getJars() ) {
+                Source jar_src = res.resolveComponent(jar);
                 String sysid = jar_src.getSystemId();
                 URI uri = URI.create(sysid);
                 File file = new File(uri);
@@ -164,6 +201,49 @@ public class SaxonPkgExtension
         }
     }
 
+    /**
+     * Create and return the classpath, return null if already exists.
+     * 
+     * Throw an exception if the storage is not on the file system, if the
+     * parent directory exists but is not in fact a directory, or if it is not
+     * possible to create the parent directory.
+     * 
+     * TODO: FIXME: This code should be moved on the storage class, so we
+     * wouldn't have to do all those checks above.  Duplicated in
+     * CalabashPkgExtension.
+     */
+    private File createClasspathFile(Package pkg)
+            throws PackageException
+    {
+        try {
+            pkg.getResolver().resolveResource(CLASSPATH_FILE);
+            // if the file exists, return null
+            return null;
+        }
+        catch ( Storage.NotExistException ex ) {
+            // if the file does not exist, continue
+        }
+        // if the classpath does not exist, we must use a FileSystemResolver
+        Storage.PackageResolver res = pkg.getResolver();
+        if ( ! (res instanceof FileSystemResolver) ) {
+            throw new PackageException("Installing JAR only work on file system: " + res.getClass());
+        }
+        FileSystemResolver fs_res = (FileSystemResolver) res;
+        File classpath = fs_res.resolveResourceAsFile(CLASSPATH_FILE);
+        // check [pkg_dir]/.saxon/
+        File saxon = classpath.getParentFile();
+        if ( saxon.exists() ) {
+            if ( ! saxon.isDirectory() ) {
+                throw new PackageException("Private dir is not a directory: " + saxon);
+            }
+        }
+        else if ( ! saxon.mkdir() ) {
+            throw new PackageException("Impossible to create directory: " + saxon);
+        }
+        return classpath;
+    }
+
+    public static final String CLASSPATH_FILE = ".saxon/classpath.txt";
     public static final String SAXON_PKG_NS = "http://saxon.sf.net/ns/expath-pkg";
     private final XMLStreamHelper myXSHelper = new XMLStreamHelper(SAXON_PKG_NS);
 
