@@ -2,11 +2,12 @@
 /pkg-java/nbproject/private/
 /pkg-saxon/nbproject/private/
 /pkg-java/build/
-/pkh-java/target/
 /pkg-java/dist/
-/pkg-saxon/target/
 /pkg-saxon/build/
 /pkg-saxon/dist/
 /pkg-calabash/build/
-/pkg-calabash/target/
 /pkg-calabash/dist/
+target/
+.idea/
+*.iml
+*.iws
