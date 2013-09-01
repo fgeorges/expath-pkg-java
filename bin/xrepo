@@ -11,9 +11,9 @@ if test \! -d "${INSTALL_DIR}"; then
     echo "INTERNAL ERROR: The install directory is not a directory?!?" 1>&2;
     exit 1;
 fi
-if test \! -f "${INSTALL_DIR}/expath/pkg-repo.jar"; then
-    echo "INTERNAL ERROR: The install directory does not contain expath/pkg-repo.jar?!?" 1>&2;
+if test \! -f "${INSTALL_DIR}/expath/pkg-java.jar"; then
+    echo "INTERNAL ERROR: The install directory does not contain expath/pkg-java.jar?!?" 1>&2;
     exit 1;
 fi
 
-"$JAVA" -jar "${INSTALL_DIR}/expath/pkg-repo.jar" "$@"
+"$JAVA" -jar "${INSTALL_DIR}/expath/pkg-java.jar" "$@"

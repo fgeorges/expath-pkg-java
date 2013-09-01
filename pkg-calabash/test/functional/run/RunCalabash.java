@@ -209,18 +209,18 @@ public class RunCalabash
             throws PackageException
     {
         XProcProcessor proc = makePlainProcessor();
-        XProcConfigurer configurer = makeConfigurer(proc);
+        XProcConfigurer configurer = makeConfigurer();
         proc.setConfigurer(configurer);
         return proc;
     }
 
-    private XProcConfigurer makeConfigurer(XProcProcessor proc)
+    private XProcConfigurer makeConfigurer()
             throws PackageException
     {
         File dir = new File(REPO);
         Storage storage = new FileSystemStorage(dir);
         Repository repo = new Repository(storage);
-        return new PkgConfigurer(proc, repo);
+        return new PkgConfigurer(repo);
     }
 
     private void copyPortToStdout(XPipeline pipe, String port, XProcRuntime runtime)

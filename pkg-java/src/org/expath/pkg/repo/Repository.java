@@ -128,6 +128,14 @@ public class Repository
         }
     }
 
+    /**
+     * Return the {@link Storage} object this repository is based upon.
+     */
+    public Storage getStorage()
+    {
+        return myStorage;
+    }
+
     public Collection<Packages> listPackages()
     {
         return myPackages.values();
@@ -246,7 +254,7 @@ public class Repository
 
         // parse the package
         File desc_f = new File(tmp_dir, "expath-pkg.xml");
-        if ( desc_f == null ) {
+        if ( ! desc_f.exists() ) {
             throw new PackageException("Package descriptor does NOT exist in: " + tmp_dir);
         }
         Source desc = new StreamSource(desc_f);
@@ -444,15 +452,15 @@ public class Repository
     }
 
     /**
-     * ...
+     * The storage object to physically access the repository content.
      */
     private Storage myStorage;
     /**
-     * ...
+     * The list of packages in this repository (indexed by name).
      */
     private Map<String, Packages> myPackages = new HashMap<String, Packages>();
     /**
-     * ...
+     * The registered extensions (indexed by name).
      */
     private Map<String, Extension> myExtensions = new HashMap<String, Extension>();
     /**

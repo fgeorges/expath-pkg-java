@@ -16,7 +16,6 @@ import com.xmlcalabash.config.JingConfigurer;
 import com.xmlcalabash.config.SaxonConfigurer;
 import com.xmlcalabash.config.XProcConfigurer;
 import com.xmlcalabash.core.XProcException;
-import com.xmlcalabash.core.XProcProcessor;
 import java.io.File;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
@@ -33,9 +32,8 @@ import org.expath.pkg.repo.util.Logger;
 public class PkgConfigurer
         implements XProcConfigurer
 {
-    public PkgConfigurer(XProcProcessor proc)
+    public PkgConfigurer()
     {
-        myCalabash = proc;
         String repo_value = System.getProperty("org.expath.pkg.calabash.repo");
         LOG.fine("org.expath.pkg.calabash.repo: {0}", repo_value);
         if ( repo_value == null ) {
@@ -56,17 +54,16 @@ public class PkgConfigurer
         }
     }
 
-    public PkgConfigurer(XProcProcessor proc, Repository repo)
+    public PkgConfigurer(Repository repo)
     {
-        myCalabash = proc;
-        myRepo     = repo;
+        myRepo = repo;
     }
 
     @Override
     public XMLCalabashConfigurer getXMLCalabashConfigurer()
     {
         if ( myConfigurer == null ) {
-            myConfigurer = new PkgCalabashConfigurer(myCalabash, myRepo);
+            myConfigurer = new PkgCalabashConfigurer(myRepo);
         }
         return myConfigurer;
     }
@@ -104,7 +101,6 @@ public class PkgConfigurer
         return mySaxon;
     }
 
-    private XProcProcessor        myCalabash;
     private Repository            myRepo;
     private XMLCalabashConfigurer myConfigurer = null;
     private JaxpConfigurer        myJaxp       = null;

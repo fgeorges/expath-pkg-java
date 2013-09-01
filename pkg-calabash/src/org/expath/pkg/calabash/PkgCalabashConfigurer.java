@@ -23,6 +23,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
@@ -44,10 +45,34 @@ import org.xml.sax.EntityResolver;
 public class PkgCalabashConfigurer
         extends DefaultXMLCalabashConfigurer
 {
-    public PkgCalabashConfigurer(XProcProcessor proc, Repository repo)
+    public PkgCalabashConfigurer(Repository repo)
     {
-        super(proc);
         myRepo = repo;
+    }
+
+    @Override
+    public void configProcessor(XProcProcessor proc)
+    {
+        super.configProcessor(proc);
+        // set the URI resolver
+        XProcURIResolver resolver = new XProcURIResolver(proc);
+        resolver.setUnderlyingURIResolver(new PkgURIResolver(myRepo, URISpace.XPROC));
+        resolver.setUnderlyingEntityResolver(new PkgEntityResolver(myRepo, URISpace.XPROC));
+        proc.setURIResolver(resolver);
+        // register the extension steps (recorded into Calabash's info on packages)
+        for ( Packages pp : myRepo.listPackages() ) {
+            Package pkg = pp.latest();
+            CalabashPkgInfo info = (CalabashPkgInfo) pkg.getInfo("calabash");
+            if ( info != null ) {
+                try {
+                    info.registerExtensionSteps(proc);
+                }
+                catch ( PackageException ex ) {
+                    String msg = "Error registering extension steps for ";
+                    throw new XProcException(msg + pkg.getName() + ", " + pkg.getVersion(), ex);
+                }
+            }
+        }
     }
 
     // TODO: The URI resolver set on the runtime object is gonna be used for
@@ -56,25 +81,25 @@ public class PkgCalabashConfigurer
     @Override
     public void configRuntime(XProcRuntime runtime)
     {
-        // set the URI resolver
-        XProcURIResolver resolver = new XProcURIResolver(xproc);
-        resolver.setUnderlyingURIResolver(new PkgURIResolver(myRepo, URISpace.XPROC));
-        resolver.setUnderlyingEntityResolver(new PkgEntityResolver(myRepo, URISpace.XPROC));
-        runtime.setURIResolver(resolver);
-        // register the extension steps (recorded into Calabash's info on packages)
-        for ( Packages pp : myRepo.listPackages() ) {
-            Package pkg = pp.latest();
-            CalabashPkgInfo info = (CalabashPkgInfo) pkg.getInfo("calabash");
-            if ( info != null ) {
-                try {
-                    info.registerExtensionSteps(xproc);
-                }
-                catch ( PackageException ex ) {
-                    String msg = "Error registering extension steps for ";
-                    throw new XProcException(msg + pkg.getName() + ", " + pkg.getVersion(), ex);
-                }
-            }
-        }
+//        // set the URI resolver
+//        XProcURIResolver resolver = new XProcURIResolver(xproc);
+//        resolver.setUnderlyingURIResolver(new PkgURIResolver(myRepo, URISpace.XPROC));
+//        resolver.setUnderlyingEntityResolver(new PkgEntityResolver(myRepo, URISpace.XPROC));
+//        runtime.setURIResolver(resolver);
+//        // register the extension steps (recorded into Calabash's info on packages)
+//        for ( Packages pp : myRepo.listPackages() ) {
+//            Package pkg = pp.latest();
+//            CalabashPkgInfo info = (CalabashPkgInfo) pkg.getInfo("calabash");
+//            if ( info != null ) {
+//                try {
+//                    info.registerExtensionSteps(xproc);
+//                }
+//                catch ( PackageException ex ) {
+//                    String msg = "Error registering extension steps for ";
+//                    throw new XProcException(msg + pkg.getName() + ", " + pkg.getVersion(), ex);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -109,6 +134,9 @@ public class PkgCalabashConfigurer
     @Override
     public ReadablePipe makeReadableDocument(XProcRuntime r, DocumentBinding b)
     {
+        if ( xproc == null ) {
+            throw new XProcException("This configurer has not been set to a processor: " + this);
+        }
         String kind = b.getExtensionAttribute(KIND);
         if ( kind == null ) {
             return super.makeReadableDocument(r, b);
@@ -121,13 +149,17 @@ public class PkgCalabashConfigurer
 
     private XdmNode parse(String href, boolean validate, String kind)
     {
+        if ( xproc == null ) {
+            throw new XProcException("This configurer has not been set to a processor: " + this);
+        }
         try {
             URIResolver resolver = getURIResolver(kind);
             Source src = resolver.resolve(href, null);
             if ( src == null ) {
                 return null;
             }
-            DocumentBuilder builder = xproc.getProcessor().newDocumentBuilder();
+            Processor saxon = xproc.getProcessor();
+            DocumentBuilder builder = saxon.newDocumentBuilder();
             builder.setDTDValidation(validate);
             builder.setLineNumbering(true);
             return builder.build(src);
