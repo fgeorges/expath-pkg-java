@@ -186,7 +186,7 @@ public class Main
         String version = props.getProperty("org.expath.pkg.repo.version");
         String revision = props.getProperty("org.expath.pkg.repo.revision");
         System.err.println("EXPath Packaging System standard on-disk repository layout manager.");
-        System.err.println("Version: " + version + " (r" + revision + ")");
+        System.err.println("Version: " + version + " (revision #" + revision + ")");
     }
 
     private void doList(String[] args, int consumed)
