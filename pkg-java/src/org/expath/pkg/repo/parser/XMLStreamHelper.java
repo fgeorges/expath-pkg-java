@@ -37,7 +37,7 @@ public class XMLStreamHelper
         return myTargetNS;
     }
 
-    public XMLStreamReader makeDescriptorParser(Source desc)
+    public XMLStreamReader makeParser(Source desc)
             throws PackageException
     {
         try {

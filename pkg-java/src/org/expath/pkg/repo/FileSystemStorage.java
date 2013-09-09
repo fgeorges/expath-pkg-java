@@ -234,7 +234,7 @@ public class FileSystemStorage
                 src.setSystemId(f.toURI().toString());
                 return src;
             }
-            catch( FileNotFoundException ex ) {
+            catch ( FileNotFoundException ex ) {
                 String msg = "File '" + f + "' exists but is not found";
                 LOG.severe(msg);
                 throw new PackageException(msg, ex);
