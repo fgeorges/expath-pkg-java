@@ -12,7 +12,12 @@ package org.expath.pkg.repo;
 import java.util.Map;
 
 /**
- * TODO: ...
+ * An extension to the packaging system.
+ * 
+ * This abstract class represents the various callback points where a specific
+ * extension can perform steps specific to the extension, both to initialize a
+ * {@link Package} object in memory, and to store additional information in the
+ * repository at install time.
  *
  * @author Florent Georges
  * @date   2010-09-18
@@ -29,6 +34,7 @@ public abstract class Extension
         return myName;
     }
 
+    @Deprecated
     public void init(Repository repo, Map<String, Packages> packages)
             throws PackageException
     {
@@ -39,7 +45,28 @@ public abstract class Extension
         }
     }
 
+    /**
+     * Initialize a package for a specific extension.
+     * 
+     * When loading a package from the repository, an extension has a chance to
+     * initialize it.  For instance by parsing an extension-specific descriptor.
+     * This function is not supposed to modify the state of the repository, like
+     * {@link install()} does.
+     */
     public abstract void init(Repository repo, Package pkg)
+            throws PackageException;
+
+    /**
+     * Additional installation actions needed by a specific extension.
+     * 
+     * When installing a new package in the repository, an extension has a
+     * chance to perform additional actions.  For instance caching additional
+     * management information in extension-specific files in the repository.
+     * 
+     * This function is supposed to initialize the {@link Package} object as
+     * well, like {@link init()} does.
+     */
+    public abstract void install(Repository repo, Package pkg)
             throws PackageException;
 
     private String myName;

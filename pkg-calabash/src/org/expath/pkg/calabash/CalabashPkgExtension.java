@@ -23,6 +23,8 @@ import org.expath.pkg.repo.DescriptorExtension;
 import org.expath.pkg.repo.FileSystemStorage.FileSystemResolver;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
+import org.expath.pkg.repo.PackageInfo;
+import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.Storage;
 import org.expath.pkg.repo.parser.XMLStreamHelper;
 
@@ -66,20 +68,47 @@ public class CalabashPkgExtension
             throw new PackageException("Error reading the saxon descriptor", ex);
         }
         pkg.addInfo(getName(), info);
-        // if the package has never been installed, install it now
-        // TODO: This is not an ideal solution, but this should work in most of
-        // the cases, and does not need xrepo to depend on any processor-specific
-        // stuff.  We need to find a proper way to make that at the real install
-        // phase though (during the "xrepo install").
-        if ( info.hasJars() ) {
-            try {
-                pkg.getResolver().resolveResource(".calabash/classpath.txt");
-            }
-            catch ( Storage.NotExistException ex ) {
-                // only if classpath.txt does not exist...
-                setupPackage(pkg, info);
-            }
+    }
+
+    @Override
+    public void install(Repository repo, Package pkg)
+            throws PackageException
+    {
+        init(repo, pkg);
+        CalabashPkgInfo info = getInfo(pkg);
+        if ( info == null ) {
+            return;
         }
+        if ( ! info.hasJars() ) {
+            return;
+        }
+        setupPackage(pkg, info);
+    }
+
+    private CalabashPkgInfo getInfo(Package pkg)
+            throws PackageException
+    {
+        PackageInfo info = pkg.getInfo(getName());
+        if ( info == null ) {
+            return null;
+        }
+        if ( ! (info instanceof CalabashPkgInfo) ) {
+            throw new PackageException("Not a Calabash-specific package info: " + info.getClass());
+        }
+        return (CalabashPkgInfo) info;
+    }
+
+    private FileSystemResolver getFileSystemResolver(Package pkg)
+            throws PackageException
+    {
+        Storage.PackageResolver res = pkg.getResolver();
+        if ( res == null ) {
+            throw new PackageException("Resolver is null on package: " + pkg.getName());
+        }
+        if ( ! (res instanceof FileSystemResolver) ) {
+            throw new PackageException("Not a file system resolver: " + res.getClass());
+        }
+        return (FileSystemResolver) res;
     }
 
     private void handleElement(XMLStreamReader parser, Package pkg, CalabashPkgInfo info)
@@ -107,20 +136,19 @@ public class CalabashPkgExtension
         }
     }
 
-    // TODO: Must not be here (in the parsing class).  See the comment at the
-    // end of parseDescriptor().  And see SaxonPkgExtension.
     private void setupPackage(Package pkg, CalabashPkgInfo info)
             throws PackageException
     {
-        // TODO: FIXME: Bad, BAD design!  But will be resolved naturally by moving the
-        // install code within the storage class (because we are writing on disk)...
-        FileSystemResolver res = (FileSystemResolver) pkg.getResolver();
+        FileSystemResolver res = getFileSystemResolver(pkg);
         File classpath = res.resolveResourceAsFile(".calabash/classpath.txt");
+        if ( classpath.exists() ) {
+            throw new PackageException("classpath.txt already exists: " + classpath);
+        }
 
-        // create [pkg_dir]/.saxon/classpath.txt
-        File saxon = classpath.getParentFile();
-        if ( ! saxon.exists() && ! saxon.mkdir() ) {
-            throw new PackageException("Impossible to create directory: " + saxon);
+        // create [pkg_dir]/.calabash/classpath.txt
+        File calabash = classpath.getParentFile();
+        if ( ! calabash.exists() && ! calabash.mkdir() ) {
+            throw new PackageException("Impossible to create directory: " + calabash);
         }
         Set<String> jars = info.getJars();
         try {

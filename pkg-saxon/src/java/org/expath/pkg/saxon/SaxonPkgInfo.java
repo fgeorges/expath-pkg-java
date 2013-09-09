@@ -196,6 +196,9 @@ public class SaxonPkgInfo
         }
     }
 
+    public boolean hasJars() {
+        return ! myJars.isEmpty();
+    }
     public Set<String> getJars() {
         return myJars;
     }
