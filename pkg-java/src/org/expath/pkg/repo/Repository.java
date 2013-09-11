@@ -277,7 +277,7 @@ public class Repository
                     }
                 }
                 else {
-                    throw new PackageException("Same version of the package is already installed");
+                    throw new AlreadyInstalledException(name, version);
                 }
             }
         }
@@ -467,6 +467,33 @@ public class Repository
      * The logger.
      */
     private static final Logger LOG = Logger.getLogger(Repository.class);
+
+    /**
+     * Exception raised when trying to install a package already installed.
+     */
+    public static class AlreadyInstalledException
+            extends PackageException
+    {
+        public AlreadyInstalledException(String name, String version)
+        {
+            super("Same version of the package is already installed: " + name + " / " + version);
+            myName    = name;
+            myVersion = version;
+        }
+
+        public String getName()
+        {
+            return myName;
+        }
+
+        public String getVersion()
+        {
+            return myVersion;
+        }
+
+        private String myName;
+        private String myVersion;
+    }
 }
 
 
