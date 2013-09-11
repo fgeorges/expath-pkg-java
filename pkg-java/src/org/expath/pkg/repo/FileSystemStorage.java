@@ -61,6 +61,11 @@ public class FileSystemStorage
         myRoot = root;
     }
 
+    public File getRootDirectory()
+    {
+        return myRoot;
+    }
+
     @Override
     public boolean isReadOnly()
     {
@@ -356,7 +361,7 @@ public class FileSystemStorage
             out.close();
         }
         catch ( TransformerConfigurationException ex ) {
-            throw new PackageException("Impossible to compile the stylesheet: " + ADD_PACKAGE_XSL, ex);
+            throw new PackageException("Impossible to compile the stylesheet: " + REMOVE_PACKAGE_XSL, ex);
         }
         catch ( TransformerException ex ) {
             throw new PackageException("Error transforming packages.xml", ex);
