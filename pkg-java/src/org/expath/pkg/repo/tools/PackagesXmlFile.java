@@ -39,6 +39,11 @@ import org.expath.pkg.repo.PackageException;
  */
 public class PackagesXmlFile
 {
+    /**
+     * Create a new instance.
+     * 
+     * @param file The actual file, for [repo]/.expath-pkg/packages.xml.
+     */
     public PackagesXmlFile(File file)
             throws PackageException
     {
