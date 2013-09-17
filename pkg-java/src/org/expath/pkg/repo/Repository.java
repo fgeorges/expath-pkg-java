@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URLConnection;
@@ -193,6 +194,18 @@ public class Repository
         File downloaded;
         try {
             URLConnection connection = pkg.toURL().openConnection();
+            connection.connect();
+            if ( connection instanceof HttpURLConnection ) {
+                HttpURLConnection hc = (HttpURLConnection) connection;
+                int code = hc.getResponseCode();
+                if ( code == 404 ) {
+                    throw new NotFoundException(pkg);
+                }
+                if ( code < 200 || code >= 300 ) {
+                    String msg = hc.getResponseMessage();
+                    throw new HttpException(pkg, code, msg);
+                }
+            }
             InputStream instream = connection.getInputStream();
             BufferedInputStream in = new BufferedInputStream(instream);
             // just to get the name, to have a meaningful name for the tmp file
@@ -211,10 +224,10 @@ public class Repository
             in.close();
         }
         catch ( MalformedURLException ex ) {
-            throw new PackageException("Error downloading the package", ex);
+            throw new OnlineException(pkg, ex);
         }
         catch ( IOException ex ) {
-            throw new PackageException("Error downloading the package", ex);
+            throw new OnlineException(pkg, ex);
         }
         return installPackage(downloaded, force, interact);
     }
@@ -309,7 +322,7 @@ public class Repository
     }
 
     /**
-     * Remove a repository by name.
+     * Remove a package from the repository, by name.
      * 
      * If a package with that name does not exist, or if there are several
      * versions installed, this is an error.
@@ -333,8 +346,8 @@ public class Repository
         myPackages.remove(pkg);
     }
 
-    /*$
-     * Remove a repository by name and version.
+    /**
+     * Remove a package from the repository, by name and version.
      * 
      * If a package with that name and that version does not exist, this is an
      * error.
@@ -476,7 +489,7 @@ public class Repository
     {
         public AlreadyInstalledException(String name, String version)
         {
-            super("Same version of the package is already installed: " + name + " / " + version);
+            super("Same version of the package is already installed: " + name + ", " + version);
             myName    = name;
             myVersion = version;
         }
@@ -493,6 +506,77 @@ public class Repository
 
         private String myName;
         private String myVersion;
+    }
+
+    /**
+     * Exception raised when receiving an error when trying to read a package on the web.
+     */
+    public static class OnlineException
+            extends PackageException
+    {
+        public OnlineException(URI url)
+        {
+            super("Error downloading the package at URL: " + url);
+            myUrl = url;
+        }
+
+        public OnlineException(URI url, String msg)
+        {
+            super(msg);
+            myUrl = url;
+        }
+
+        public OnlineException(URI url, Exception cause)
+        {
+            super("Error downloading the package at URL: " + url, cause);
+            myUrl = url;
+        }
+
+        public URI getUrl()
+        {
+            return myUrl;
+        }
+
+        private URI myUrl;
+    }
+
+    /**
+     * Exception raised when receiving 404 when trying to read a package on the web.
+     */
+    public static class NotFoundException
+            extends OnlineException
+    {
+        public NotFoundException(URI url)
+        {
+            super(url, "Package not found at URL: " + url);
+        }
+    }
+
+    /**
+     * Exception raised when receiving 404 when trying to read a package on the web.
+     */
+    public static class HttpException
+            extends OnlineException
+    {
+        public HttpException(URI url, int code, String status)
+        {
+            super(url, "HTTP error at URL: " + url + ", code: " + code + ", status: " + status);
+            myCode   = code;
+            myStatus = status;
+        }
+
+        public int getCode()
+        {
+            return myCode;
+        }
+
+        public String getStatus()
+        {
+            return myStatus;
+        }
+
+        private int myCode;
+        private String myStatus;
     }
 }
 
