@@ -341,7 +341,9 @@ public class Repository
         if ( pp.packages().size() != 1 ) {
             throw new PackageException("The package has several versions installed: " + pkg);
         }
-        myStorage.remove(pp.latest());
+        Package p = pp.latest();
+        myStorage.remove(p);
+        pp.remove(p);
         // remove the package from the list
         myPackages.remove(pkg);
     }
