@@ -1,5 +1,5 @@
 /****************************************************************************/
-/*  File:       PackagesXmlFile.java                                        */
+/*  File:       UpdatableXmlFile.java                                       */
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2013-09-17                                                  */
 /*  Tags:                                                                   */
@@ -10,78 +10,77 @@
 package org.expath.pkg.repo.tools;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.InputStream;
+import java.io.StringWriter;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
-import org.expath.pkg.repo.Package;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.PackageException;
 
 /**
- * Represent the file [repo]/.expath-pkg/packages.xml.
+ * An XML file, that can be updated with XSLT stylesheets.
  *
  * @author Florent Georges
  * @date   2013-09-17
  */
-public class PackagesXmlFile
-        extends UpdatableXmlFile
+public abstract class UpdatableXmlFile
+        extends UpdatableFile
 {
     /**
      * Create a new instance.
-     * 
-     * @param file The actual file, for [repo]/.expath-pkg/packages.xml.
      */
-    public PackagesXmlFile(File file)
+    public UpdatableXmlFile(File file)
             throws PackageException
     {
         super(file);
     }
 
     /**
-     * Add a package to packages.xml.
-     * 
-     * @param dir The name of the directory where the package is installed,
-     * right below the repository root.
+     * Compile a stylesheet.
      */
-    public void addPackage(Package pkg, String dir)
+    protected Transformer compile(String rsrc_name)
             throws PackageException
     {
-        Transformer trans = compile(ADD_PACKAGE_XSL);
-        trans.setParameter("name",    pkg.getName());
-        trans.setParameter("dir",     dir);
-        trans.setParameter("version", pkg.getVersion());
-        transform(trans);
+        try {
+            // cache the compiled stylesheet?
+            ClassLoader loader = UpdatableXmlFile.class.getClassLoader();
+            InputStream style_in = loader.getResourceAsStream(rsrc_name);
+            if ( style_in == null ) {
+                throw new PackageException("Resource not found: " + rsrc_name);
+            }
+            Source style_src = new StreamSource(style_in);
+            style_src.setSystemId(rsrc_name);
+            Templates style = TransformerFactory.newInstance().newTemplates(style_src);
+            return style.newTransformer();
+        }
+        catch ( TransformerConfigurationException ex ) {
+            throw new PackageException("Impossible to compile the stylesheet: " + rsrc_name, ex);
+        }
     }
 
     /**
-     * Remove a package from packages.xml.
-     * 
-     * The package is identified by its directory name (the name of the
-     * directory where it is installed, right below the repository root).
+     * Transform the file with the transformer.
      */
-    public void removePackageByDir(String dir)
+    protected void transform(Transformer trans)
             throws PackageException
     {
-        Transformer trans = compile(REMOVE_PACKAGE_XSL);
-        trans.setParameter("dir", dir);
-        transform(trans);
+        try {
+            Source src = new StreamSource(myFile);
+            StringWriter res_out = new StringWriter();
+            Result res = new StreamResult(res_out);
+            trans.transform(src, res);
+            update(res_out);
+        }
+        catch ( TransformerException ex ) {
+            throw new PackageException("Error transforming the file: " + myFile, ex);
+        }
     }
-
-    /**
-     * Create an empty file.
-     * 
-     * By empty, means with the root element, with no package element.
-     */
-    @Override
-    protected void createEmpty(Writer out)
-            throws IOException
-    {
-        out.write("<packages xmlns=\"http://expath.org/ns/repo/packages\"/>\n");
-    }
-
-    /** The stylesheet to add a package, as a Java resource name. */
-    private static final String ADD_PACKAGE_XSL    = "org/expath/pkg/repo/rsrc/add-package.xsl";
-    /** The stylesheet to remove a package, as a Java resource name. */
-    private static final String REMOVE_PACKAGE_XSL = "org/expath/pkg/repo/rsrc/remove-package.xsl";
 }
 
 

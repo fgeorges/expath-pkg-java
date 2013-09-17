@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -27,14 +26,12 @@ import org.expath.pkg.repo.PackageException;
  * @date   2013-09-17
  */
 public class PackagesTxtFile
+        extends UpdatableFile
 {
     public PackagesTxtFile(File file)
             throws PackageException
     {
-        myFile = file;
-        if ( ! myFile.exists() ) {
-            createIt();
-        }
+        super(file);
     }
 
     public void addPackage(Package pkg, String pkg_dir)
@@ -63,15 +60,13 @@ public class PackagesTxtFile
                 }
             }
             in.close();
-            Writer out = new FileWriter(myFile);
-            out.write(buffer.getBuffer().toString());
-            out.write(pkg_dir);
-            out.write(" ");
-            out.write(pkg_name);
-            out.write(" ");
-            out.write(pkg_version);
-            out.write("\n");
-            out.close();
+            buffer.write(pkg_dir);
+            buffer.write(" ");
+            buffer.write(pkg_name);
+            buffer.write(" ");
+            buffer.write(pkg_version);
+            buffer.write("\n");
+            update(buffer);
         }
         catch ( FileNotFoundException ex ) {
             throw new PackageException("File not found: " + myFile, ex);
@@ -98,9 +93,7 @@ public class PackagesTxtFile
                 }
             }
             in.close();
-            Writer out = new FileWriter(myFile);
-            out.write(buffer.getBuffer().toString());
-            out.close();
+            update(buffer);
         }
         catch ( FileNotFoundException ex ) {
             throw new PackageException("File not found: " + myFile, ex);
@@ -110,24 +103,11 @@ public class PackagesTxtFile
         }
     }
 
-    private void createIt()
-            throws PackageException
+    protected void createEmpty(Writer out)
+            throws IOException
     {
-        try {
-            Writer out = new FileWriter(myFile);
-            out.write("\n");
-            out.close();
-        }
-        catch ( FileNotFoundException ex ) {
-            throw new PackageException("Impossible to create the packages text list: " + myFile, ex);
-        }
-        catch ( IOException ex ) {
-            throw new PackageException("Error creating the packages text list: " + myFile, ex);
-        }
+        out.write("\n");
     }
-
-    /** The actual file object to [repo]/.expath-pkg/packages.xml. */
-    private File myFile;
 }
 
 

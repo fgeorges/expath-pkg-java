@@ -1,5 +1,5 @@
 /****************************************************************************/
-/*  File:       PackagesXmlFile.java                                        */
+/*  File:       UpdatableFile.java                                          */
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2013-09-17                                                  */
 /*  Tags:                                                                   */
@@ -10,78 +10,83 @@
 package org.expath.pkg.repo.tools;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.io.Writer;
-import javax.xml.transform.Transformer;
-import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
 
 /**
- * Represent the file [repo]/.expath-pkg/packages.xml.
+ * A file that can be updated.
  *
  * @author Florent Georges
  * @date   2013-09-17
  */
-public class PackagesXmlFile
-        extends UpdatableXmlFile
+public abstract class UpdatableFile
 {
-    /**
-     * Create a new instance.
-     * 
-     * @param file The actual file, for [repo]/.expath-pkg/packages.xml.
-     */
-    public PackagesXmlFile(File file)
+    public UpdatableFile(File file)
             throws PackageException
     {
-        super(file);
-    }
-
-    /**
-     * Add a package to packages.xml.
-     * 
-     * @param dir The name of the directory where the package is installed,
-     * right below the repository root.
-     */
-    public void addPackage(Package pkg, String dir)
-            throws PackageException
-    {
-        Transformer trans = compile(ADD_PACKAGE_XSL);
-        trans.setParameter("name",    pkg.getName());
-        trans.setParameter("dir",     dir);
-        trans.setParameter("version", pkg.getVersion());
-        transform(trans);
-    }
-
-    /**
-     * Remove a package from packages.xml.
-     * 
-     * The package is identified by its directory name (the name of the
-     * directory where it is installed, right below the repository root).
-     */
-    public void removePackageByDir(String dir)
-            throws PackageException
-    {
-        Transformer trans = compile(REMOVE_PACKAGE_XSL);
-        trans.setParameter("dir", dir);
-        transform(trans);
+        myFile = file;
+        if ( ! myFile.exists() ) {
+            topCreateEmpty();
+        }
     }
 
     /**
      * Create an empty file.
      * 
-     * By empty, means with the root element, with no package element.
+     * By empty, means without any record.  If this is an XML file for instance,
+     * it might have the root element.  No need to close the writer, it is done
+     * automatically.
      */
-    @Override
-    protected void createEmpty(Writer out)
-            throws IOException
+    protected abstract void createEmpty(Writer out)
+            throws IOException;
+
+    /**
+     * Replace the actual file with {@code content}.
+     */
+    protected void update(StringWriter content)
+            throws PackageException
     {
-        out.write("<packages xmlns=\"http://expath.org/ns/repo/packages\"/>\n");
+        try {
+            OutputStream out = new FileOutputStream(myFile);
+            byte[] bytes = content.getBuffer().toString().getBytes();
+            out.write(bytes);
+            out.close();
+        }
+        catch ( FileNotFoundException ex ) {
+            throw new PackageException("File not found: " + myFile, ex);
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error writing the file: " + myFile, ex);
+        }
     }
 
-    /** The stylesheet to add a package, as a Java resource name. */
-    private static final String ADD_PACKAGE_XSL    = "org/expath/pkg/repo/rsrc/add-package.xsl";
-    /** The stylesheet to remove a package, as a Java resource name. */
-    private static final String REMOVE_PACKAGE_XSL = "org/expath/pkg/repo/rsrc/remove-package.xsl";
+    /**
+     * Wrap the call to {@link #createEmpty(java.io.Writer)}, and handle I/O exceptions.
+     */
+    private void topCreateEmpty()
+            throws PackageException
+    {
+        try {
+            Writer out = new FileWriter(myFile);
+            createEmpty(out);
+            out.close();
+        }
+        catch ( FileNotFoundException ex ) {
+            throw new PackageException("Impossible to create the packages text list: " + myFile, ex);
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error creating the packages text list: " + myFile, ex);
+        }
+    }
+
+    /** The actual file object. */
+    protected File myFile;
 }
 
 
