@@ -29,7 +29,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import org.expath.pkg.repo.parser.DescriptorParser;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Represent a standard EXPath package repository structure on the disk.
@@ -58,7 +58,9 @@ public class Repository
             throws PackageException
     {
         LOG.info("Create a new repository with storage: {0}", storage);
-        myStorage = storage;
+        myStorage    = storage;
+        myPackages   = new HashMap<String, Packages>();
+        myExtensions = new HashMap<String, Extension>();
         // dynamically register extensions from the classpath
         ServiceLoader<Extension> loader = ServiceLoader.load(Extension.class);
         for ( Extension e : loader ) {
@@ -127,6 +129,17 @@ public class Repository
             myExtensions.put(ext.getName(), ext);
             ext.init(this, myPackages);
         }
+    }
+
+    /**
+     * Reload the repository configuration, so parse again the package descriptors.
+     */
+    public synchronized void reload()
+            throws PackageException
+    {
+        // TODO: Reload extensions as well?
+        myPackages = new HashMap<String, Packages>();
+        parsePublicUris();
     }
 
     /**
@@ -464,20 +477,21 @@ public class Repository
     Repository()
     {
         // nothing, packages will be added "by hand" in tests
+        myStorage = null; // make javac happy, init the final variable
     }
 
     /**
      * The storage object to physically access the repository content.
      */
-    private Storage myStorage;
+    private final Storage myStorage;
     /**
      * The list of packages in this repository (indexed by name).
      */
-    private Map<String, Packages> myPackages = new HashMap<String, Packages>();
+    private Map<String, Packages> myPackages;
     /**
      * The registered extensions (indexed by name).
      */
-    private Map<String, Extension> myExtensions = new HashMap<String, Extension>();
+    private Map<String, Extension> myExtensions;
     /**
      * The logger.
      */
