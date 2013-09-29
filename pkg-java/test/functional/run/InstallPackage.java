@@ -76,10 +76,9 @@ public class InstallPackage
     private static final String PACKAGES_TXT_CONTENT_OLD =
             "hello-1.1 http://www.example.org/lib/hello 1.1\n";
     private static final String PACKAGES_XML_CONTENT_OLD =
-            "<packages xmlns=\"http://expath.org/ns/repo/packages\">\n"
-            + "   <package name=\"http://www.example.org/lib/hello\"\n"
-            + "            dir=\"hello-1.1\"\n"
-            + "            version=\"1.1\"/>\n"
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<packages xmlns=\"http://expath.org/ns/repo/packages\">\n"
+            + "<package name=\"http://www.example.org/lib/hello\" dir=\"hello-1.1\" version=\"1.1\"/>\n"
             + "</packages>\n";
     private static final String PACKAGES_TXT_CONTENT_NEW =
             "hello-1.1 http://www.example.org/lib/hello 1.1\n"
