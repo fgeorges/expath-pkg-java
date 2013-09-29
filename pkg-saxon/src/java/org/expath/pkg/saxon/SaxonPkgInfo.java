@@ -29,7 +29,7 @@ import net.sf.saxon.trans.XPathException;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.*;
 import org.expath.pkg.repo.Storage.PackageResolver;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * TODO: ...

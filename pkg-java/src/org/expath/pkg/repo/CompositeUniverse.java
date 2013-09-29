@@ -12,7 +12,7 @@ package org.expath.pkg.repo;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.transform.Source;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Create a universe by assembling several sub-universes.

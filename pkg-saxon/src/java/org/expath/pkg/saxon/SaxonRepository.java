@@ -25,7 +25,7 @@ import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.Storage;
 import org.expath.pkg.repo.URISpace;
 import org.expath.pkg.repo.UserInteractionStrategy;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Wrap an EXPath repository with Saxon-specific services.

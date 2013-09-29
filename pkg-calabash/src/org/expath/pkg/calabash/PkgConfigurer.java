@@ -21,7 +21,7 @@ import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.Storage;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Calabash configurer factory for the EXPath Packaging System.

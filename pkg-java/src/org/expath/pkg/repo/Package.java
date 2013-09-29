@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.transform.Source;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Represent a particular package, with a particular version.

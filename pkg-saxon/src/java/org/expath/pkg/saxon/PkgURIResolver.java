@@ -10,7 +10,7 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.URISpace;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * URI Resolver to resolve within a repository.
