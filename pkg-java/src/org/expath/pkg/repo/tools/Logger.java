@@ -7,7 +7,7 @@
 /* ------------------------------------------------------------------------ */
 
 
-package org.expath.pkg.repo.util;
+package org.expath.pkg.repo.tools;
 
 import java.util.logging.Level;
 
