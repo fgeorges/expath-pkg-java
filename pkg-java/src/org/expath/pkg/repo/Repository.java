@@ -477,7 +477,9 @@ public class Repository
     Repository()
     {
         // nothing, packages will be added "by hand" in tests
-        myStorage = null; // make javac happy, init the final variable
+        myStorage    = null; // make javac happy, init the final variable
+        myPackages   = new HashMap<String, Packages>(); // init the variable, for addPackage()
+        myExtensions = new HashMap<String, Extension>();
     }
 
     /**
