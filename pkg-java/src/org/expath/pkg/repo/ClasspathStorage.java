@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
-import org.expath.pkg.repo.util.Logger;
-import org.expath.pkg.repo.util.PackageTxt;
+import org.expath.pkg.repo.tools.PackagesTxtFile;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Storage using the classpath.
@@ -52,12 +52,11 @@ public class ClasspathStorage
     public Set<String> listPackageDirectories()
             throws PackageException
     {
-        InputStream pkg_txt = null;
         String rsrc = myRoot.replace('.', '/') + "/" + ".expath-pkg/packages.txt";
         ClassLoader loader = ClasspathStorage.class.getClassLoader();
         InputStream res = loader.getResourceAsStream(rsrc);
         LOG.fine("Resolve resource .expath-pkg/packages.txt to ''{0}''", res);
-        return PackageTxt.parseDirectories(pkg_txt);
+        return PackagesTxtFile.parseDirectories(res);
     }
 
     @Override

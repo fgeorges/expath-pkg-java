@@ -11,11 +11,17 @@ package org.expath.pkg.repo.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
 
@@ -44,6 +50,10 @@ public class PackagesTxtFile
             StringWriter buffer = new StringWriter();
             String line;
             while ( (line = in.readLine()) != null ) {
+                // ignore "white" lines
+                if ( WHITE_LINE_RE.matcher(line).matches() ) {
+                    continue;
+                }
                 int pos = line.indexOf(' ');
                 String dir = line.substring(0, pos);
                 ++pos;
@@ -84,6 +94,10 @@ public class PackagesTxtFile
             StringWriter buffer = new StringWriter();
             String line;
             while ( (line = in.readLine()) != null ) {
+                // ignore "white" lines
+                if ( WHITE_LINE_RE.matcher(line).matches() ) {
+                    continue;
+                }
                 int pos = line.indexOf(' ');
                 String d = line.substring(0, pos);
                 // we don't write the line of the dir of the package to remove
@@ -103,11 +117,59 @@ public class PackagesTxtFile
         }
     }
 
+    /**
+     * Return the names of all the package directories, as a set.
+     * 
+     * TODO: Cache them! (easy now, as all update go through this class)
+     */
+    public Set<String> parseDirectories()
+            throws PackageException
+    {
+        try {
+            InputStream stream = new FileInputStream(myFile);
+            return parseDirectories(stream);
+        }
+        catch ( FileNotFoundException ex ) {
+            throw new PackageException("File not found: " + myFile, ex);
+        }
+    }
+
+    /**
+     * Return the names of all the package directories, as a set.
+     * 
+     * This is a utility method for systems where packages.txt is not stored as
+     * an actual file (for instance on classpath storages).
+     */
+    public static Set<String> parseDirectories(InputStream stream)
+            throws PackageException
+    {
+        Set<String> result = new HashSet<String>();
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+            String line;
+            while ( (line = in.readLine()) != null ) {
+                // ignore "white" lines
+                if ( WHITE_LINE_RE.matcher(line).matches() ) {
+                    continue;
+                }
+                int pos = line.indexOf(' ');
+                String dir = line.substring(0, pos);
+                result.add(dir);
+            }
+            return result;
+        }
+        catch ( IOException ex ) {
+            throw new PackageException("Error reading the package list", ex);
+        }
+    }
+
     protected void createEmpty(Writer out)
             throws IOException
     {
         out.write("\n");
     }
+
+    private static final Pattern WHITE_LINE_RE = Pattern.compile("^[ \t\n\r]*$");
 }
 
 

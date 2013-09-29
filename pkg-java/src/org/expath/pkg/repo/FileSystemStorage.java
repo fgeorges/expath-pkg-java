@@ -17,8 +17,7 @@ import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.tools.PackagesTxtFile;
 import org.expath.pkg.repo.tools.PackagesXmlFile;
-import org.expath.pkg.repo.util.Logger;
-import org.expath.pkg.repo.util.PackageTxt;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Storage using the file system.
@@ -77,17 +76,7 @@ public class FileSystemStorage
     public Set<String> listPackageDirectories()
             throws PackageException
     {
-        File f = new File(myRoot, ".expath-pkg/packages.txt");
-        InputStream pkg_txt = null;
-        if ( f.exists() ) {
-            try {
-                pkg_txt = new FileInputStream(f);
-            }
-            catch ( FileNotFoundException ex ) {
-                throw new PackageException("File exists but is not found: " + f, ex);
-            }
-        }
-        return PackageTxt.parseDirectories(pkg_txt);
+        return myTxtFile.parseDirectories();
     }
 
     @Override
