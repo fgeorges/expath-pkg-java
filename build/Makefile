@@ -11,7 +11,7 @@ pkg-saxon=../pkg-saxon
 pkg-calabash=../pkg-calabash
 bin=../bin
 samples=../samples
-version-prop=$(pkg-java)/src/org/expath/pkg/repo/tui/version.properties
+version-prop=$(pkg-java)/src/main/resources/org/expath/pkg/repo/tui/version.properties
 
 all: $(NAME).zip $(NAME)-install.jar
 
