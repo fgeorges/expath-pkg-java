@@ -52,17 +52,27 @@ public abstract class UpdatableFile
     protected void update(StringWriter content)
             throws PackageException
     {
+        OutputStream out = null;
         try {
-            OutputStream out = new FileOutputStream(myFile);
+            out = new FileOutputStream(myFile);
             byte[] bytes = content.getBuffer().toString().getBytes();
             out.write(bytes);
-            out.close();
         }
         catch ( FileNotFoundException ex ) {
             throw new PackageException("File not found: " + myFile, ex);
         }
         catch ( IOException ex ) {
             throw new PackageException("Error writing the file: " + myFile, ex);
+        }
+        finally {
+            if ( out != null ) {
+                try {
+                    out.close();
+                }
+                catch ( IOException ex ) {
+                    throw new PackageException("Error closing the file: " + myFile, ex);
+                }
+            }
         }
     }
 
@@ -72,16 +82,26 @@ public abstract class UpdatableFile
     private void topCreateEmpty()
             throws PackageException
     {
+        Writer out = null;
         try {
-            Writer out = new FileWriter(myFile);
+            out = new FileWriter(myFile);
             createEmpty(out);
-            out.close();
-        }
+       }
         catch ( FileNotFoundException ex ) {
             throw new PackageException("Impossible to create the packages text list: " + myFile, ex);
         }
         catch ( IOException ex ) {
             throw new PackageException("Error creating the packages text list: " + myFile, ex);
+        }
+        finally {
+            if ( out != null ) {
+                try {
+                    out.close();
+                }
+                catch ( IOException ex ) {
+                    throw new PackageException("Error closing the file: " + myFile, ex);
+                }
+            }
         }
     }
 
