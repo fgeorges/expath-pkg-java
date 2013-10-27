@@ -51,10 +51,10 @@ However, we have one golden rule, adhered to even by the project founders: **nev
 
 The main things that get a Pull Request accepted quickly are:
 
-- **Only change what you need to. ** If you must reformat code, keep it in a separate commit to any syntax or functionality changes.
+- **Only change what you need to.** If you must reformat code, keep it in a separate commit to any syntax or functionality changes.
 - **Test.** If you fix something prove it, write a test that illustrates the issue before you fix the issue and validate the test. If you add a new feature it needs tests, so that we can understand its intent and try to avoid regressions in future as much as possible.
-- **Make sure the appropriate licence header appears at the top of your source code file. ** We exclusively use [MPL v1.0](http://opensource.org/licenses/MPL-1.0 "The Mozilla Public License (MPL), version 1.0 (MPL-1.0)") for EXPath.
-- **Run the full the test suite! ** We don't accept code that causes regressions.
+- **Make sure the appropriate licence header appears at the top of your source code file.** We exclusively use [MPL v1.0](http://opensource.org/licenses/MPL-1.0 "The Mozilla Public License (MPL), version 1.0 (MPL-1.0)") for EXPath.
+- **Run the full the test suite!** We don't accept code that causes regressions.
 
 
 Build Management with Maven
@@ -78,12 +78,12 @@ Artifacts produced by maven are always postfixed with a version number. For spec
 
 - ***SNAPSHOT***: Is a development version release. e.g. You may specify the version `2.0-SNAPSHOT` to Maven, which is interpreted as a version which will eventually become `2.0`. When you do an actual build of a SNAPSHOT, Maven injects a timestamp into the version number to differentiate one development build version from another. For example for the `expath-pkg-java` module, with version number `2.0-SNAPSHOT`, if you were to ***release*** the snapshot you may get the artifact `expath-pkg-java-1.0-20131027.124609-1.jar`.
 
-Whilst the EXPath PKG project is a multi-module project, the version number of the EXPath PKG is common for all modules in the project. As the entire project is released, rather than individual modules. As such the version number can be found in `expath-pkg-parent/pom.xml`. ***NOTE***: The Version Number should not be manually changed, rather the Maven Release plugin should be used (see below).
+Whilst the EXPath PKG project is a multi-module project, the version number of the EXPath PKG is common for all modules in the project. As the entire project is released, rather than individual modules. As such the version number can be found in `expath-pkg-parent/pom.xml`. ***NOTE***: The Version Number should not be manually changed, rather the Maven Release plugin should be used (see [Release Process](#release-process) below).
 
 
 Release Process
 ---------------
-A release may only be done from the main EXPath PKG repository, as such you will need write access to that GitHub repository. Releasing also involves uploading the release artifacts to Maven Central which will be taken care of for you by Maven, however you do need to have setup your GPG key and configured your Maven `settings.xml` with your Maven Central account, see steps (2), (3) and (7a.1 settings.xml) here: https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide.
+A release may only be done from the main EXPath PKG repository, as such you will need write access to that GitHub repository. Releasing also involves uploading the release artifacts to Maven Central which will be taken care of for you by Maven, however you do need to have setup your GPG key and configured your Maven `settings.xml` with your Maven Central account, see steps (*2*), (*3*) and (*7a.1 settings.xml*) here: https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide.
 
 To create an EXPath PKG release, you may use the Maven Release plugin which is already configured for the project. FYI - performing a release will take the following steps for you:
 
@@ -114,7 +114,11 @@ $ mvn release perform
 
 Building Offline
 ----------------
-Maven will download on demand the dependencies of the EXPath PKG project, a copy of these will be placed in your local repository which is `~/.m2/repository` on Linux/Unix/Mac platforms or `%USERPROFILE%/.m2/repositorty` on Windows platforms. Once these are downloaded, they will not be retrieved again. However Maven will check occasionally whether newer versions are available. If you are working offline you can pass the `-O` option to `mvn` to stop it from trying to download dependencies from remote sources or checking for updates.
+Maven will download on demand the dependencies of the EXPath PKG project, a copy of these will be placed in your local repository which is `~/.m2/repository` on Linux/Unix/Mac platforms or `%USERPROFILE%/.m2/repositorty` on Windows platforms. Once these are downloaded, they will not be retrieved again. However Maven will check occasionally whether newer versions are available. If you are working offline you can pass the `-O` option to `mvn` to stop it from trying to download dependencies from remote sources or checking for updates, for example:
+
+```bash
+$mvn -O package
+```
 
 
 Working behind a Proxy Server

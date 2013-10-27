@@ -29,3 +29,6 @@ The install directory contains also a script `saxon` and a script
 `calabash`, that launch resp. Saxon and Calabash, by configuring them
 with the repository, and adding useful options from the command line.
 For more information: `saxon --help` and `calabash ++help`.
+
+## Development
+For information on working with the EXPath PKG code base see here [development.md](doc/development.md).
