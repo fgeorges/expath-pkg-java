@@ -31,6 +31,13 @@ In the example above, we use the SSH form of the GitHub repo URL to clone PKG. H
 From here, you now have a compiled version of PKG.
 
 
+IDE Support
+-----------
+- NetBeans supports Maven projects natively, you can simply open the `expath-pkg` folder as project in NetBeans.
+- Intelli-J supports importing Maven projects. From the `File -> Import Project` menu select the `expath-pkg` folder, choose `Import project from external model` and then select `Maven`.
+- Eclipse, if you are forced to use it, various plugins exist for Maven support, however the [IAM](http://wiki.eclipse.org/IAM) plugin project looks most promising currently.
+
+
 Contributing to EXPath
 ----------------------
 We welcome all contributions to EXPath! 
