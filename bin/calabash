@@ -228,9 +228,9 @@ if test -n "$REPO"; then
     IFS=$'\n'
     for cp in `resolve "${REPO}"`/*/.calabash/classpath.txt
     do
-	# If no file corresponds to the glob, the glob is returned as
-	# is.  We check this is not the case by looking for '*' in the
-	# path (in this case we want to iterate zero times).
+        # If no file corresponds to the glob, the glob is returned as
+        # is.  We check this is not the case by looking for '*' in the
+        # path (in this case we want to iterate zero times).
         if echo "$cp" | grep '*' >/dev/null; then
             true; #nothing
         else
