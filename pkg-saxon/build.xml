@@ -116,7 +116,7 @@
          <include name="**/*88.java"/>
          <classpath>
             <pathelement location="${saxon88.jar}"/>
-            <pathelement location="${reference.pkg-repo.jar}"/>
+            <pathelement location="${reference.pkg-java.jar}"/>
          </classpath>
       </javac>
    </target>
@@ -126,7 +126,7 @@
          <include name="**/*89.java"/>
          <classpath>
             <pathelement location="${saxon89.jar}"/>
-            <pathelement location="${reference.pkg-repo.jar}"/>
+            <pathelement location="${reference.pkg-java.jar}"/>
          </classpath>
       </javac>
    </target>
@@ -136,7 +136,7 @@
          <include name="**/*90.java"/>
          <classpath>
             <pathelement location="${saxon90.jar}"/>
-            <pathelement location="${reference.pkg-repo.jar}"/>
+            <pathelement location="${reference.pkg-java.jar}"/>
          </classpath>
       </javac>
    </target>
@@ -146,7 +146,7 @@
          <include name="**/*91.java"/>
          <classpath>
             <pathelement location="${saxon91.jar}"/>
-            <pathelement location="${reference.pkg-repo.jar}"/>
+            <pathelement location="${reference.pkg-java.jar}"/>
          </classpath>
       </javac>
    </target>
@@ -156,7 +156,7 @@
          <include name="**/*92.java"/>
          <classpath>
             <pathelement location="${saxon92.jar}"/>
-            <pathelement location="${reference.pkg-repo.jar}"/>
+            <pathelement location="${reference.pkg-java.jar}"/>
          </classpath>
       </javac>
    </target>
