@@ -10,10 +10,10 @@ REM classpath to use to launch Saxon, except the JAR files contained in
 REM the repository (those are automatically added).  It must at least
 REM contain the following JAR files:
 REM   - saxon9he.jar  (or any main Saxon JAR from 8.8 to 9.2)
-REM   - pkg-repo.jar  (the EXPath repo manager)
+REM   - pkg-java.jar  (the EXPath repo manager)
 REM   - pkg-saxon.jar (the EXPath pkg support for Saxon)
 REM
-REM SET SAXON_CP=.../some.jar;.../saxon9he.jar;.../pkg-repo.jar;.../pkg-saxon.jar
+REM SET SAXON_CP=.../some.jar;.../saxon9he.jar;.../pkg-java.jar;.../pkg-saxon.jar
 
 REM Set this variable in your environment or here, if you don't set SAXON_CP.
 REM This is the directory where Saxon is installed.
@@ -38,7 +38,7 @@ SET SAXON_CP=%SAXON_CP%;%SAXON_HOME%/saxon9sa.jar
 SET SAXON_CP=%SAXON_CP%;%SAXON_HOME%/saxon9.jar
 SET SAXON_CP=%SAXON_CP%;%SAXON_HOME%/saxon8sa.jar
 SET SAXON_CP=%SAXON_CP%;%SAXON_HOME%/saxon8.jar
-SET SAXON_CP=%SAXON_CP%;%~dp0/../expath/pkg-repo.jar
+SET SAXON_CP=%SAXON_CP%;%~dp0/../expath/pkg-java.jar
 SET SAXON_CP=%SAXON_CP%;%~dp0/../expath/pkg-saxon.jar
 
 :saxoncpset

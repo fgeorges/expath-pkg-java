@@ -16,9 +16,9 @@ INSTALL_DIR=`dirname $0`/..
 if test \! -d "${INSTALL_DIR}"; then
     die "INTERNAL ERROR: The install directory is not a directory?!? ($INSTALL_DIR)"
 fi
-# pkg-repo.jar
+# pkg-java.jar
 if test -z "$EXPATH_PKG_REPO_JAR"; then
-    EXPATH_PKG_REPO_JAR="$INSTALL_DIR/expath/pkg-repo.jar"
+    EXPATH_PKG_REPO_JAR="$INSTALL_DIR/expath/pkg-java.jar"
 fi
 if test \! -f "$EXPATH_PKG_REPO_JAR"; then
     die "\$EXPATH_PKG_REPO_JAR does not exist: $EXPATH_PKG_REPO_JAR"
@@ -38,6 +38,11 @@ if test \! -f "$EXPATH_PKG_CALABASH_JAR"; then
     die "\$EXPATH_PKG_CALABASH_JAR does not exist: $EXPATH_PKG_CALABASH_JAR"
 fi
 
-CP=$EXPATH_PKG_REPO_JAR:$EXPATH_PKG_SAXON_JAR:$EXPATH_PKG_CALABASH_JAR
+############ TODO: ...
+# saxon.jar
+SAXON_JAR="$INSTALL_DIR/saxon/saxon9he.jar"
+############
+
+CP=$EXPATH_PKG_REPO_JAR:$EXPATH_PKG_SAXON_JAR:$EXPATH_PKG_CALABASH_JAR:$SAXON_JAR
 
 "$JAVA" -cp "$CP" org.expath.pkg.repo.tui.Main "$@"

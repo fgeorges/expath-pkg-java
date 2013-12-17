@@ -121,12 +121,12 @@ if test -z "$SAXON_CP"; then
     else
         die "Saxon JAR cannot be found in SAXON_HOME: $SAXON_HOME"
     fi
-    # add the EXPath pkg-repo.jar to the classpath
+    # add the EXPath pkg-java.jar to the classpath
     if test -z "$EXPATH_PKG_REPO_JAR"; then
-	if test \! -f "$INSTALL_DIR/expath/pkg-repo.jar"; then
-            die "INTERNAL ERROR: The install directory does not contain expath/pkg-repo.jar?!? ($INSTALL_DIR)"
+	if test \! -f "$INSTALL_DIR/expath/pkg-java.jar"; then
+            die "INTERNAL ERROR: The install directory does not contain expath/pkg-java.jar?!? ($INSTALL_DIR)"
 	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-repo.jar"
+	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-java.jar"
     else
 	if test \! -f "$EXPATH_PKG_REPO_JAR"; then
             die "\$EXPATH_PKG_REPO_JAR does not exist: $EXPATH_PKG_REPO_JAR"
