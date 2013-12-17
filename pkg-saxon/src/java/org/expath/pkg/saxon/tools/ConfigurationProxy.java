@@ -95,14 +95,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public boolean useTypedValueCache() {
-        if ( myConfig == null ) {
-            return super.useTypedValueCache();
-        }
-        return myConfig.useTypedValueCache();
-    }
-
-    @Override
     public NodeInfo unravel(Source source) {
         if ( myConfig == null ) {
             return super.unravel(source);
@@ -192,15 +184,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setTraceExternalFunctions(boolean traceExternalFunctions) {
-        if ( myConfig == null ) {
-            super.setTraceExternalFunctions(traceExternalFunctions);
-            return;
-        }
-        myConfig.setTraceExternalFunctions(traceExternalFunctions);
-    }
-
-    @Override
     public void setTiming(boolean timing) {
         if ( myConfig == null ) {
             super.setTiming(timing);
@@ -282,15 +265,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setRetainDTDAttributeTypes(boolean useTypes) throws TransformerFactoryConfigurationError {
-        if ( myConfig == null ) {
-            super.setRetainDTDAttributeTypes(useTypes);
-            return;
-        }
-        myConfig.setRetainDTDAttributeTypes(useTypes);
-    }
-
-    @Override
     public void setRecoveryPolicy(int recoveryPolicy) {
         if ( myConfig == null ) {
             super.setRecoveryPolicy(recoveryPolicy);
@@ -327,30 +301,12 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setOptimizerTracing(boolean trace) {
-        if ( myConfig == null ) {
-            super.setOptimizerTracing(trace);
-            return;
-        }
-        myConfig.setOptimizerTracing(trace);
-    }
-
-    @Override
     public void setNamePool(NamePool targetNamePool) {
         if ( myConfig == null ) {
             super.setNamePool(targetNamePool);
             return;
         }
         myConfig.setNamePool(targetNamePool);
-    }
-
-    @Override
-    public void setMultiThreading(boolean multithreading) {
-        if ( myConfig == null ) {
-            super.setMultiThreading(multithreading);
-            return;
-        }
-        myConfig.setMultiThreading(multithreading);
     }
 
     @Override
@@ -396,15 +352,6 @@ public class ConfigurationProxy
             return;
         }
         myConfig.setLineNumbering(lineNumbering);
-    }
-
-    @Override
-    public void setLazyConstructionMode(boolean lazy) {
-        if ( myConfig == null ) {
-            super.setLazyConstructionMode(lazy);
-            return;
-        }
-        myConfig.setLazyConstructionMode(lazy);
     }
 
     @Override
@@ -543,15 +490,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setAllowExternalFunctions(boolean allowExternalFunctions) {
-        if ( myConfig == null ) {
-            super.setAllowExternalFunctions(allowExternalFunctions);
-            return;
-        }
-        myConfig.setAllowExternalFunctions(allowExternalFunctions);
-    }
-
-    @Override
     public void sealNamespace(String namespace) {
         if ( myConfig == null ) {
             super.sealNamespace(namespace);
@@ -662,7 +600,7 @@ public class ConfigurationProxy
     }
 
     @Override
-    public NodeInfo makeUnconstructedDocument(DocumentInstr instr, XPathContext context) throws XPathException {
+    public DocumentInfo makeUnconstructedDocument(DocumentInstr instr, XPathContext context) throws XPathException {
         if ( myConfig == null ) {
             return super.makeUnconstructedDocument(instr, context);
         }
@@ -791,14 +729,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public boolean isTraceExternalFunctions() {
-        if ( myConfig == null ) {
-            return super.isTraceExternalFunctions();
-        }
-        return myConfig.isTraceExternalFunctions();
-    }
-
-    @Override
     public boolean isTiming() {
         if ( myConfig == null ) {
             return super.isTiming();
@@ -831,30 +761,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public boolean isRetainDTDAttributeTypes() {
-        if ( myConfig == null ) {
-            return super.isRetainDTDAttributeTypes();
-        }
-        return myConfig.isRetainDTDAttributeTypes();
-    }
-
-    @Override
-    public boolean isOptimizerTracing() {
-        if ( myConfig == null ) {
-            return super.isOptimizerTracing();
-        }
-        return myConfig.isOptimizerTracing();
-    }
-
-    @Override
-    public boolean isMultiThreading() {
-        if ( myConfig == null ) {
-            return super.isMultiThreading();
-        }
-        return myConfig.isMultiThreading();
-    }
-
-    @Override
     public boolean isLineNumbering() {
         if ( myConfig == null ) {
             return super.isLineNumbering();
@@ -868,14 +774,6 @@ public class ConfigurationProxy
             return super.isLicensedFeature(feature);
         }
         return myConfig.isLicensedFeature(feature);
-    }
-
-    @Override
-    public boolean isLazyConstructionMode() {
-        if ( myConfig == null ) {
-            return super.isLazyConstructionMode();
-        }
-        return myConfig.isLazyConstructionMode();
     }
 
     @Override
@@ -900,14 +798,6 @@ public class ConfigurationProxy
             return super.isCompatible(other);
         }
         return myConfig.isCompatible(other);
-    }
-
-    @Override
-    public boolean isAllowExternalFunctions() {
-        if ( myConfig == null ) {
-            return super.isAllowExternalFunctions();
-        }
-        return myConfig.isAllowExternalFunctions();
     }
 
     @Override
@@ -1216,11 +1106,11 @@ public class ConfigurationProxy
     }
 
     @Override
-    public SequenceReceiver getElementValidator(SequenceReceiver receiver, NodeName elemName, int locationId, SchemaType schemaType, int validation) throws XPathException {
+    public SequenceReceiver getElementValidator(SequenceReceiver receiver, ParseOptions validationOptions, int locationId) throws XPathException {
         if ( myConfig == null ) {
-            return super.getElementValidator(receiver, elemName, locationId, schemaType, validation);
+            return super.getElementValidator(receiver, validationOptions, locationId);
         }
-        return myConfig.getElementValidator(receiver, elemName, locationId, schemaType, validation);
+        return myConfig.getElementValidator(receiver, validationOptions, locationId);
     }
 
     @Override
@@ -1248,11 +1138,11 @@ public class ConfigurationProxy
     }
 
     @Override
-    public Receiver getDocumentValidator(Receiver receiver, String systemId, int validationMode, int stripSpace, SchemaType schemaType, int topLevelElementName) {
+    public Receiver getDocumentValidator(Receiver receiver, String systemId, ParseOptions validationOptions) {
         if ( myConfig == null ) {
-            return super.getDocumentValidator(receiver, systemId, validationMode, stripSpace, schemaType, topLevelElementName);
+            return super.getDocumentValidator(receiver, systemId, validationOptions);
         }
-        return myConfig.getDocumentValidator(receiver, systemId, validationMode, stripSpace, schemaType, topLevelElementName);
+        return myConfig.getDocumentValidator(receiver, systemId, validationOptions);
     }
 
     @Override
@@ -1469,5 +1359,5 @@ public class ConfigurationProxy
         myConfig.addExtensionBinders(list);
     }
 
-    private Configuration myConfig;
+    private final Configuration myConfig;
 }
