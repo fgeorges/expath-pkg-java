@@ -1,4 +1,8 @@
 @echo off
+rem # -*- mode: dos -*-
+
+rem # is debug enabled?
+set DEBUG=false
 
 SET ADD_CP=%ADD_CP%;%1
 

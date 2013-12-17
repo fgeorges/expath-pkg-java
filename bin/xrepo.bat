@@ -1,6 +1,10 @@
 @echo off
+rem # -*- mode: dos -*-
 
-REM TODO: Try to use JAVA_HOME?
-SET JAVA=java
+rem # is debug enabled?
+set DEBUG=false
 
-%JAVA% -jar "%~dp0/../expath/pkg-java.jar" %1 %2 %3 %4 %5 %6 %7 %8 %9
+rem # load the common definitions in expath-pkg-common.bat
+call %~dp0/expath-pkg-common.bat
+
+%JAVA% -jar %INSTALL_DIR%/expath/pkg-repo.jar %*
