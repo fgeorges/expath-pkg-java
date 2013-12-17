@@ -28,4 +28,6 @@ For more information on the repository manager: `xrepo help`.
 The install directory contains also a script `saxon` and a script
 `calabash`, that launch resp. Saxon and Calabash, by configuring them
 with the repository, and adding useful options from the command line.
-For more information: `saxon --help` and `calabash ++help`.
+For more information: `saxon --help` and `calabash ++help`, or see the
+[README](https://github.com/fgeorges/expath-pkg-java/tree/master/bin)
+file in the sub-directory `bin/` in the source repository.
