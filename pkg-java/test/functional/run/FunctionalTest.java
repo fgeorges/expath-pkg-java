@@ -48,6 +48,7 @@ public class FunctionalTest
 
 
     static private void recursiveDelete(File file)
+            throws InterruptedException
     {
         if ( file.isDirectory() ) {
             for ( File child : file.listFiles() ) {
@@ -55,7 +56,16 @@ public class FunctionalTest
             }
         }
         if ( ! file.delete() ) {
-            fail("Error deleting the file/dir: " + file);
+            // on Windows, there can be race condition, leading to an error when
+            // trying to delete the files, because the repository object still
+            // holds a reference to the private files like .expath-pkg/packages.xml,
+            // and Windows does not permit to delete a file open by an application
+            System.err.println("Deleting the file/dir failed, collect garbage and sleep 1 sec: " + file);
+            System.gc();
+            Thread.sleep(1000);
+            if ( ! file.delete() ) {
+                fail("Error deleting the file/dir: " + file);
+            }
         }
     }
 }
