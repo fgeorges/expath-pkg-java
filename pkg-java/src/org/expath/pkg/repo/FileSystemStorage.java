@@ -335,6 +335,9 @@ public class FileSystemStorage
     private void removePackageInXml(File file, String dir)
             throws PackageException
     {
+        if ( ! file.exists() ) {
+            throw new PackageException("The file does not exist, whilst removing a package: " + file);
+        }
         try {
             // cache the compiled stylesheet?
             ClassLoader loader = FileSystemStorage.class.getClassLoader();
@@ -359,7 +362,7 @@ public class FileSystemStorage
             throw new PackageException("Impossible to compile the stylesheet: " + ADD_PACKAGE_XSL, ex);
         }
         catch ( TransformerException ex ) {
-            throw new PackageException("Error transforming packages.xml", ex);
+            throw new PackageException("Error transforming " + file, ex);
         }
         catch ( FileNotFoundException ex ) {
             throw new PackageException("File not found (wtf? - I just transformed it): " + file, ex);

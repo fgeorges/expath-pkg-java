@@ -18,6 +18,7 @@ import com.xmlcalabash.io.WritableDocument;
 import com.xmlcalabash.model.Serialization;
 import com.xmlcalabash.runtime.XPipeline;
 import com.xmlcalabash.config.XProcConfigurer;
+import com.xmlcalabash.util.Input;
 import java.io.File;
 import net.sf.saxon.s9api.SaxonApiException;
 import org.expath.pkg.calabash.PkgConfigurer;
@@ -190,9 +191,12 @@ public class RunCalabash
     private void runPipeline(String name, XProcRuntime runtime)
             throws SaxonApiException
     {
+        String path = PIPE_DIR + name;
         System.err.println(" ------------ ");
-        System.err.println("I AM GONNA RUN " + name);
-        XPipeline pipe = runtime.load(PIPE_DIR + name);
+        System.err.println("I AM GONNA RUN: '" + name + "'");
+        System.err.println("      with uri: '" + path + "'");
+        Input in = new Input(path);
+        XPipeline pipe = runtime.load(in);
         pipe.run();
         copyPortToStdout(pipe, "result", runtime);
     }

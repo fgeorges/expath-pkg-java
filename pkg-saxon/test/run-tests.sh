@@ -12,8 +12,8 @@ xslt_java=java/transform/using-java.xsl
 xquery_std=java/transform/query.xq
 xquery_java=java/transform/using-java.xq
 
-# pkg-repo.jar and pkg-saxon.jar
-repo_jar=../../../repo/pkg-repo/dist/pkg-repo.jar
+# pkg-java.jar and pkg-saxon.jar
+repo_jar=../../../repo/pkg-java/dist/pkg-java.jar
 saxon_jar=../dist/pkg-saxon.jar
 
 # must be called with two params: the Saxon home, and the version string

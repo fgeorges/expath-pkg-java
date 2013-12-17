@@ -43,8 +43,12 @@ public class PkgConfigurer
             LOG.fine("$EPATH_REPO: {0}", repo_value);
         }
         if ( repo_value == null ) {
-            // TODO: An error, really?
-            throw new XProcException("Unable to locate the EXPath repository");
+            // TODO: Detect if --debug is enabled, and then display a message
+            // properly formatted for humans (not through logs), including basic
+            // doc and links to reference material.
+            LOG.severe("Unable to locate the EXPath repository, cannot set up packaging");
+            LOG.severe("Use ++repo, org.expath.pkg.calabash.repo, or $EXPATH_REPO to enable it");
+            return;
         }
         LOG.info("Initialize EXPath Packaging with: {0}", repo_value);
         try {

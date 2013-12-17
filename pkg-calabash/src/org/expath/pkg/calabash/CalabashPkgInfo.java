@@ -41,7 +41,10 @@ public class CalabashPkgInfo
     {
         XProcConfiguration config = runtime.getConfiguration();
         for ( Map.Entry<QName, String> e : mySteps.entrySet() ) {
-            config.implementations.put(e.getKey(), e.getValue());
+            QName  key   = e.getKey();
+            String value = e.getValue();
+            Class clazz = loadClass(value);
+            config.implementations.put(key, clazz);
         }
     }
 
@@ -71,6 +74,18 @@ public class CalabashPkgInfo
     public void addStep(QName type, String clazz)
     {
         mySteps.put(type, clazz);
+    }
+
+    private Class loadClass(String name)
+            throws PackageException
+    {
+        ClassLoader loader = CalabashPkgInfo.class.getClassLoader();
+        try {
+            return loader.loadClass(name);
+        }
+        catch ( ClassNotFoundException ex ) {
+            throw new PackageException("Class not found: '" + name + "'", ex);
+        }
     }
 
     private Set<String>        myJars = new HashSet<String>();
