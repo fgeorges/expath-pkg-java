@@ -28,7 +28,6 @@ import org.expath.pkg.repo.PackageException;
  * Packaging spec too.
  *
  * @author Florent Georges
- * @date   2010-11-15
  */
 public class Semver
 {

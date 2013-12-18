@@ -24,7 +24,6 @@ import org.expath.pkg.repo.util.Logger;
  * If the versionning scheme does not follow SemVer, then the order is undefined.
  *
  * @author Florent Georges
- * @date   2010-11-18
  */
 public class Packages
         implements Universe

@@ -24,7 +24,6 @@ import javax.xml.transform.Source;
  * We should rather use a listener mechanism.
  *
  * @author Florent Georges
- * @date   2011-01-26
  */
 public interface Universe
 {

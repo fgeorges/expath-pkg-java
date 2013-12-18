@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2010-11-15                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
  * Unit tests of {@code Semver}.
  *
  * @author Florent Georges
- * @date   2010-11-15
  */
 public class SemverTest
 {

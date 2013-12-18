@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
  * Helper classes providing ZIP file services.
  *
  * @author Florent Georges
- * @date   2009-06-15
  */
 class ZipHelper
 {

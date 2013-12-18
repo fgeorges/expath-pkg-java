@@ -38,7 +38,6 @@ import org.expath.pkg.repo.util.PackageTxt;
  * Storage using the file system.
  *
  * @author Florent Georges
- * @date   2010-10-07
  */
 public class FileSystemStorage
         extends Storage

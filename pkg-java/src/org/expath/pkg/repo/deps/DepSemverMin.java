@@ -15,7 +15,6 @@ import org.expath.pkg.repo.PackageException;
  * A dependency version using {@code @semver-min}.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 class DepSemverMin
         extends DependencyVersion

@@ -1,9 +1,9 @@
 /****************************************************************************/
 /*  File:       EXPathFunctionDefinition.java                               */
-/*  Author:     F. Georges - fgeorges.org                                   */
+/*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2009-08-09                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -17,7 +17,6 @@ import net.sf.saxon.lib.ExtensionFunctionDefinition;
  * TODO: Doc...
  *
  * @author Florent Georges
- * @date   2009-08-09
  */
 public abstract class EXPathFunctionDefinition
         extends ExtensionFunctionDefinition

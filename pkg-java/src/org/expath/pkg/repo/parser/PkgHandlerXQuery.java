@@ -23,7 +23,6 @@ import org.expath.pkg.repo.URISpace;
  * a main module (with an import-uri element).
  *
  * @author Florent Georges
- * @date   2010-05-15
  */
 @Deprecated
 class PkgHandlerXQuery

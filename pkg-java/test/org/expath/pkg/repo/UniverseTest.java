@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2011-01-29                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2011 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2011-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
  * Test the {@code Universe}, especially its resolve mechanism.
  *
  * @author Florent Georges
- * @date   2012-01-29
  */
 public class UniverseTest
 {

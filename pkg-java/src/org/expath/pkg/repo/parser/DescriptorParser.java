@@ -25,7 +25,6 @@ import org.expath.pkg.repo.URISpace;
  * Parser for package descriptors.
  *
  * @author Florent Georges
- * @date   2010-10-07
  */
 public class DescriptorParser
 {

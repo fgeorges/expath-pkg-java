@@ -18,7 +18,6 @@ import org.expath.pkg.repo.parser.XMLStreamHelper;
  * An extension that is based on a dedicated descriptor (e.g. saxon.xml or exist.xml).
  *
  * @author Florent Georges
- * @date   2010-09-18
  */
 public abstract class DescriptorExtension
         extends Extension

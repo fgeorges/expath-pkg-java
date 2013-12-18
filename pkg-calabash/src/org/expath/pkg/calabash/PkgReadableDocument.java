@@ -28,7 +28,6 @@ import net.sf.saxon.s9api.XdmNode;
  * Based on ReadableDocument (Calabash 0.9.15, SVN revision 456.)
  *
  * @author Florent Georges
- * @date   2009-10-20
  */
 public class PkgReadableDocument
         implements ReadablePipe

@@ -22,7 +22,6 @@ import org.expath.pkg.saxon.SaxonRepository;
  * ...
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class PkgSaxonConfigurer
         implements SaxonConfigurer

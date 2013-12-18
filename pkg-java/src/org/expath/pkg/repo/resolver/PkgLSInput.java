@@ -21,7 +21,6 @@ import org.xml.sax.InputSource;
  * Package-private class used by {@link PkgLSResourceResolver}.
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 class PkgLSInput
         implements LSInput

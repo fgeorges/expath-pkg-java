@@ -14,7 +14,6 @@ package org.expath.pkg.repo;
  * General exception related to the Packaging System.
  *
  * @author Florent Georges
- * @date   2009-10-23
  */
 public class PackageException
         extends Exception

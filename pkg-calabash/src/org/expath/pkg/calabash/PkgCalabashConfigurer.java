@@ -37,7 +37,6 @@ import org.xml.sax.EntityResolver;
  * ...
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class PkgCalabashConfigurer
         extends DefaultXMLCalabashConfigurer

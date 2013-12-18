@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2009-11-02                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
  * Functional tests for package install.
  *
  * @author Florent Georges
- * @date   2009-11-02
  */
 public class InstallPackage
 {

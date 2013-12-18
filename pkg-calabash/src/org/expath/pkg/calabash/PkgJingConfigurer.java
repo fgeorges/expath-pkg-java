@@ -21,7 +21,6 @@ import org.expath.pkg.repo.URISpace;
  * ...
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class PkgJingConfigurer
         implements JingConfigurer

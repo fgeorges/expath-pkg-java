@@ -22,7 +22,6 @@ import org.expath.pkg.repo.UserInteractionStrategy;
  * TODO: See what has been done for pkg-saxon...
  *
  * @author Florent Georges
- * @date   2009-11-08
  */
 public class TextUserInteraction
         implements UserInteractionStrategy

@@ -15,7 +15,6 @@ import java.util.Map;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2010-09-18
  */
 public abstract class Extension
 {

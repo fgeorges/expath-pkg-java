@@ -22,7 +22,6 @@ import java.util.Date;
  * Centralize some file-related utilities.
  *
  * @author Florent Georges
- * @date   2011-04-14
  */
 public class FileHelper
 {

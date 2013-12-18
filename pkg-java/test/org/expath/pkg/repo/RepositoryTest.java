@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2010-12-04                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -22,7 +22,6 @@ import static org.junit.Assert.assertSame;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2010-12-04
  */
 public class RepositoryTest
 {

@@ -25,7 +25,6 @@ import org.expath.pkg.repo.util.Logger;
  * Represent a particular package, with a particular version.
  *
  * @author Florent Georges
- * @date   2010-09-18
  */
 public class Package
         implements Universe

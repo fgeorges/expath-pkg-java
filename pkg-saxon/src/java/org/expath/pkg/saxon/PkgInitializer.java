@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2011-08-24                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2011 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2011-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -23,7 +23,6 @@ import org.expath.pkg.repo.Storage;
  * system property {@code org.expath.pkg.saxon.repo}.
  *
  * @author Florent Georges
- * @date   2011-08-24
  */
 public class PkgInitializer
         implements Initializer

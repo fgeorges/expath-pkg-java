@@ -38,7 +38,6 @@ import org.expath.pkg.repo.UserInteractionStrategy;
  * TODO: Add a {@code remove} command...
  * 
  * @author Florent Georges
- * @date   2009-11-03
  */
 public class Main
 {

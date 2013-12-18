@@ -14,7 +14,6 @@ package org.expath.pkg.repo;
  * Enumerate the standard URI spaces.
  *
  * @author Florent Georges
- * @date   2009-10-23
  */
 public enum URISpace
 {

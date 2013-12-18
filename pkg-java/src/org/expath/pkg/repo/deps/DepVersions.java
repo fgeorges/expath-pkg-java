@@ -13,7 +13,6 @@ package org.expath.pkg.repo.deps;
  * A dependency version using {@code @version}.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 class DepVersions
         extends DependencyVersion

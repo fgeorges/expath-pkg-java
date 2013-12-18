@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2010-09-19                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010 Florent Georges (see end of file.)               */
+/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -35,7 +35,6 @@ import org.expath.pkg.repo.util.Logger;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2010-09-19
  */
 public class SaxonPkgInfo
         extends PackageInfo

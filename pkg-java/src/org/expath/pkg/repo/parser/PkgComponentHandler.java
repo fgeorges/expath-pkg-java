@@ -18,7 +18,6 @@ import org.expath.pkg.repo.PackageException;
  * Handle an element when parsing a package descriptor.
  *
  * @author Florent Georges
- * @date   2009-11-04
  */
 public interface PkgComponentHandler
 {

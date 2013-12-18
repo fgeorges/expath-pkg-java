@@ -18,7 +18,6 @@ package org.expath.pkg.repo;
  * strategy, while the graphical GUI will use dialog boxes and such.
  *
  * @author Florent Georges
- * @date   2009-06-17
  */
 public interface UserInteractionStrategy
 {

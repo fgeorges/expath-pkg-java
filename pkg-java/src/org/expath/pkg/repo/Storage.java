@@ -22,7 +22,6 @@ import javax.xml.transform.Source;
  * within the classpath.
  *
  * @author Florent Georges
- * @date   2010-10-07
  */
 public abstract class Storage
 {

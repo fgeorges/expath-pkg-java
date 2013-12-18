@@ -36,7 +36,6 @@ import org.xml.sax.SAXException;
  * Implementation of {@link EntityResolver} based on a repository and a URI space.
  *
  * @author Florent Georges
- * @date   2010-05-15
  */
 public class PkgEntityResolver
         implements EntityResolver

@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2009-10-29                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009, 2010 Florent Georges (see end of file.)         */
+/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -28,7 +28,6 @@ import org.expath.pkg.repo.util.Logger;
  * Implementation for EXPath Pkg of Saxon's {@link ModuleURIResolver} for XQuery.
  *
  * @author Florent Georges
- * @date   2009-10-29
  */
 public class PkgModuleResolver
         implements ModuleURIResolver

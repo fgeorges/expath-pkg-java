@@ -51,7 +51,6 @@ import org.expath.pkg.repo.parser.XMLStreamHelper;
  * be a suitable class for an extension step for Calabash.
  * 
  * @author Florent Georges
- * @date   2011-09-06
  */
 public class CalabashPkgExtension
         extends DescriptorExtension

@@ -21,7 +21,6 @@ import org.expath.pkg.repo.Universe;
  * Implementation of {@link URIResolver} based on a repository and a URI space.
  *
  * @author Florent Georges
- * @date   2010-05-12
  */
 public class PkgURIResolver
         implements URIResolver

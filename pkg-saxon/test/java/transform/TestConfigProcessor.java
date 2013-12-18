@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:                                                                   */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009, 2010 Florent Georges (see end of file.)         */
+/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -48,7 +48,6 @@ import net.sf.saxon.xqj.SaxonXQDataSource;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Storage;
-import org.expath.pkg.repo.URISpace;
 import org.expath.pkg.saxon.ConfigHelper;
 import org.expath.pkg.saxon.SaxonRepository;
 import org.junit.Test;
@@ -57,7 +56,6 @@ import org.junit.Test;
  * ...
  *
  * @author Florent Georges
- * @date
  */
 public class TestConfigProcessor
 {

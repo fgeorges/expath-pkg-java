@@ -22,8 +22,7 @@ import org.expath.pkg.repo.PackageException;
 /**
  * Helper class for the package {@link javax.xml.stream}.
  *
- * @author Florent Georges - H2O Consulting
- * @date   2010-05-13
+ * @author Florent Georges
  */
 public class XMLStreamHelper
 {

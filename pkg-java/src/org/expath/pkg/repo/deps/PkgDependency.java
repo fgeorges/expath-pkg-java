@@ -13,7 +13,6 @@ package org.expath.pkg.repo.deps;
  * A dependence to another package.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 public class PkgDependency
 {

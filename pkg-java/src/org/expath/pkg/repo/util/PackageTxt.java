@@ -21,7 +21,6 @@ import org.expath.pkg.repo.PackageException;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2013-02-11
  */
 public class PackageTxt
 {

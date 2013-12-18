@@ -28,7 +28,6 @@ import org.expath.pkg.repo.util.Logger;
  * Calabash configurer factory for the EXPath Packaging System.
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class PkgConfigurer
         implements XProcConfigurer

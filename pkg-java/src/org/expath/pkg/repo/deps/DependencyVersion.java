@@ -15,7 +15,6 @@ import org.expath.pkg.repo.PackageException;
  * A specific version a dependency depends on.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 public abstract class DependencyVersion
 {

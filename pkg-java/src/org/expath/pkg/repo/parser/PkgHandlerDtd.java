@@ -20,7 +20,6 @@ import org.expath.pkg.repo.URISpace;
  * Parse a standard DTD component in the package descriptor.
  *
  * @author Florent Georges
- * @date   2012-05-09
  */
 class PkgHandlerDtd
         implements PkgComponentHandler

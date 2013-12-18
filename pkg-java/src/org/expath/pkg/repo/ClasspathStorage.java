@@ -21,7 +21,6 @@ import org.expath.pkg.repo.util.PackageTxt;
  * Storage using the classpath.
  *
  * @author Florent Georges
- * @date   2010-10-09
  */
 public class ClasspathStorage
         extends Storage

@@ -48,7 +48,6 @@ import org.expath.pkg.repo.util.Logger;
  * repository descriptor, and parses the package descriptors only as needed.
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class Repository
         implements Universe

@@ -38,7 +38,6 @@ import org.xml.sax.SAXException;
  * Based on ReadableData (Calabash 0.9.15, SVN revision 456.)
  *
  * @author Florent Georges
- * @date   2009-10-21
  */
 public class PkgReadableData
         implements ReadablePipe

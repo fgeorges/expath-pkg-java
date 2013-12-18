@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2009-07-28                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009, 2010 Florent Georges (see end of file.)         */
+/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -18,10 +18,9 @@ import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.URISpace;
 
 /**
- * ...
+ * TODO: ...
  *
  * @author Florent Georges
- * @date   2009-07-28
  */
 public class ConfigHelper
 {

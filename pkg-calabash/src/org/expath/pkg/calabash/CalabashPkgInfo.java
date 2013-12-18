@@ -26,7 +26,6 @@ import org.expath.pkg.repo.URISpace;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2011-09-06
  */
 public class CalabashPkgInfo
         extends PackageInfo

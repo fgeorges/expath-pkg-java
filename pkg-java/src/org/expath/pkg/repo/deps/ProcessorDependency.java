@@ -13,7 +13,6 @@ package org.expath.pkg.repo.deps;
  * A dependence to a processor.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 public class ProcessorDependency
 {

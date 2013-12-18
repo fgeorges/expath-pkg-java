@@ -17,7 +17,6 @@ import org.expath.pkg.repo.UserInteractionStrategy;
  * Interaction strategy for batch "interaction".  Always return default values.
  *
  * @author Florent Georges
- * @date   2010-01-05
  */
 public class BatchUserInteraction
         implements UserInteractionStrategy

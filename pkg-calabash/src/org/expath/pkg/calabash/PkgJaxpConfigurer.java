@@ -21,7 +21,6 @@ import org.w3c.dom.ls.LSResourceResolver;
  * ...
  *
  * @author Florent Georges
- * @date   2009-10-25
  */
 public class PkgJaxpConfigurer
         implements JaxpConfigurer

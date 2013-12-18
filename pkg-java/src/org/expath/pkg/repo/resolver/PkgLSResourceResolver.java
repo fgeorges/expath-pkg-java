@@ -23,7 +23,6 @@ import org.xml.sax.SAXException;
  * Implementation of {@link LSResourceResolver} based on a repository and a URI space.
  *
  * @author Florent Georges
- * @date   2009-10-19
  */
 public class PkgLSResourceResolver
         implements LSResourceResolver

@@ -13,7 +13,6 @@ package org.expath.pkg.repo.deps;
  * A dependency version using no versionning attribute.
  * 
  * @author Florent Georges
- * @date   2011-27-27
  */
 class DepNoVersion
         extends DependencyVersion

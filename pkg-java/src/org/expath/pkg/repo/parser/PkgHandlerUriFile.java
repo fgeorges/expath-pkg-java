@@ -24,7 +24,6 @@ import org.expath.pkg.repo.URISpace;
  * configured in the ctor.  They are pushed in the map passed in the ctor.
  *
  * @author Florent Georges
- * @date   2010-05-13
  */
 class PkgHandlerUriFile
         implements PkgComponentHandler

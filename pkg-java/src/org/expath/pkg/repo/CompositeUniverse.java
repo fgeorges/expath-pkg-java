@@ -21,7 +21,6 @@ import org.expath.pkg.repo.util.Logger;
  * resolving mechanism look into the declared dependencies, recursively?
  *
  * @author Florent Georges
- * @date   2011-01-30
  */
 public class CompositeUniverse
         implements Universe

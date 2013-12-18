@@ -15,7 +15,6 @@ import javax.xml.transform.Source;
  * TODO: ...
  *
  * @author Florent Georges
- * @date   2010-09-19
  */
 public abstract class PackageInfo
 {

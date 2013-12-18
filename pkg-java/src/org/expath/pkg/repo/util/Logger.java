@@ -15,7 +15,6 @@ import java.util.logging.Level;
  * Wrapper around the Java Logging facility.
  *
  * @author Florent Georges
- * @date   2012-02-13
  */
 public class Logger
 {
