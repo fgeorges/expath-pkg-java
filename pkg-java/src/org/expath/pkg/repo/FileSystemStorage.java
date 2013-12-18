@@ -311,12 +311,13 @@ public class FileSystemStorage
     public void remove(Package pkg)
             throws PackageException
     {
+        File priv_dir = ensurePrivateDir();
         FileSystemResolver resolver = getResolver(pkg);
         // remove the entries from the packages.* files
         String dir = resolver.getDirName();
-        File xml_file = new File(myPrivate, "packages.xml");
+        File xml_file = new File(priv_dir, "packages.xml");
         removePackageInXml(xml_file, dir);
-        File txt_file = new File(myPrivate, "packages.txt");
+        File txt_file = new File(priv_dir, "packages.txt");
         removePackageInTxt(txt_file, dir);
         // actually delete the files
         deleteDirRecurse(resolver.myPkgDir);
