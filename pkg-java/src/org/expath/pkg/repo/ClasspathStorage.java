@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
-import org.expath.pkg.repo.util.Logger;
-import org.expath.pkg.repo.util.PackageTxt;
+import org.expath.pkg.repo.tools.Logger;
+import org.expath.pkg.repo.tools.PackagesTxtFile;
 
 /**
  * Storage using the classpath.
@@ -51,12 +51,11 @@ public class ClasspathStorage
     public Set<String> listPackageDirectories()
             throws PackageException
     {
-        InputStream pkg_txt = null;
         String rsrc = myRoot.replace('.', '/') + "/" + ".expath-pkg/packages.txt";
         ClassLoader loader = ClasspathStorage.class.getClassLoader();
         InputStream res = loader.getResourceAsStream(rsrc);
         LOG.fine("Resolve resource .expath-pkg/packages.txt to ''{0}''", res);
-        return PackageTxt.parseDirectories(pkg_txt);
+        return PackagesTxtFile.parseDirectories(res);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class ClasspathStorage
         return "Classpath storage in " + myRoot;
     }
 
-    private String myRoot;
+    private final String myRoot;
 
     public static class ClasspathResolver
             extends PackageResolver
@@ -192,10 +191,10 @@ public class ClasspathStorage
             return src;
         }
 
-        private String myPkgRoot;
-        private String myContent;
-        private String myRsrcName;
-        private ClassLoader myLoader;
+        private final String      myPkgRoot;
+        private final String      myContent;
+        private final String      myRsrcName;
+        private final ClassLoader myLoader;
     }
 
     private static final Logger LOG = Logger.getLogger(ClasspathStorage.class);

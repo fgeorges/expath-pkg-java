@@ -35,7 +35,7 @@ public class DescriptorParser
             throws PackageException
     {
         // parse the pkg descriptor
-        XMLStreamReader parser = XS_HELPER.makeDescriptorParser(desc);
+        XMLStreamReader parser = XS_HELPER.makeParser(desc);
         // go to the package element
         XS_HELPER.ensureDocument(parser);
         XS_HELPER.ensureNextElement(parser, "package");

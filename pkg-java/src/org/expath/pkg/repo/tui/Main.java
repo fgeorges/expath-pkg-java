@@ -11,11 +11,8 @@
 package org.expath.pkg.repo.tui;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 import javax.xml.transform.Source;
 import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.PackageException;
@@ -23,6 +20,7 @@ import org.expath.pkg.repo.Packages;
 import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.URISpace;
 import org.expath.pkg.repo.UserInteractionStrategy;
+import org.expath.pkg.repo.Version;
 
 /**
  * Main class for the Text User Interface repository administration.
@@ -165,27 +163,9 @@ public class Main
     private void doVersion(String[] args, int consumed)
     {
         checkParams("Version", args, consumed, new String[]{ });
-        Properties props = new Properties();
-        InputStream rsrc = Main.class.getResourceAsStream("/org/expath/pkg/repo/tui/version.properties");
-        if ( rsrc == null ) {
-            System.err.println("Version properties file does not exist - internal error");
-            System.exit(1);
-        }
-        try {
-            props.load(rsrc);
-            rsrc.close();
-        }
-        catch ( IOException ex ) {
-            System.err.println("Error reading the version properties: " + ex.getMessage());
-            if ( myVerbose ) {
-                ex.printStackTrace();
-            }
-            System.exit(1);
-        }
-        String version = props.getProperty("org.expath.pkg.repo.version");
-        String revision = props.getProperty("org.expath.pkg.repo.revision");
+        Version v = Version.instance();
         System.err.println("EXPath Packaging System standard on-disk repository layout manager.");
-        System.err.println("Version: " + version + " (r" + revision + ")");
+        System.err.println("Version: " + v.getVersion() + " (revision #" + v.getRevision() + ")");
     }
 
     private void doList(String[] args, int consumed)

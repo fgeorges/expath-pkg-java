@@ -113,10 +113,26 @@ else
 fi
 
 # Libraries
-CODEC_JAR="${CALABASH_HOME}/lib/commons-codec-1.6.jar"
-LOGGING_JAR="${CALABASH_HOME}/lib/commons-logging-1.1.1.jar"
-HTTPC_JAR="${CALABASH_HOME}/lib/commons-httpclient-3.1.jar"
-IO_JAR="${CALABASH_HOME}/lib/commons-io-1.3.1.jar"
+if test -z "$CODEC_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/commons-codec-1.6.jar"; then
+        CODEC_JAR="${CALABASH_HOME}/lib/commons-codec-1.6.jar"
+    fi
+fi
+if test -z "$LOGGING_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/commons-logging-1.1.1.jar"; then
+        LOGGING_JAR="${CALABASH_HOME}/lib/commons-logging-1.1.1.jar"
+    fi
+fi
+if test -z "$HTTPC_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/commons-httpclient-3.1.jar"; then
+        HTTPC_JAR="${CALABASH_HOME}/lib/commons-httpclient-3.1.jar"
+    fi
+fi
+if test -z "$IO_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/commons-io-1.3.1.jar"; then
+        IO_JAR="${CALABASH_HOME}/lib/commons-io-1.3.1.jar"
+    fi
+fi
 if test -z "$XCC_JAR"; then
     if test -f "${CALABASH_HOME}/lib/xcc.jar"; then
         XCC_JAR="${CALABASH_HOME}/lib/xcc.jar"

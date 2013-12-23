@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URLConnection;
@@ -28,7 +29,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import org.expath.pkg.repo.parser.DescriptorParser;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Represent a standard EXPath package repository structure on the disk.
@@ -56,7 +57,9 @@ public class Repository
             throws PackageException
     {
         LOG.info("Create a new repository with storage: {0}", storage);
-        myStorage = storage;
+        myStorage    = storage;
+        myPackages   = new HashMap<String, Packages>();
+        myExtensions = new HashMap<String, Extension>();
         // dynamically register extensions from the classpath
         ServiceLoader<Extension> loader = ServiceLoader.load(Extension.class);
         for ( Extension e : loader ) {
@@ -127,6 +130,25 @@ public class Repository
         }
     }
 
+    /**
+     * Reload the repository configuration, so parse again the package descriptors.
+     */
+    public synchronized void reload()
+            throws PackageException
+    {
+        // TODO: Reload extensions as well?
+        myPackages = new HashMap<String, Packages>();
+        parsePublicUris();
+    }
+
+    /**
+     * @return The {@link Storage} object this repository is based upon.
+     */
+    public Storage getStorage()
+    {
+        return myStorage;
+    }
+
     public Collection<Packages> listPackages()
     {
         return myPackages.values();
@@ -184,6 +206,18 @@ public class Repository
         File downloaded;
         try {
             URLConnection connection = pkg.toURL().openConnection();
+            connection.connect();
+            if ( connection instanceof HttpURLConnection ) {
+                HttpURLConnection hc = (HttpURLConnection) connection;
+                int code = hc.getResponseCode();
+                if ( code == 404 ) {
+                    throw new NotFoundException(pkg);
+                }
+                if ( code < 200 || code >= 300 ) {
+                    String msg = hc.getResponseMessage();
+                    throw new HttpException(pkg, code, msg);
+                }
+            }
             InputStream instream = connection.getInputStream();
             BufferedInputStream in = new BufferedInputStream(instream);
             // just to get the name, to have a meaningful name for the tmp file
@@ -202,10 +236,10 @@ public class Repository
             in.close();
         }
         catch ( MalformedURLException ex ) {
-            throw new PackageException("Error downloading the package", ex);
+            throw new OnlineException(pkg, ex);
         }
         catch ( IOException ex ) {
-            throw new PackageException("Error downloading the package", ex);
+            throw new OnlineException(pkg, ex);
         }
         return installPackage(downloaded, force, interact);
     }
@@ -245,7 +279,7 @@ public class Repository
 
         // parse the package
         File desc_f = new File(tmp_dir, "expath-pkg.xml");
-        if ( desc_f == null ) {
+        if ( ! desc_f.exists() ) {
             throw new PackageException("Package descriptor does NOT exist in: " + tmp_dir);
         }
         Source desc = new StreamSource(desc_f);
@@ -268,7 +302,7 @@ public class Repository
                     }
                 }
                 else {
-                    throw new PackageException("Same version of the package is already installed");
+                    throw new AlreadyInstalledException(name, version);
                 }
             }
         }
@@ -300,7 +334,7 @@ public class Repository
     }
 
     /**
-     * Remove a repository by name.
+     * Remove a package from the repository, by name.
      * 
      * If a package with that name does not exist, or if there are several
      * versions installed, this is an error.
@@ -319,13 +353,15 @@ public class Repository
         if ( pp.packages().size() != 1 ) {
             throw new PackageException("The package has several versions installed: " + pkg);
         }
-        myStorage.remove(pp.latest());
+        Package p = pp.latest();
+        myStorage.remove(p);
+        pp.remove(p);
         // remove the package from the list
         myPackages.remove(pkg);
     }
 
-    /*$
-     * Remove a repository by name and version.
+    /**
+     * Remove a package from the repository, by name and version.
      * 
      * If a package with that name and that version does not exist, this is an
      * error.
@@ -440,24 +476,125 @@ public class Repository
     Repository()
     {
         // nothing, packages will be added "by hand" in tests
+        myStorage    = null; // make javac happy, init the final variable
+        myPackages   = new HashMap<String, Packages>(); // init the variable, for addPackage()
+        myExtensions = new HashMap<String, Extension>();
     }
 
     /**
-     * ...
+     * The storage object to physically access the repository content.
      */
-    private Storage myStorage;
+    private final Storage myStorage;
     /**
-     * ...
+     * The list of packages in this repository (indexed by name).
      */
-    private Map<String, Packages> myPackages = new HashMap<String, Packages>();
+    private Map<String, Packages> myPackages;
     /**
-     * ...
+     * The registered extensions (indexed by name).
      */
-    private Map<String, Extension> myExtensions = new HashMap<String, Extension>();
+    private Map<String, Extension> myExtensions;
     /**
      * The logger.
      */
     private static final Logger LOG = Logger.getLogger(Repository.class);
+
+    /**
+     * Exception raised when trying to install a package already installed.
+     */
+    public static class AlreadyInstalledException
+            extends PackageException
+    {
+        public AlreadyInstalledException(String name, String version)
+        {
+            super("Same version of the package is already installed: " + name + ", " + version);
+            myName    = name;
+            myVersion = version;
+        }
+
+        public String getName()
+        {
+            return myName;
+        }
+
+        public String getVersion()
+        {
+            return myVersion;
+        }
+
+        private final String myName;
+        private final String myVersion;
+    }
+
+    /**
+     * Exception raised when receiving an error when trying to read a package on the web.
+     */
+    public static class OnlineException
+            extends PackageException
+    {
+        public OnlineException(URI url)
+        {
+            super("Error downloading the package at URL: " + url);
+            myUrl = url;
+        }
+
+        public OnlineException(URI url, String msg)
+        {
+            super(msg);
+            myUrl = url;
+        }
+
+        public OnlineException(URI url, Exception cause)
+        {
+            super("Error downloading the package at URL: " + url, cause);
+            myUrl = url;
+        }
+
+        public URI getUrl()
+        {
+            return myUrl;
+        }
+
+        private final URI myUrl;
+    }
+
+    /**
+     * Exception raised when receiving 404 when trying to read a package on the web.
+     */
+    public static class NotFoundException
+            extends OnlineException
+    {
+        public NotFoundException(URI url)
+        {
+            super(url, "Package not found at URL: " + url);
+        }
+    }
+
+    /**
+     * Exception raised when receiving 404 when trying to read a package on the web.
+     */
+    public static class HttpException
+            extends OnlineException
+    {
+        public HttpException(URI url, int code, String status)
+        {
+            super(url, "HTTP error at URL: " + url + ", code: " + code + ", status: " + status);
+            myCode   = code;
+            myStatus = status;
+        }
+
+        public int getCode()
+        {
+            return myCode;
+        }
+
+        public String getStatus()
+        {
+            return myStatus;
+        }
+
+        private final int    myCode;
+        private final String myStatus;
+    }
 }
 
 

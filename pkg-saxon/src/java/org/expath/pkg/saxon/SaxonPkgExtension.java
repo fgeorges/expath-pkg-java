@@ -153,32 +153,38 @@ public class SaxonPkgExtension
         // first init and parse the descriptor
         init(repo, pkg);
         // get the freshly created info object
-        PackageInfo info = pkg.getInfo(getName());
+        SaxonPkgInfo info = getInfo(pkg);
         if ( info == null ) {
             // not a Saxon extension
             return;
         }
-        // the info must be info object for Saxon
+        // if there are no JAR, nothing to do
+        if ( ! info.hasJars() ) {
+            return;
+        }
+        setupClasspath(pkg, info);
+    }
+
+    private SaxonPkgInfo getInfo(Package pkg)
+            throws PackageException
+    {
+        PackageInfo info = pkg.getInfo(getName());
+        if ( info == null ) {
+            return null;
+        }
         if ( ! (info instanceof SaxonPkgInfo) ) {
-            throw new PackageException("Package info for Saxon of wrong type: " + info.getName());
+            throw new PackageException("Not a Saxon-specific package info: " + info.getClass());
         }
-        SaxonPkgInfo saxon_info = (SaxonPkgInfo) info;
-        // if there is some JAR, crete the classpath file
-        if ( ! saxon_info.getJars().isEmpty() ) {
-            try {
-                pkg.getResolver().resolveResource(".saxon/classpath.txt");
-            }
-            catch ( Storage.NotExistException ex ) {
-                // only if classpath.txt does not exist...
-                setupClasspath(pkg, saxon_info);
-            }
-        }
+        return (SaxonPkgInfo) info;
     }
 
     private void setupClasspath(Package pkg, SaxonPkgInfo info)
             throws PackageException
     {
         File classpath = createClasspathFile(pkg);
+        if ( classpath == null ) {
+            return;
+        }
         Storage.PackageResolver res = pkg.getResolver();
         try {
             FileWriter out = new FileWriter(classpath);
@@ -223,12 +229,8 @@ public class SaxonPkgExtension
             // if the file does not exist, continue
         }
         // if the classpath does not exist, we must use a FileSystemResolver
-        Storage.PackageResolver res = pkg.getResolver();
-        if ( ! (res instanceof FileSystemResolver) ) {
-            throw new PackageException("Installing JAR only work on file system: " + res.getClass());
-        }
-        FileSystemResolver fs_res = (FileSystemResolver) res;
-        File classpath = fs_res.resolveResourceAsFile(CLASSPATH_FILE);
+        FileSystemResolver res = getFileSystemResolver(pkg);
+        File classpath = res.resolveResourceAsFile(CLASSPATH_FILE);
         // check [pkg_dir]/.saxon/
         File saxon = classpath.getParentFile();
         if ( saxon.exists() ) {
@@ -240,6 +242,19 @@ public class SaxonPkgExtension
             throw new PackageException("Impossible to create directory: " + saxon);
         }
         return classpath;
+    }
+
+    private FileSystemResolver getFileSystemResolver(Package pkg)
+            throws PackageException
+    {
+        Storage.PackageResolver res = pkg.getResolver();
+        if ( res == null ) {
+            throw new PackageException("Resolver is null on package: " + pkg.getName());
+        }
+        if ( ! (res instanceof FileSystemResolver) ) {
+            throw new PackageException("Not a file system resolver: " + res.getClass());
+        }
+        return (FileSystemResolver) res;
     }
 
     public static final String CLASSPATH_FILE = ".saxon/classpath.txt";

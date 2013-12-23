@@ -22,7 +22,7 @@ import net.sf.saxon.trans.XPathException;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Repository;
 import org.expath.pkg.repo.URISpace;
-import org.expath.pkg.repo.util.Logger;
+import org.expath.pkg.repo.tools.Logger;
 
 /**
  * Implementation for EXPath Pkg of Saxon's {@link ModuleURIResolver} for XQuery.

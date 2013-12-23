@@ -120,32 +120,39 @@ public class CalabashPkgExtension
         // first init and parse the descriptor
         init(repo, pkg);
         // get the freshly created info object
-        PackageInfo info = pkg.getInfo(getName());
+        CalabashPkgInfo info = getInfo(pkg);
         if ( info == null ) {
             // not a Calabash extension
             return;
         }
-        // the info must be info object for Calabash
-        if ( ! (info instanceof CalabashPkgInfo) ) {
-            throw new PackageException("Package info for Calabash of wrong type: " + info.getName());
+        // if there are no JAR, nothing to do
+        if ( ! info.hasJars() ) {
+            return;
         }
-        CalabashPkgInfo calabash_info = (CalabashPkgInfo) info;
         // if there is some JAR, crete the classpath file
-        if ( ! calabash_info.getJars().isEmpty() ) {
-            try {
-                pkg.getResolver().resolveResource(".calabash/classpath.txt");
-            }
-            catch ( Storage.NotExistException ex ) {
-                // only if classpath.txt does not exist...
-                setupClasspath(pkg, calabash_info);
-            }
+        setupClasspath(pkg, info);
+    }
+
+    private CalabashPkgInfo getInfo(Package pkg)
+            throws PackageException
+    {
+        PackageInfo info = pkg.getInfo(getName());
+        if ( info == null ) {
+            return null;
         }
+        if ( ! (info instanceof CalabashPkgInfo) ) {
+            throw new PackageException("Not a Calabash-specific package info: " + info.getClass());
+        }
+        return (CalabashPkgInfo) info;
     }
 
     private void setupClasspath(Package pkg, CalabashPkgInfo info)
             throws PackageException
     {
         File classpath = createClasspathFile(pkg);
+        if ( classpath == null ) {
+            return;
+        }
         Storage.PackageResolver res = pkg.getResolver();
         try {
             FileWriter out = new FileWriter(classpath);
@@ -190,12 +197,8 @@ public class CalabashPkgExtension
             // if the file does not exist, continue
         }
         // if the classpath does not exist, we must use a FileSystemResolver
-        Storage.PackageResolver res = pkg.getResolver();
-        if ( ! (res instanceof FileSystemResolver) ) {
-            throw new PackageException("Installing JAR only work on file system: " + res.getClass());
-        }
-        FileSystemResolver fs_res = (FileSystemResolver) res;
-        File classpath = fs_res.resolveResourceAsFile(CLASSPATH_FILE);
+        FileSystemResolver res = getFileSystemResolver(pkg);
+        File classpath = res.resolveResourceAsFile(CLASSPATH_FILE);
         // check [pkg_dir]/.calabash/
         File calabash = classpath.getParentFile();
         if ( calabash.exists() ) {
@@ -207,6 +210,19 @@ public class CalabashPkgExtension
             throw new PackageException("Impossible to create directory: " + calabash);
         }
         return classpath;
+    }
+
+    private FileSystemResolver getFileSystemResolver(Package pkg)
+            throws PackageException
+    {
+        Storage.PackageResolver res = pkg.getResolver();
+        if ( res == null ) {
+            throw new PackageException("Resolver is null on package: " + pkg.getName());
+        }
+        if ( ! (res instanceof FileSystemResolver) ) {
+            throw new PackageException("Not a file system resolver: " + res.getClass());
+        }
+        return (FileSystemResolver) res;
     }
 
     public static final String CLASSPATH_FILE = ".calabash/classpath.txt";

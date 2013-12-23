@@ -42,8 +42,7 @@ public abstract class DescriptorExtension
         }
         // parse the pkg descriptor
         XMLStreamHelper helper = DescriptorParser.XS_HELPER;
-        XMLStreamReader parser = helper.makeDescriptorParser(desc);
-        // go to the module element
+        XMLStreamReader parser = helper.makeParser(desc);
         helper.ensureDocument(parser);
         // actually parse the descriptor (in the derived class)
         parseDescriptor(parser, pkg);

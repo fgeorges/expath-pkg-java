@@ -12,7 +12,9 @@ pkg-saxon=../pkg-saxon
 pkg-calabash=../pkg-calabash
 bin=../bin
 samples=../samples
-version-prop=$(pkg-java)/src/org/expath/pkg/repo/tui/version.properties
+prop-java=$(pkg-java)/src/org/expath/pkg/repo/tui/version.properties
+prop-saxon=$(pkg-saxon)/src/java/org/expath/pkg/saxon/tools/version.properties
+prop-calabash=$(pkg-calabash)/src/org/expath/pkg/calabash/version.properties
 
 all: $(NAME).zip $(NAME)-install.jar
 
@@ -21,10 +23,14 @@ $(NAME).zip:
 	rm -rf $@
 	mkdir $(NAME)
 	cp README $(NAME)
-	echo "Version: $(VERSION)" > $(NAME)/VERSION
-	echo "Subversion revision: $(REVISION)" >> $(NAME)/VERSION
-	echo "org.expath.pkg.repo.version=$(VERSION)" > $(version-prop)
-	echo "org.expath.pkg.repo.revision=$(REVISION)" >> $(version-prop)
+	echo "Version: $(VERSION)"                          >  $(NAME)/VERSION
+	echo "Subversion revision: $(REVISION)"             >> $(NAME)/VERSION
+	echo "org.expath.pkg.repo.version=$(VERSION)"       >  $(prop-java)
+	echo "org.expath.pkg.repo.revision=$(REVISION)"     >> $(prop-java)
+	echo "org.expath.pkg.saxon.version=$(VERSION)"      >  $(prop-saxon)
+	echo "org.expath.pkg.saxon.revision=$(REVISION)"    >> $(prop-saxon)
+	echo "org.expath.pkg.calabash.version=$(VERSION)"   >  $(prop-calabash)
+	echo "org.expath.pkg.calabash.revision=$(REVISION)" >> $(prop-calabash)
 	( cd $(pkg-java)/ && ant )
 	( cd $(pkg-saxon)/ && ant )
 	( cd $(pkg-calabash)/ && ant )
