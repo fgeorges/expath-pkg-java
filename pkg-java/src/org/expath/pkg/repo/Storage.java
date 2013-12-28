@@ -10,6 +10,7 @@
 package org.expath.pkg.repo;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Set;
 import javax.xml.transform.Source;
 
@@ -105,31 +106,74 @@ public abstract class Storage
             throws PackageException;
 
     /**
-     * TODO: ...
+     * Resolve paths in a package installed in the repository.
      */
     public static abstract class PackageResolver
     {
         /**
-         * Return the package ID within the repository (i.e. its subdirectory name).
+         * @return the package ID within the repository (i.e. its subdirectory name).
          */
         public abstract String getResourceName();
 
         /**
-         * Resolve a resource within the package "root dir".
+         * Resolve a resource within the "package directory".
+         * 
+         * @param path The path to resolve, relative to the package directory.
+         * 
+         * @return the corresponding {@link Source} object.
+         * 
+         * @throws NotExistException if the corresponding resource does not exist
+         * in the package.
+         * 
+         * @throws PackageException in case of any other error.
          */
         public abstract Source resolveResource(String path)
                 throws PackageException
                      , NotExistException;
+
         /**
-         * Resolve a resource within the package "module dir".
+         * Resolve a resource within the package "content directory".
+         * 
+         * @param path The path to resolve, relative to the package content
+         * directory.
+         * 
+         * @return the corresponding {@link Source} object.
+         * 
+         * @throws NotExistException if the corresponding component does not exist
+         * in the package.
+         * 
+         * @throws PackageException in case of any other error.
          */
         public abstract Source resolveComponent(String path)
                 throws PackageException
                      , NotExistException;
+
+        /**
+         * The base URI of the package "content directory".
+         * 
+         * It is not recommended that the user resolves URIs him- or herself.
+         * Other functions in this class are all about resolving resources and
+         * components in this package.  But sometimes, the user will want to
+         * simply get back the resolved URI, instead of the corresponding entity
+         * content.
+         * 
+         * Using {@link URI#resolve(String)} on the returned value, with a
+         * relative filename, must resolve this filename in the installed package
+         * "content directory".
+         * 
+         * Use with caution, especially on storages not on a (regular) file-system.
+         * 
+         * @return the base URI of the package "content directory".
+         * 
+         * @throws PackageException in case of any error. Also thrown by storage
+         * implementations for which such a URI does not make sense.
+         */
+        public abstract URI getContentDirBaseURI()
+                throws PackageException;
     }
 
     /**
-     * TODO: ...
+     * If a resource or a component does not exist, when trying to resolve a path.
      */
     public static class NotExistException
             extends Exception

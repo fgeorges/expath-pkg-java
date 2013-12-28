@@ -11,6 +11,8 @@ package org.expath.pkg.repo;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
@@ -119,6 +121,30 @@ public class ClasspathStorage
             myRsrcName = rsrc_name;
             myLoader = ClasspathResolver.class.getClassLoader();
             myContent = getContent(myLoader, pkg_root, abbrev);
+        }
+
+        @Override
+        public URI getContentDirBaseURI()
+                throws PackageException
+        {
+            String rsrc = myPkgRoot + "expath-pkg.xml";
+            InputStream in = myLoader.getResourceAsStream(rsrc);
+            if ( in == null ) {
+                throw new PackageException("The package descriptor cannot be resolved: " + rsrc);
+            }
+            URL sysid = myLoader.getResource(rsrc);
+            if ( sysid == null ) {
+                throw new PackageException("The package descriptor exists, but has no URL: " + rsrc);
+            }
+            URI uri;
+            try {
+                uri = sysid.toURI();
+            }
+            catch ( URISyntaxException ex ) {
+                String msg = "The package descriptor exists, but has an invalid URI: ";
+                throw new PackageException(msg + sysid + ", for " + rsrc, ex);
+            }
+            return uri.resolve("content/");
         }
 
         private static String getContent(ClassLoader loader, String pkg_root, String abbrev)

@@ -1,56 +1,48 @@
 /****************************************************************************/
-/*  File:       RepositoryTest.java                                         */
+/*  File:       FileSystemResolverTest.java                                 */
 /*  Author:     F. Georges - H2O Consulting                                 */
-/*  Date:       2010-12-04                                                  */
+/*  Date:       2013-12-26                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2013 Florent Georges (see end of file.)               */
 /* ------------------------------------------------------------------------ */
 
 
 package org.expath.pkg.repo;
 
 import java.io.File;
-import java.util.Collection;
+import java.net.URI;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 /**
- * Unit tests for {@link Repository}.
+ * Unit tests for {@link FileSystemStorage.FileSystemResolver}.
  *
  * @author Florent Georges
  */
-public class RepositoryTest
+public class FileSystemResolverTest
 {
     @Test
     public void testConstructor()
             throws Exception
     {
-        Storage storage = new FileSystemStorage(new File("test/repos/simple"));
-        Repository sut = new Repository(storage);
-        Collection<Packages> packages_list = sut.listPackages();
-        assertEquals("number of packages", 1, packages_list.size());
-        Packages packages = packages_list.iterator().next();
-        assertNotNull("packages not null", packages);
-        assertEquals("packages name", HELLO_NAME, packages.name());
-        assertNotNull("latest not null", packages.latest());
-        assertNotNull("get 1.1.1 not null", packages.version("1.1.1"));
-        assertNull("get 1.0 null", packages.version("1.0"));
-        assertNull("get 1 null", packages.version("1"));
-        assertSame("latest =is= get 1.1", packages.latest(), packages.version("1.1.1"));
-        assertEquals("get 1.1.1 version", "1.1.1", packages.version("1.1.1").getVersion());
-        Collection<Package> package_list = packages.packages();
-        assertEquals("number of package versions", 1, package_list.size());
-        Package pkg = package_list.iterator().next();
-        assertNotNull("package not null", pkg);
-        assertEquals("version", "1.1.1", pkg.getVersion());
-        assertEquals("name", HELLO_NAME, pkg.getName());
+        // get the repo
+        File repodir = new File("test/repos/simple");
+        Storage storage = new FileSystemStorage(repodir);
+        Repository repo = new Repository(storage);
+        // get the pkg
+        Packages packages = repo.getPackages("http://www.example.org/lib/hello");
+        Package pkg = packages.latest();
+        // the SUT
+        Storage.PackageResolver resolver = pkg.getResolver();
+        // the base URI must be a file: URI, absolute, with "hello-1.1.1/hello/"
+        // resolved against the repo dir
+        URI repouri  = repodir.toURI();
+        URI expected = repouri.resolve("hello-1.1.1/hello/");
+        URI actual   = resolver.getContentDirBaseURI();
+        Assert.assertEquals("base URI scheme is file:", "file", actual.getScheme());
+        Assert.assertTrue("base URI is absolute", actual.isAbsolute());
+        Assert.assertEquals("base URI value", expected, actual);
     }
-
-    private static final String HELLO_NAME = "http://www.example.org/lib/hello";
 }
 
 

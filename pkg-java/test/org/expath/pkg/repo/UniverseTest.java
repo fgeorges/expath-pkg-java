@@ -75,7 +75,7 @@ public class UniverseTest
         public String toString() {
             return myStr;
         }
-        private String myStr;
+        private final String myStr;
     }
 
     private static class TestResolver
@@ -83,6 +83,10 @@ public class UniverseTest
     {
         public TestResolver(String pkg) {
             myPkg = pkg;
+        }
+        @Override
+        public StreamSource resolveComponent(String path) throws PackageException {
+            return new TestSource(myPkg + " | component | " + path);
         }
         @Override
         public String getResourceName() {
@@ -93,10 +97,10 @@ public class UniverseTest
             throw new UnsupportedOperationException("Not supported in tests.");
         }
         @Override
-        public StreamSource resolveComponent(String path) throws PackageException {
-            return new TestSource(myPkg + " | component | " + path);
+        public URI getContentDirBaseURI() throws PackageException {
+            throw new UnsupportedOperationException("Not supported in tests.");
         }
-        private String myPkg;
+        private final String myPkg;
     }
 
     private static final String APP_PKG_NAME   = "http://example.com/my-app";

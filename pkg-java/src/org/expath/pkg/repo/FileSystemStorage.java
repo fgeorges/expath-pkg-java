@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Set;
 import javax.xml.transform.stream.StreamSource;
 import org.expath.pkg.repo.tools.Logger;
@@ -205,6 +206,12 @@ public class FileSystemStorage
         public String getResourceName()
         {
             return myRsrcName;
+        }
+
+        @Override
+        public URI getContentDirBaseURI()
+        {
+            return myContentDir.toURI();
         }
 
         private void setPkgDir(File dir)
