@@ -40,7 +40,10 @@ rest of the options are passed straight to Saxon.
 
 By default, the repository manager looks at the environment variable
 `EXPATH_REPO` for the repository directory, so you do not have to set
-it explicitly every time you use `xrepo`, `calabash` or `saxon`.
+it explicitly every time you use `xrepo`, `calabash` or `saxon`.  The
+scripts for Saxon and Calabash come with the packaging support
+built-in, but one can use them without packaging at all, but simply as
+convenience scripts to launch both processors.
 
 ## xrepo
 
