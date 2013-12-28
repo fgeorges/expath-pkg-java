@@ -11,6 +11,7 @@ package org.expath.pkg.repo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Properties;
 
 /**
@@ -40,6 +41,17 @@ public class Version
         // get both properties
         myVersion  = props.getProperty("org.expath.pkg.repo.version");
         myRevision = props.getProperty("org.expath.pkg.repo.revision");
+    }
+
+    public static void main(String[] args)
+    {
+        instance().display(System.out);
+    }
+
+    public void display(PrintStream out)
+    {
+        out.println("EXPath Packaging System standard on-disk repository manager.");
+        out.println("Version: " + getVersion() + " (revision #" + getRevision() + ")");
     }
 
     public static synchronized Version instance()

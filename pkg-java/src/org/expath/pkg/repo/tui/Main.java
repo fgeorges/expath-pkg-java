@@ -156,21 +156,20 @@ public class Main
 
     private void doHelp(String[] args, int consumed)
     {
-        checkParams("Help", args, consumed, new String[]{ });
+        checkParams("Help", args, consumed);
         usage(false);
     }
 
     private void doVersion(String[] args, int consumed)
     {
-        checkParams("Version", args, consumed, new String[]{ });
+        checkParams("Version", args, consumed);
         Version v = Version.instance();
-        System.err.println("EXPath Packaging System standard on-disk repository layout manager.");
-        System.err.println("Version: " + v.getVersion() + " (revision #" + v.getRevision() + ")");
+        v.display(System.out);
     }
 
     private void doList(String[] args, int consumed)
     {
-        checkParams("List", args, consumed, new String[]{ });
+        checkParams("List", args, consumed);
         Repository repo = requireRepo();
         for ( Packages pp : repo.listPackages() ) {
             System.out.println(pp.name());
@@ -264,7 +263,7 @@ public class Main
 
     private void doCreate(String[] args, int consumed)
     {
-        checkParams("Create", args, consumed, new String[]{"repository directory name"});
+        checkParams("Create", args, consumed, "repository directory name");
         File repo_dir = new File(args[consumed]);
         try {
             Repository.createRepository(repo_dir);
@@ -279,7 +278,7 @@ public class Main
 
     private void doLookup(String[] args, int consumed)
     {
-        checkParams("Lookup", args, consumed, new String[]{"URI space", "URI"});
+        checkParams("Lookup", args, consumed, "URI space", "URI");
         try {
             // TODO: Catch IllegalArgumentException in case of unknown space name...
             URISpace   space    = URISpace.valueOf(args[consumed].toUpperCase());
@@ -307,7 +306,7 @@ public class Main
      * @param args The actual arguments passed to the application.
      * @param params The formal params to check the args agasint.
      */
-    private void checkParams(String cmd, String[] args, int consumed, String[] params)
+    private void checkParams(String cmd, String[] args, int consumed, String... params)
     {
         if ( args.length > consumed + params.length ) {
             System.err.println(cmd + ": too much parameters");
