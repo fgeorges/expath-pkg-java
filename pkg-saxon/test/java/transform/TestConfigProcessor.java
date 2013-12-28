@@ -11,7 +11,7 @@
 package transform;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,11 +23,11 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xquery.XQConnection;
-import javax.xml.xquery.XQDataSource;
-import javax.xml.xquery.XQException;
-import javax.xml.xquery.XQPreparedExpression;
-import javax.xml.xquery.XQResultSequence;
+//import javax.xml.xquery.XQConnection;
+//import javax.xml.xquery.XQDataSource;
+//import javax.xml.xquery.XQException;
+//import javax.xml.xquery.XQPreparedExpression;
+//import javax.xml.xquery.XQResultSequence;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.TransformerFactoryImpl;
 import net.sf.saxon.query.DynamicQueryContext;
@@ -44,7 +44,7 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.xqj.SaxonXQDataSource;
+//import net.sf.saxon.xqj.SaxonXQDataSource;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Storage;
@@ -363,48 +363,48 @@ public class TestConfigProcessor
         OUT.flush();
     }
 
-    @Test(
-        // error while compiling the stylesheet...
-        expected=XQException.class
-    )
-    public void queryXQJ_fail()
-            throws XQException
-                 , FileNotFoundException
-    {
-        System.err.println("queryXQJ_fail");
-        XQDataSource ds = new SaxonXQDataSource();
-        XQConnection conn = ds.getConnection();
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQPreparedExpression expr = conn.prepareExpression(query);
-        XQResultSequence result = expr.executeQuery();
-        while ( result.next() ) {
-            // System.out.println(result.getItemAsString(null));
-        }
-        System.out.flush();
-    }
-
-    @Test
-    public void queryXQJ_successful()
-            throws XQException
-                 , FileNotFoundException
-                 , XPathException
-                 , PackageException
-    {
-        System.err.println("queryXQJ_successful");
-        Configuration config = new Configuration();
-        ConfigHelper helper = new ConfigHelper(REPO);
-        helper.config(config);
-
-        XQDataSource ds = new SaxonXQDataSource(config);
-        XQConnection conn = ds.getConnection();
-        Reader query = new FileReader(new File(QUERY_STD));
-        XQPreparedExpression expr = conn.prepareExpression(query);
-        XQResultSequence result = expr.executeQuery();
-        while ( result.next() ) {
-            // System.out.println(result.getItemAsString(null));
-        }
-        System.out.flush();
-    }
+//    @Test(
+//        // error while compiling the stylesheet...
+//        expected=XQException.class
+//    )
+//    public void queryXQJ_fail()
+//            throws XQException
+//                 , FileNotFoundException
+//    {
+//        System.err.println("queryXQJ_fail");
+//        XQDataSource ds = new SaxonXQDataSource();
+//        XQConnection conn = ds.getConnection();
+//        Reader query = new FileReader(new File(QUERY_STD));
+//        XQPreparedExpression expr = conn.prepareExpression(query);
+//        XQResultSequence result = expr.executeQuery();
+//        while ( result.next() ) {
+//            // System.out.println(result.getItemAsString(null));
+//        }
+//        System.out.flush();
+//    }
+//
+//    @Test
+//    public void queryXQJ_successful()
+//            throws XQException
+//                 , FileNotFoundException
+//                 , XPathException
+//                 , PackageException
+//    {
+//        System.err.println("queryXQJ_successful");
+//        Configuration config = new Configuration();
+//        ConfigHelper helper = new ConfigHelper(REPO);
+//        helper.config(config);
+//
+//        XQDataSource ds = new SaxonXQDataSource(config);
+//        XQConnection conn = ds.getConnection();
+//        Reader query = new FileReader(new File(QUERY_STD));
+//        XQPreparedExpression expr = conn.prepareExpression(query);
+//        XQResultSequence result = expr.executeQuery();
+//        while ( result.next() ) {
+//            // System.out.println(result.getItemAsString(null));
+//        }
+//        System.out.flush();
+//    }
 
     private SaxonRepository REPO;
     private static final String STYLE_STD  = "test/java/transform/style.xsl";

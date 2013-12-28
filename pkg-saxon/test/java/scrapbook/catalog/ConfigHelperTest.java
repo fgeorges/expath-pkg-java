@@ -3,9 +3,9 @@ package scrapbook.catalog;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+//import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
+//import java.io.Reader;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -13,11 +13,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xquery.XQConnection;
-import javax.xml.xquery.XQDataSource;
-import javax.xml.xquery.XQException;
-import javax.xml.xquery.XQPreparedExpression;
-import javax.xml.xquery.XQResultSequence;
+//import javax.xml.xquery.XQConnection;
+//import javax.xml.xquery.XQDataSource;
+//import javax.xml.xquery.XQException;
+//import javax.xml.xquery.XQPreparedExpression;
+//import javax.xml.xquery.XQResultSequence;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.TransformerFactoryImpl;
 import net.sf.saxon.query.DynamicQueryContext;
@@ -34,7 +34,7 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.xqj.SaxonXQDataSource;
+//import net.sf.saxon.xqj.SaxonXQDataSource;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
 import org.expath.pkg.repo.Storage;
@@ -146,32 +146,32 @@ public class ConfigHelperTest
         exp.run(dyn, res, null);
     }
 
-    //Using XQJ.
-    @Test
-    public void xquery_xqj()
-            throws TransformerException
-                 , XPathException
-                 , IOException
-                 , XQException
-                 , PackageException
-    {
-        // the config object
-        Configuration config = new Configuration();
-        // configure the config object for Packaging System
-        ConfigHelper helper = new ConfigHelper(REPO);
-        helper.config(config);
-        // compiling
-        XQDataSource ds = new SaxonXQDataSource(config);
-        XQConnection conn = ds.getConnection();
-        Reader query = new InputStreamReader(getResource(XQUERY_NAME), "utf-8");
-        XQPreparedExpression expr = conn.prepareExpression(query);
-        // actually evaluate
-        XQResultSequence result = expr.executeQuery();
-        while ( result.next() ) {
-            // System.out.println(result.getItemAsString(null));
-        }
-        System.out.flush();
-    }
+//    //Using XQJ.
+//    @Test
+//    public void xquery_xqj()
+//            throws TransformerException
+//                 , XPathException
+//                 , IOException
+//                 , XQException
+//                 , PackageException
+//    {
+//        // the config object
+//        Configuration config = new Configuration();
+//        // configure the config object for Packaging System
+//        ConfigHelper helper = new ConfigHelper(REPO);
+//        helper.config(config);
+//        // compiling
+//        XQDataSource ds = new SaxonXQDataSource(config);
+//        XQConnection conn = ds.getConnection();
+//        Reader query = new InputStreamReader(getResource(XQUERY_NAME), "utf-8");
+//        XQPreparedExpression expr = conn.prepareExpression(query);
+//        // actually evaluate
+//        XQResultSequence result = expr.executeQuery();
+//        while ( result.next() ) {
+//            // System.out.println(result.getItemAsString(null));
+//        }
+//        System.out.flush();
+//    }
 
     private InputStream getResource(String resource)
     {
