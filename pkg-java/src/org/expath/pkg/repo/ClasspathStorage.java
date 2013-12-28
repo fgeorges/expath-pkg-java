@@ -128,10 +128,6 @@ public class ClasspathStorage
                 throws PackageException
         {
             String rsrc = myPkgRoot + "expath-pkg.xml";
-            InputStream in = myLoader.getResourceAsStream(rsrc);
-            if ( in == null ) {
-                throw new PackageException("The package descriptor cannot be resolved: " + rsrc);
-            }
             URL sysid = myLoader.getResource(rsrc);
             if ( sysid == null ) {
                 throw new PackageException("The package descriptor exists, but has no URL: " + rsrc);
@@ -147,6 +143,7 @@ public class ClasspathStorage
             return uri.resolve("content/");
         }
 
+        // TODO: Use getContentDirBaseURI() instead?
         private static String getContent(ClassLoader loader, String pkg_root, String abbrev)
                 throws PackageException
         {
@@ -166,11 +163,9 @@ public class ClasspathStorage
                 throw new PackageException(msg);
             }
             else if ( old_url == null ) {
-                // TODO: Any way to test it is a "directory", and not a "file"?
                 return new_style;
             }
             else {
-                // TODO: Any way to test it is a "directory", and not a "file"?
                 LOG.info("Warning: package uses old-style content dir: ''{0}''", old_style);
                 return old_style;
             }
@@ -207,7 +202,6 @@ public class ClasspathStorage
             if ( in == null ) {
                 return null;
             }
-            // FIXME:
             URL sysid = myLoader.getResource(rsrc);
             if ( sysid == null ) {
                 throw new PackageException("The resource exists, but has no URL: " + rsrc);

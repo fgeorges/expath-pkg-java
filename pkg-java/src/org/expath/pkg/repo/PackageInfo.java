@@ -12,7 +12,7 @@ package org.expath.pkg.repo;
 import javax.xml.transform.Source;
 
 /**
- * TODO: ...
+ * More information to attach to a package, especially designed for extensions.
  *
  * @author Florent Georges
  */

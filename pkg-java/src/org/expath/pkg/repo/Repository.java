@@ -34,10 +34,6 @@ import org.expath.pkg.repo.tools.Logger;
 /**
  * Represent a standard EXPath package repository structure on the disk.
  *
- * TODO: The resolution part has been (more or less completely) adapted to the
- * new structure, using directly the package descriptors.  We still need to
- * adapt the install and removing processes, and other admin services here...!
- * 
  * TODO: Because we have a repository descriptor with the list of installed
  * packages (by the spec: .expath-pkg/packages.txt and .expath-pkg/packages.xml),
  * we don't have to parse all the package descriptors in the repository at the

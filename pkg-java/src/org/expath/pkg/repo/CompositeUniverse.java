@@ -48,9 +48,6 @@ public class CompositeUniverse
     {
         LOG.fine("Composite universe, resolve in {0}: ''{1}'' ({2})", space, href, transitive);
         for ( Universe sub : mySubUniverses ) {
-            // TODO: Because this composite universe has been created explicitly
-            // to be transitive or not, maybe we should actually pass down this
-            // property instead, i.e. 'myTransitive' instead of 'transitive'.
             Source src = sub.resolve(href, space, transitive);
             if ( src != null ) {
                 return src;

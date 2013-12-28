@@ -75,15 +75,10 @@ public class FileHelper
         return tmp;
     }
 
-    // TODO: Check atomicity in case of failure (for instance in the middle of the copy)
     public static void renameTmpDir(File from, File to)
             throws PackageException
     {
-        // DEBUG: Added some debug "logs" to see what happen on Windows.  To be
-        // removed or correctly re-written.
-        // System.err.println("renaming " + from + " to " + to);
         boolean failed = ! from.renameTo(to);
-        // System.err.println("failed? : " + failed + ", OS: " + System.getProperty("os.name"));
         // if renaming failed and we're not on Windows, that's an error
         // if renaming failed and we're on Windows, we try several things, as
         // this can be related to stpid Windows locking handling...
@@ -92,16 +87,13 @@ public class FileHelper
         }
         // if the renaming fails, max. 5 times...
         for ( int i = 0; failed && i < 5; ++ i ) {
-            // System.err.println("renaming loop #" + i);
             // call the garbage collector
-            // TODO: Document why (Windows, locks, etc.)
             System.gc();
             // and try again
             failed = ! from.renameTo(to);
         }
         // if that was not enough and renaming still failed after 5 attempts
         if ( failed ) {
-            // System.err.println("trying to copy");
             // then try to copy the whole thing
             copyDir(from, to);
             boolean res = deleteDir(from);
@@ -109,11 +101,6 @@ public class FileHelper
                 System.err.println("Error deleting dir: " + from);
             }
         }
-        // // if that failed too, then that's an error
-        // if ( failed ) {
-        //     String msg = "Error moving the temp dir to the repo: ";
-        //     throw new PackageException(msg + from + " -> " + to);
-        // }
     }
 
     private static void copyDir(File from, File to)
@@ -134,7 +121,6 @@ public class FileHelper
         }
         for ( File file : files ) {
             File copied = new File(to, file.getName());
-            // System.err.println("handling subcopy of " + file + " to " + copied);
             if ( file.isDirectory() ) {
                 copyDir(file, copied);
             }
