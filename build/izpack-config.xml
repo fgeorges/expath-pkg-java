@@ -3,7 +3,7 @@
    <info>
       <appname>EXPath Packaging: Repo, Saxon and Calabash</appname>
       <appversion>0.12.0dev</appversion>
-      <appsubpath>expath-repo</appsubpath>
+      <appsubpath>expath/pkg</appsubpath>
       <authors>
          <author email="fgeorges@expath.org" name="Florent Georges"/>
       </authors>
@@ -88,6 +88,9 @@
          <file src="../bin/saxon_addenv.bat"         targetdir="$INSTALL_PATH/bin/">
             <os family="Windows"/>
          </file>
+         <file src="../bin/expath-pkg-common.bat"    targetdir="$INSTALL_PATH/bin/">
+            <os family="Windows"/>
+         </file>
          <executable targetfile="$INSTALL_PATH/bin/saxon">
             <os family="Mac"/>
          </executable>
@@ -98,6 +101,9 @@
             <os family="Windows"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/saxon_addenv.bat">
+            <os family="Windows"/>
+         </executable>
+         <executable targetfile="$INSTALL_PATH/bin/expath-pkg-common.bat">
             <os family="Windows"/>
          </executable>
       </pack>
@@ -116,11 +122,23 @@
          <file src="../bin/calabash"                       targetdir="$INSTALL_PATH/bin/">
             <os family="Unix"/>
          </file>
+         <file src="../bin/calabash.bat"                   targetdir="$INSTALL_PATH/bin/">
+            <os family="Windows"/>
+         </file>
+         <file src="../bin/expath-pkg-common.bat"          targetdir="$INSTALL_PATH/bin/">
+            <os family="Windows"/>
+         </file>
          <executable targetfile="$INSTALL_PATH/bin/calabash">
             <os family="Mac"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/calabash">
             <os family="Unix"/>
+         </executable>
+         <executable targetfile="$INSTALL_PATH/bin/calabash.bat">
+            <os family="Windows"/>
+         </executable>
+         <executable targetfile="$INSTALL_PATH/bin/expath-pkg-common.bat">
+            <os family="Windows"/>
          </executable>
       </pack>
       <pack name="Calabash" preselected="yes" required="no">
