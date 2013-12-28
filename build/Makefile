@@ -1,5 +1,8 @@
-IZPACK=/Applications/IzPack/bin/compile
-#IZPACK=c:/apps/izpack/bin/compile
+# Makefile.local is commited, it must define the variable IZPACK, to
+# point to Izpack's compile program, for instance:
+#     IZPACK=/Applications/IzPack/bin/compile
+#     IZPACK=c:/apps/izpack/bin/compile
+include Makefile.local
 
 VERSION=0.12.0dev
 # TODO: Check whether REVISION ends with an 'M' (then it should be an
