@@ -28,11 +28,11 @@ set JAVA=java
 rem # ------------------------------ EXPATH_PKG_REPO_JAR, EXPATH_PKG_SAXON_JAR
 
 if defined EXPATH_PKG_REPO_JAR goto pkg_repo_jar_defined
-    set EXPATH_PKG_REPO_JAR=%INSTALL_DIR%/expath/pkg-repo.jar
+    set EXPATH_PKG_REPO_JAR=%INSTALL_DIR%/expath/pkg-java.jar
 :pkg_repo_jar_defined
 
 if exist %EXPATH_PKG_REPO_JAR% goto pkg_repo_jar_exists
-    echo ERROR: EXPath pkg-repo jar does not exist: %EXPATH_PKG_REPO_JAR%
+    echo ERROR: EXPath pkg-java jar does not exist: %EXPATH_PKG_REPO_JAR%
     goto end
 :pkg_repo_jar_exists
 
