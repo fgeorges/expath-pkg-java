@@ -56,8 +56,8 @@ IF "%1"x == "--proxy"x  GOTO optproxy
 IF "%1"x == "--java"x   GOTO optjava
 IF "%1"x == "--help"x   GOTO opthelp
 
-rem # TODO: Test if the option starts with '--'.
-rem # IF "%1"x == "--*"x       GOTO optunknown
+set curopt=%1
+if "%curopt:~0,2%"_ == "--"_ goto optunknown
 
 GOTO launch
 
