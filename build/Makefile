@@ -4,7 +4,7 @@
 #     IZPACK=c:/apps/izpack/bin/compile
 include Makefile.local
 
-VERSION=0.12.0
+VERSION=0.13.0dev
 # TODO: Check whether REVISION ends with an 'M' (then it should be an
 # error: everything has to be checked in before a release)
 REVISION=$(shell git describe --always)
