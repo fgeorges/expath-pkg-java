@@ -9,6 +9,7 @@ VERSION=0.12.0
 # error: everything has to be checked in before a release)
 REVISION=$(shell git describe --always)
 NAME=expath-repo-$(VERSION)
+INSTALLER=expath-repo-installer-$(VERSION).jar
 
 pkg-java=../pkg-java
 pkg-saxon=../pkg-saxon
@@ -19,7 +20,7 @@ prop-java=$(pkg-java)/src/org/expath/pkg/repo/tui/version.properties
 prop-saxon=$(pkg-saxon)/src/java/org/expath/pkg/saxon/tools/version.properties
 prop-calabash=$(pkg-calabash)/src/org/expath/pkg/calabash/version.properties
 
-all: $(NAME).zip $(NAME)-install.jar
+all: $(NAME).zip $(INSTALLER)
 
 $(NAME).zip:
 	rm -rf $(NAME)
@@ -50,9 +51,9 @@ $(NAME).zip:
 	zip -r "$@" $(NAME)
 
 # Why using Perl, why not just Sed?
-$(NAME)-install.jar:
+$(INSTALLER):
 	perl -e "s|<appversion>([-.0-9a-z]+)</appversion>|<appversion>$(VERSION)</appversion>|g;" \
 	    -pi izpack-config.xml
 	"$(IZPACK)" izpack-config.xml -o "$@"
 
-.PHONY: all $(NAME).zip $(NAME)-install.jar
+.PHONY: all $(NAME).zip $(INSTALLER)
