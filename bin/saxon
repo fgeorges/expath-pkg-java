@@ -219,20 +219,23 @@ if test -n "$REPO"; then
     JAVA_OPT="$JAVA_OPT -Dorg.expath.pkg.saxon.repo=$REPO"
 
     # add each line of {repo}/*/.saxon/classpath.txt to the classpath
-    oldIFS=$IFS
-    IFS=$'\n'
-    for cp in `resolve "${REPO}"`/*/.saxon/classpath.txt
-    do
-	# TODO: If no file corresponds to the glob, the glob is returned
-	# as is.  We need to check this is not the case (in this case we
-	# want to iterate zero times).
-        for jar in `cat "$cp"`
-        #while read jar
+    cp_txt=`resolve "${REPO}"`/*/.saxon/classpath.txt
+    if test -f "$cp_txt"; then
+        oldIFS=$IFS
+        IFS=$'\n'
+        for cp in "$cp_txt"
         do
-            ADD_CP="${ADD_CP}${CP_DELIM}${jar}";
+            # TODO: If no file corresponds to the glob, the glob is returned
+            # as is.  We need to check this is not the case (in this case we
+            # want to iterate zero times).
+            for jar in `cat "$cp"`
+            #while read jar
+            do
+                ADD_CP="${ADD_CP}${CP_DELIM}${jar}";
+            done
         done
-    done
-    IFS=$oldIFS
+        IFS=$oldIFS
+    fi
 
 fi
 
