@@ -29,6 +29,11 @@
 ## ISORELAX_JAR         for Jing
 ## JING_JAR             
 ## 
+## SLF4J_API_JAR        the paths to the JAR files for logging support
+## LOG4J_API_JAR
+## LOG4J_CORE_JAR
+## LOG4J_SLF4J_JAR
+## 
 ## EXPATH_PKG_REPO_JAR      the paths to the JAR files for Packaging support
 ## EXPATH_PKG_SAXON_JAR     (resp. the on-disk repo manager, the support for
 ## EXPATH_PKG_CALABASH_JAR  Saxon, and the support for Calabash)
@@ -153,6 +158,26 @@ if test -z "$JING_JAR"; then
         JING_JAR="${CALABASH_HOME}/lib/jing.jar"
     fi
 fi
+if test -z "$SLF4J_API_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/slf4j-api-1.7.7.jar"; then
+        SLF4J_API_JAR="${CALABASH_HOME}/lib/slf4j-api-1.7.7.jar"
+    fi
+fi
+if test -z "$LOG4J_API_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/log4j-api-2.0.2.jar"; then
+        LOG4J_API_JAR="${CALABASH_HOME}/lib/log4j-api-2.0.2.jar"
+    fi
+fi
+if test -z "$LOG4J_CORE_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/log4j-core-2.0.2.jar"; then
+        LOG4J_CORE_JAR="${CALABASH_HOME}/lib/log4j-core-2.0.2.jar"
+    fi
+fi
+if test -z "$LOG4J_SLF4J_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/log4j-api-2.0.2.jar"; then
+        LOG4J_SLF4J_JAR="${CALABASH_HOME}/lib/log4j-slf4j-impl-2.0.2.jar"
+    fi
+fi
 
 # The EXPath JAR files for packaging support
 # pkg-java.jar
@@ -200,6 +225,10 @@ CP="${CP}${CP_DELIM}${XCC_JAR}"
 CP="${CP}${CP_DELIM}${TAGSOUP_JAR}"
 CP="${CP}${CP_DELIM}${ISORELAX_JAR}"
 CP="${CP}${CP_DELIM}${JING_JAR}"
+CP="${CP}${CP_DELIM}${SLF4J_API_JAR}"
+CP="${CP}${CP_DELIM}${LOG4J_API_JAR}"
+CP="${CP}${CP_DELIM}${LOG4J_CORE_JAR}"
+CP="${CP}${CP_DELIM}${LOG4J_SLF4J_JAR}"
 CP="${CP}${CP_DELIM}${EXPATH_PKG_REPO_JAR}"
 CP="${CP}${CP_DELIM}${EXPATH_PKG_SAXON_JAR}"
 CP="${CP}${CP_DELIM}${EXPATH_PKG_CALABASH_JAR}"
