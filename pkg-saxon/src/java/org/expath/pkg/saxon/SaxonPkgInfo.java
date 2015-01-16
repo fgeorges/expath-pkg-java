@@ -30,6 +30,10 @@ import org.expath.pkg.repo.Package;
 import org.expath.pkg.repo.*;
 import org.expath.pkg.repo.Storage.PackageResolver;
 import org.expath.pkg.repo.tools.Logger;
+import org.expath.tools.ToolsException;
+import org.expath.tools.saxon.fun.Definition;
+import org.expath.tools.saxon.fun.Function;
+import org.expath.tools.saxon.fun.Library;
 
 /**
  * TODO: ...
@@ -48,9 +52,9 @@ public class SaxonPkgInfo
             throws PackageException
     {
         try {
-            // for ( String name : getExtensionClasses(config, root) ) {
-            for ( String name : myFuns ) {
-                LOG.fine("Register class {0}", name);
+            // the libraries
+            for ( String name : myLibs ) {
+                LOG.fine("Register library class {0}", name);
                 Class clazz;
                 try {
                     clazz = Class.forName(name);
@@ -59,7 +63,33 @@ public class SaxonPkgInfo
                     ClassLoader loader = getClassLoader(getPackage(), myJars);
                     clazz = Class.forName(name, true, loader);
                 }
-                if ( EXPathFunctionDefinition.class.isAssignableFrom(clazz) ) {
+                if ( Library.class.isAssignableFrom(clazz) ) {
+                    Class<Library> c = clazz.asSubclass(Library.class);
+                    Library lib = c.newInstance();
+                    lib.register(config);
+                }
+                else {
+                    throw new PackageException("Not a proper library: " + clazz);
+                }
+            }
+            // the functions
+            for ( String name : myFuns ) {
+                LOG.fine("Register function class {0}", name);
+                Class clazz;
+                try {
+                    clazz = Class.forName(name);
+                }
+                catch ( ClassNotFoundException ex ) {
+                    ClassLoader loader = getClassLoader(getPackage(), myJars);
+                    clazz = Class.forName(name, true, loader);
+                }
+                if ( Function.class.isAssignableFrom(clazz) ) {
+                    Class<Function> c = clazz.asSubclass(Function.class);
+                    Function fun = c.newInstance();
+                    Definition def = fun.definition();
+                    config.registerExtensionFunction(def);
+                }
+                else if ( EXPathFunctionDefinition.class.isAssignableFrom(clazz) ) {
                     Class<EXPathFunctionDefinition> c = clazz.asSubclass(EXPathFunctionDefinition.class);
                     EXPathFunctionDefinition fun = c.newInstance();
                     fun.setConfiguration(config);
@@ -71,21 +101,24 @@ public class SaxonPkgInfo
                     config.registerExtensionFunction(fun);
                 }
                 else {
-                    throw new PackageException("Not a proper ExtensionFunctionDefinition: " + clazz);
+                    throw new PackageException("Not a proper extension function: " + clazz);
                 }
             }
         }
+        catch ( ToolsException ex ) {
+            throw new PackageException("Error registering Java extension functions", ex);
+        }
         catch ( ClassNotFoundException ex ) {
-            throw new PackageException("Error registering Java extension function", ex);
+            throw new PackageException("Error registering Java extension functions", ex);
         }
         catch ( InstantiationException ex ) {
-            throw new PackageException("Error registering Java extension function", ex);
+            throw new PackageException("Error registering Java extension functions", ex);
         }
         catch ( IllegalAccessException ex ) {
-            throw new PackageException("Error registering Java extension function", ex);
+            throw new PackageException("Error registering Java extension functions", ex);
         }
         catch ( XPathException ex ) {
-            throw new PackageException("Error registering extension functions", ex);
+            throw new PackageException("Error registering Java extension functions", ex);
         }
     }
 
@@ -208,6 +241,9 @@ public class SaxonPkgInfo
     public void addFunction(String fun) {
         myFuns.add(fun);
     }
+    public void addLibrary(String lib) {
+        myLibs.add(lib);
+    }
     public void addXslt(String href, String file) {
         myXslt.put(href, file);
     }
@@ -221,17 +257,18 @@ public class SaxonPkgInfo
         myXqueryWrappers.put(href, file);
     }
 
-    private Set<String>         myJars = new HashSet<String>();
-    private Set<String>         myFuns = new HashSet<String>();
-    private Map<String, String> myXslt = new HashMap<String, String>();
-    private Map<String, String> myXquery = new HashMap<String, String>();
-    private Map<String, String> myXsltWrappers = new HashMap<String, String>();
-    private Map<String, String> myXqueryWrappers = new HashMap<String, String>();
+    private final Set<String>         myJars = new HashSet<String>();
+    private final Set<String>         myFuns = new HashSet<String>();
+    private final Set<String>         myLibs = new HashSet<String>();
+    private final Map<String, String> myXslt = new HashMap<String, String>();
+    private final Map<String, String> myXquery = new HashMap<String, String>();
+    private final Map<String, String> myXsltWrappers = new HashMap<String, String>();
+    private final Map<String, String> myXqueryWrappers = new HashMap<String, String>();
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(SaxonPkgInfo.class);
     /** The content of the empty wrapper stylesheet. */
-    private static String EMPTY_STYLESHEET =
+    private static final String EMPTY_STYLESHEET =
             "<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='2.0'/>\n";
 }
 

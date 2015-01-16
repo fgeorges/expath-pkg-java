@@ -109,6 +109,10 @@ public class SaxonPkgExtension
             String fun = myXSHelper.getElementValue(parser);
             info.addFunction(fun);
         }
+        else if ( "library".equals(local) ) {
+            String lib = myXSHelper.getElementValue(parser);
+            info.addLibrary(lib);
+        }
         else if ( "xslt".equals(local) ) {
             Mapping m = handleMapping(parser, "import-uri");
             info.addXslt(m.href, m.file);
