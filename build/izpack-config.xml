@@ -2,7 +2,7 @@
 <installation version="1.0">
    <info>
       <appname>EXPath Packaging: Repo, Saxon and Calabash</appname>
-      <appversion>0.12.1</appversion>
+      <appversion>0.13.0-dev</appversion>
       <appsubpath>expath/pkg</appsubpath>
       <authors>
          <author email="fgeorges@expath.org" name="Florent Georges"/>

@@ -4,7 +4,7 @@
 #     IZPACK=c:/apps/izpack/bin/compile
 include Makefile.local
 
-VERSION=0.12.1
+VERSION=0.13.0-dev
 REVISION=$(shell git describe --always)
 NAME=expath-repo-$(VERSION)
 INSTALLER=expath-repo-installer-$(VERSION).jar
