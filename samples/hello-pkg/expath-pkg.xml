@@ -1,6 +1,6 @@
 <package xmlns="http://expath.org/ns/pkg"
          name="http://www.example.org/lib/hello"
-         version="1.1"
+         version="1.3"
          abbrev="hello"
          spec="1.0">
 
