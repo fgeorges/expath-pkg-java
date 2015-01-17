@@ -7,3 +7,6 @@
 /pkg-saxon/dist/
 /pkg-calabash/build/
 /pkg-calabash/dist/
+/pkg-calabash/src/org/expath/pkg/calabash/version.properties
+/pkg-java/src/org/expath/pkg/repo/tui/version.properties
+/pkg-saxon/src/java/org/expath/pkg/saxon/tools/version.properties
