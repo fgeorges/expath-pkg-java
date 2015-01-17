@@ -25,7 +25,6 @@ import net.sf.saxon.event.FilterFactory;
 import net.sf.saxon.event.PipelineConfiguration;
 import net.sf.saxon.event.Receiver;
 import net.sf.saxon.event.SequenceReceiver;
-import net.sf.saxon.expr.CollationMap;
 import net.sf.saxon.expr.PendingUpdateList;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.expr.instruct.Debugger;
@@ -261,15 +260,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setSchemaURIResolver(SchemaURIResolver resolver) {
-        if ( myConfig == null ) {
-            super.setSchemaURIResolver(resolver);
-            return;
-        }
-        myConfig.setSchemaURIResolver(resolver);
-    }
-
-    @Override
     public void setRecoveryPolicy(int recoveryPolicy) {
         if ( myConfig == null ) {
             super.setRecoveryPolicy(recoveryPolicy);
@@ -360,15 +350,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public void setHostLanguage(int hostLanguage) {
-        if ( myConfig == null ) {
-            super.setHostLanguage(hostLanguage);
-            return;
-        }
-        myConfig.setHostLanguage(hostLanguage);
-    }
-
-    @Override
     public void setExpandAttributeDefaults(boolean expand) {
         if ( myConfig == null ) {
             super.setExpandAttributeDefaults(expand);
@@ -447,15 +428,6 @@ public class ConfigurationProxy
             return;
         }
         myConfig.setDebugger(debugger);
-    }
-
-    @Override
-    public void setDOMLevel(int level) {
-        if ( myConfig == null ) {
-            super.setDOMLevel(level);
-            return;
-        }
-        myConfig.setDOMLevel(level);
     }
 
     @Override
@@ -750,14 +722,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public boolean isSchemaAware(int language) {
-        if ( myConfig == null ) {
-            return super.isSchemaAware(language);
-        }
-        return myConfig.isSchemaAware(language);
-    }
-
-    @Override
     public boolean isSchemaAvailable(String targetNamespace) {
         if ( myConfig == null ) {
             return super.isSchemaAvailable(targetNamespace);
@@ -935,14 +899,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public SchemaURIResolver getSchemaURIResolver() {
-        if ( myConfig == null ) {
-            return super.getSchemaURIResolver();
-        }
-        return myConfig.getSchemaURIResolver();
-    }
-
-    @Override
     public SchemaType getSchemaType(int fingerprint) {
         if ( myConfig == null ) {
             return super.getSchemaType(fingerprint);
@@ -999,14 +955,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public NameChecker getNameChecker() {
-        if ( myConfig == null ) {
-            return super.getNameChecker();
-        }
-        return myConfig.getNameChecker();
-    }
-
-    @Override
     public ModuleURIResolver getModuleURIResolver() {
         if ( myConfig == null ) {
             return super.getModuleURIResolver();
@@ -1055,14 +1003,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public int getHostLanguage() {
-        if ( myConfig == null ) {
-            return super.getHostLanguage();
-        }
-        return myConfig.getHostLanguage();
-    }
-
-    @Override
     public DocumentPool getGlobalDocumentPool() {
         if ( myConfig == null ) {
             return super.getGlobalDocumentPool();
@@ -1100,14 +1040,6 @@ public class ConfigurationProxy
             return super.getExtensionsOfType(type);
         }
         return myConfig.getExtensionsOfType(type);
-    }
-
-    @Override
-    public ErrorListener getErrorListener() {
-        if ( myConfig == null ) {
-            return super.getErrorListener();
-        }
-        return myConfig.getErrorListener();
     }
 
     @Override
@@ -1215,14 +1147,6 @@ public class ConfigurationProxy
     }
 
     @Override
-    public int getDOMLevel() {
-        if ( myConfig == null ) {
-            return super.getDOMLevel();
-        }
-        return myConfig.getDOMLevel();
-    }
-
-    @Override
     public XPathContext getConversionContext() {
         if ( myConfig == null ) {
             return super.getConversionContext();
@@ -1252,14 +1176,6 @@ public class ConfigurationProxy
             return super.getCollationURIResolver();
         }
         return myConfig.getCollationURIResolver();
-    }
-
-    @Override
-    public CollationMap getCollationMap() {
-        if ( myConfig == null ) {
-            return super.getCollationMap();
-        }
-        return myConfig.getCollationMap();
     }
 
     @Override
