@@ -33,9 +33,11 @@ rem # TAGSOUP_JAR          lib, the TagSoup lib, and the isorelax and jing JAR
 rem # ISORELAX_JAR         for Jing
 rem # JING_JAR             
 rem # 
-rem # EXPATH_PKG_REPO_JAR      the paths to the JAR files for Packaging support
-rem # EXPATH_PKG_SAXON_JAR     (resp. the on-disk repo manager, the support for
-rem # EXPATH_PKG_CALABASH_JAR  Saxon, and the support for Calabash)
+rem # EXPATH_TOOLS_JAVA_JAR    the paths to the JAR files for Packaging support
+rem # EXPATH_TOOLS_SAXON_JAR   (resp. the generic Java tools, the tools for
+rem # EXPATH_PKG_REPO_JAR      Saxon, the on-disk repo manager, the support for
+rem # EXPATH_PKG_SAXON_JAR     Saxon, and the support for Calabash)
+rem # EXPATH_PKG_CALABASH_JAR
 
 
 rem # load the common definitions in expath-pkg-common.bat
@@ -115,6 +117,8 @@ if defined CALABASH_CP goto calabash_cp_defined
     set CALABASH_CP=%CALABASH_CP%;%HCORE_JAR%
     set CALABASH_CP=%CALABASH_CP%;%HMIME_JAR%
     set CALABASH_CP=%CALABASH_CP%;%XRESOLVER_JAR%
+    set CALABASH_CP=%CALABASH_CP%;%EXPATH_TOOLS_JAVA_JAR%
+    set CALABASH_CP=%CALABASH_CP%;%EXPATH_TOOLS_SAXON_JAR%
     set CALABASH_CP=%CALABASH_CP%;%EXPATH_PKG_REPO_JAR%
     set CALABASH_CP=%CALABASH_CP%;%EXPATH_PKG_SAXON_JAR%
     set CALABASH_CP=%CALABASH_CP%;%EXPATH_PKG_CALABASH_JAR%
@@ -147,6 +151,10 @@ if defined CALABASH_CP goto calabash_cp_defined
         echo DEBUG: ISO Relax jar   : %ISORELAX_JAR%
         echo DEBUG: Jing jar        : %JING_JAR%
         echo DEBUG: XML Resolver jar: %XRESOLVER_JAR%
+        echo DEBUG: Tools Java jar  : %EXPATH_TOOLS_JAVA_JAR%
+        echo DEBUG: Tools Saxon jar : %EXPATH_TOOLS_SAXON_JAR%
+        echo DEBUG: Pkg repo jar    : %EXPATH_PKG_REPO_JAR%
+        echo DEBUG: Pkg Saxon jar   : %EXPATH_PKG_SAXON_JAR%
         echo DEBUG: Pkg Calabash jar: %EXPATH_PKG_CALABASH_JAR%
         echo.
     :dont_display_cp

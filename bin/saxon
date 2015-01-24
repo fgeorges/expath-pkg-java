@@ -121,6 +121,30 @@ if test -z "$SAXON_CP"; then
     else
         die "Saxon JAR cannot be found in SAXON_HOME: $SAXON_HOME"
     fi
+    # add the EXPath tools-java.jar to the classpath
+    if test -z "$EXPATH_TOOLS_JAVA_JAR"; then
+	if test \! -f "$INSTALL_DIR/expath/tools-java.jar"; then
+            die "INTERNAL ERROR: The install directory does not contain expath/tools-java.jar?!? ($INSTALL_DIR)"
+	fi
+	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-java.jar"
+    else
+	if test \! -f "$EXPATH_TOOLS_JAVA_JAR"; then
+            die "\$EXPATH_TOOLS_JAVA_JAR does not exist: $EXPATH_TOOLS_JAVA_JAR"
+	fi
+	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_JAVA_JAR"
+    fi
+    # add the EXPath tools-saxon.jar to the classpath
+    if test -z "$EXPATH_TOOLS_SAXON_JAR"; then
+	if test \! -f "$INSTALL_DIR/expath/tools-saxon.jar"; then
+            die "INTERNAL ERROR: The install directory does not contain expath/tools-saxon.jar?!? ($INSTALL_DIR)"
+	fi
+	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-saxon.jar"
+    else
+	if test \! -f "$EXPATH_TOOLS_SAXON_JAR"; then
+            die "\$EXPATH_TOOLS_SAXON_JAR does not exist: $EXPATH_TOOLS_SAXON_JAR"
+	fi
+	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_SAXON_JAR"
+    fi
     # add the EXPath pkg-java.jar to the classpath
     if test -z "$EXPATH_PKG_REPO_JAR"; then
 	if test \! -f "$INSTALL_DIR/expath/pkg-java.jar"; then
