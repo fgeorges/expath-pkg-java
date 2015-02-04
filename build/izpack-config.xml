@@ -75,7 +75,9 @@
       </pack>
       <pack name="Packaging for Saxon" preselected="yes" required="no">
          <description>EXPath Packaging support and scripts for Saxon.</description>
-         <file src="../pkg-saxon/dist/pkg-saxon.jar" targetdir="$INSTALL_PATH/expath/"/>
+         <file src="../pkg-saxon/dist/pkg-saxon.jar"       targetdir="$INSTALL_PATH/expath/"/>
+         <file src="../pkg-saxon/dist/lib/tools-java.jar"  targetdir="$INSTALL_PATH/expath/"/>
+         <file src="../pkg-saxon/dist/lib/tools-saxon.jar" targetdir="$INSTALL_PATH/expath/"/>
          <file src="../bin/saxon"                    targetdir="$INSTALL_PATH/bin/">
             <os family="Mac"/>
          </file>
@@ -154,6 +156,10 @@
          <file src="../pkg-calabash/lib/httpmime-4.2.5.jar"         targetdir="$INSTALL_PATH/calabash/lib/"/>
          <file src="../pkg-calabash/lib/isorelax.jar"               targetdir="$INSTALL_PATH/calabash/lib/"/>
          <file src="../pkg-calabash/lib/jing.jar"                   targetdir="$INSTALL_PATH/calabash/lib/"/>
+         <file src="../pkg-calabash/lib/log4j-api-2.0.2.jar"        targetdir="$INSTALL_PATH/calabash/lib/"/>
+         <file src="../pkg-calabash/lib/log4j-core-2.0.2.jar"       targetdir="$INSTALL_PATH/calabash/lib/"/>
+         <file src="../pkg-calabash/lib/log4j-slf4j-impl-2.0.2.jar" targetdir="$INSTALL_PATH/calabash/lib/"/>
+         <file src="../pkg-calabash/lib/slf4j-api-1.7.7.jar"        targetdir="$INSTALL_PATH/calabash/lib/"/>
          <file src="../pkg-calabash/lib/tagsoup-1.2.jar"            targetdir="$INSTALL_PATH/calabash/lib/"/>
          <file src="../pkg-calabash/lib/xcc.jar"                    targetdir="$INSTALL_PATH/calabash/lib/"/>
          <file src="../pkg-calabash/lib/xmlresolver.jar"            targetdir="$INSTALL_PATH/calabash/lib/"/>
