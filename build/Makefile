@@ -38,6 +38,8 @@ $(NAME).zip:
 	( cd $(pkg-calabash)/ && ant )
 	cp -r $(bin) $(NAME)
 	mkdir $(NAME)/expath
+	cp $(pkg-saxon)/dist/lib/tools-java.jar     $(NAME)/expath
+	cp $(pkg-saxon)/dist/lib/tools-saxon.jar    $(NAME)/expath
 	cp $(pkg-java)/dist/pkg-java.jar            $(NAME)/expath
 	cp $(pkg-saxon)/dist/pkg-saxon.jar          $(NAME)/expath
 	cp $(pkg-calabash)/dist/pkg-calabash.jar    $(NAME)/expath
