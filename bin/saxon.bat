@@ -1,5 +1,4 @@
 @echo off
-rem # -*- mode: dos -*-
 
 rem # is debug enabled?
 set DEBUG=false

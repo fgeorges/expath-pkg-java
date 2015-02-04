@@ -1,5 +1,4 @@
 @echo off
-rem # -*- mode: dos -*-
 
 rem # is debug enabled?
 set DEBUG=false
@@ -25,8 +24,29 @@ rem # ------------------------------------------------------------------- JAVA
 rem # TODO: Try to use JAVA_HOME?
 set JAVA=java
 
-rem # ------------------------------ EXPATH_PKG_REPO_JAR, EXPATH_PKG_SAXON_JAR
+rem # ----------------------------------- EXPATH_TOOLS_*_JAR, EXPATH_PKG_*_JAR
 
+rem # EXPATH_TOOLS_JAVA_JAR
+if defined EXPATH_TOOLS_JAVA_JAR goto tools_java_jar_defined
+    set EXPATH_TOOLS_JAVA_JAR=%INSTALL_DIR%/expath/tools-java.jar
+:tools_java_jar_defined
+
+if exist %EXPATH_TOOLS_JAVA_JAR% goto tools_java_jar_exists
+    echo ERROR: EXPath tools-java jar does not exist: %EXPATH_TOOLS_JAVA_JAR%
+    goto end
+:tools_java_jar_exists
+
+rem # EXPATH_TOOLS_SAXON_JAR
+if defined EXPATH_TOOLS_SAXON_JAR goto tools_saxon_jar_defined
+    set EXPATH_TOOLS_SAXON_JAR=%INSTALL_DIR%/expath/tools-saxon.jar
+:tools_saxon_jar_defined
+
+if exist %EXPATH_TOOLS_SAXON_JAR% goto tools_saxon_jar_exists
+    echo ERROR: EXPath tools-saxon jar does not exist: %EXPATH_TOOLS_SAXON_JAR%
+    goto end
+:tools_saxon_jar_exists
+
+rem # EXPATH_PKG_REPO_JAR
 if defined EXPATH_PKG_REPO_JAR goto pkg_repo_jar_defined
     set EXPATH_PKG_REPO_JAR=%INSTALL_DIR%/expath/pkg-java.jar
 :pkg_repo_jar_defined
@@ -36,6 +56,7 @@ if exist %EXPATH_PKG_REPO_JAR% goto pkg_repo_jar_exists
     goto end
 :pkg_repo_jar_exists
 
+rem # EXPATH_PKG_SAXON_JAR
 if defined EXPATH_PKG_SAXON_JAR goto pkg_saxon_jar_defined
     set EXPATH_PKG_SAXON_JAR=%INSTALL_DIR%/expath/pkg-saxon.jar
 :pkg_saxon_jar_defined
@@ -72,6 +93,8 @@ if defined SAXON_CP goto saxon_cp_defined
     :saxon_jar_exists
 
     set SAXON_CP=%SAXON_JAR%
+    set SAXON_CP=%SAXON_CP%;%EXPATH_TOOLS_JAVA_JAR%
+    set SAXON_CP=%SAXON_CP%;%EXPATH_TOOLS_SAXON_JAR%
     set SAXON_CP=%SAXON_CP%;%EXPATH_PKG_REPO_JAR%
     set SAXON_CP=%SAXON_CP%;%EXPATH_PKG_SAXON_JAR%
 

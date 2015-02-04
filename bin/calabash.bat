@@ -1,5 +1,4 @@
 @echo off
-rem # -*- mode: dos -*-
 
 rem # is debug enabled?
 set DEBUG=false
@@ -76,7 +75,7 @@ if defined CALABASH_CP goto calabash_cp_defined
 
     rem # Libraries
     set CODEC_JAR=%CALABASH_HOME%/lib/commons-codec-1.6.jar
-    set IO_JAR=%CALABASH_HOME%/lib/commons-io-1.3.1.jar
+    set IO_JAR=%CALABASH_HOME%/lib/commons-io-2.1.jar
     set LOGGING_JAR=%CALABASH_HOME%/lib/commons-logging-1.1.1.jar
     set HCLIENT_JAR=%CALABASH_HOME%/lib/httpclient-4.2.5.jar
     set HCORE_JAR=%CALABASH_HOME%/lib/httpcore-4.2.4.jar
@@ -98,6 +97,22 @@ if defined CALABASH_CP goto calabash_cp_defined
         if not exist %CALABASH_HOME%/lib/jing.jar goto jing_jar_defined
             set JING_JAR=%CALABASH_HOME%/lib/jing.jar
     :jing_jar_defined
+    if defined SLF4J_API_JAR goto slf4j_api_jar_defined
+        if not exist %CALABASH_HOME%/lib/slf4j-api-1.7.7.jar goto slf4j_api_jar_defined
+            set SLF4J_API_JAR=%CALABASH_HOME%/lib/slf4j-api-1.7.7.jar
+    :slf4j_api_jar_defined
+    if defined LOG4J_API_JAR goto log4j_api_jar_defined
+        if not exist %CALABASH_HOME%/lib/log4j-api-2.0.2.jar goto log4j_api_jar_defined
+            set LOG4J_API_JAR=%CALABASH_HOME%/lib/log4j-api-2.0.2.jar
+    :log4j_api_jar_defined
+    if defined LOG4J_CORE_JAR goto log4j_core_jar_defined
+        if not exist %CALABASH_HOME%/lib/log4j-core-2.0.2.jar goto log4j_core_jar_defined
+            set LOG4J_CORE_JAR=%CALABASH_HOME%/lib/log4j-core-2.0.2.jar
+    :log4j_core_jar_defined
+    if defined LOG4J_SLF4J_JAR goto log4j_slf4j_jar_defined
+        if not exist %CALABASH_HOME%/lib/log4j-slf4j-impl-2.0.2.jar goto log4j_slf4j_jar_defined
+            set LOG4J_SLF4J_JAR=%CALABASH_HOME%/lib/log4j-slf4j-impl-2.0.2.jar
+    :log4j_slf4j_jar_defined
 
     rem # pkg-calabash.jar
     if defined EXPATH_PKG_CALABASH_JAR goto calabash_jar_defined
@@ -135,6 +150,18 @@ if defined CALABASH_CP goto calabash_cp_defined
     if not defined JING_JAR goto skip_jing_jar
         set CALABASH_CP=%CALABASH_CP%;%JING_JAR%
     :skip_jing_jar
+    if not defined SLF4J_API_JAR goto skip_slf4j_api_jar
+        set CALABASH_CP=%CALABASH_CP%;%SLF4J_API_JAR%
+    :skip_slf4j_api_jar
+    if not defined LOG4J_API_JAR goto skip_log4j_api_jar
+        set CALABASH_CP=%CALABASH_CP%;%LOG4J_API_JAR%
+    :skip_log4j_api_jar
+    if not defined LOG4J_CORE_JAR goto skip_log4j_core_jar
+        set CALABASH_CP=%CALABASH_CP%;%LOG4J_CORE_JAR%
+    :skip_log4j_core_jar
+    if not defined LOG4J_SLF4J_JAR goto skip_log4j_slf4j_jar
+        set CALABASH_CP=%CALABASH_CP%;%LOG4J_SLF4J_JAR%
+    :skip_log4j_slf4j_jar
 
     if "%DEBUG%" == "false" goto dont_display_cp
         echo DEBUG: Calabash home   : %CALABASH_HOME%
@@ -150,6 +177,10 @@ if defined CALABASH_CP goto calabash_cp_defined
         echo DEBUG: TagSoup jar     : %TAGSOUP_JAR%
         echo DEBUG: ISO Relax jar   : %ISORELAX_JAR%
         echo DEBUG: Jing jar        : %JING_JAR%
+        echo DEBUG: Slf4j api jar   : %SLF4J_API_JAR%
+        echo DEBUG: Log4j api jar   : %LOG4J_API_JAR%
+        echo DEBUG: Log4j core jar  : %LOG4J_CORE_JAR%
+        echo DEBUG: Log4j Slf4j jar : %LOG4J_SLF4J_JAR%
         echo DEBUG: XML Resolver jar: %XRESOLVER_JAR%
         echo DEBUG: Tools Java jar  : %EXPATH_TOOLS_JAVA_JAR%
         echo DEBUG: Tools Saxon jar : %EXPATH_TOOLS_SAXON_JAR%
