@@ -128,14 +128,24 @@ if test -z "$LOGGING_JAR"; then
         LOGGING_JAR="${CALABASH_HOME}/lib/commons-logging-1.1.1.jar"
     fi
 fi
-if test -z "$HTTPC_JAR"; then
-    if test -f "${CALABASH_HOME}/lib/commons-httpclient-3.1.jar"; then
-        HTTPC_JAR="${CALABASH_HOME}/lib/commons-httpclient-3.1.jar"
+if test -z "$HTTP_CLIENT_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/httpclient-4.2.5.jar"; then
+        HTTP_CLIENT_JAR="${CALABASH_HOME}/lib/httpclient-4.2.5.jar"
+    fi
+fi
+if test -z "$HTTP_CORE_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/httpcore-4.2.4.jar"; then
+        HTTP_CORE_JAR="${CALABASH_HOME}/lib/httpcore-4.2.4.jar"
+    fi
+fi
+if test -z "$HTTP_MIME_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/httpmime-4.2.5.jar"; then
+        HTTP_MIME_JAR="${CALABASH_HOME}/lib/httpmime-4.2.5.jar"
     fi
 fi
 if test -z "$IO_JAR"; then
-    if test -f "${CALABASH_HOME}/lib/commons-io-1.3.1.jar"; then
-        IO_JAR="${CALABASH_HOME}/lib/commons-io-1.3.1.jar"
+    if test -f "${CALABASH_HOME}/lib/commons-io-2.1.jar"; then
+        IO_JAR="${CALABASH_HOME}/lib/commons-io-2.1.jar"
     fi
 fi
 if test -z "$XCC_JAR"; then
@@ -174,7 +184,7 @@ if test -z "$LOG4J_CORE_JAR"; then
     fi
 fi
 if test -z "$LOG4J_SLF4J_JAR"; then
-    if test -f "${CALABASH_HOME}/lib/log4j-api-2.0.2.jar"; then
+    if test -f "${CALABASH_HOME}/lib/log4j-slf4j-impl-2.0.2.jar"; then
         LOG4J_SLF4J_JAR="${CALABASH_HOME}/lib/log4j-slf4j-impl-2.0.2.jar"
     fi
 fi
@@ -233,7 +243,9 @@ CP="${CALABASH_JAR}"
 CP="${CP}${CP_DELIM}${SAXON_JAR}"
 CP="${CP}${CP_DELIM}${CODEC_JAR}"
 CP="${CP}${CP_DELIM}${LOGGING_JAR}"
-CP="${CP}${CP_DELIM}${HTTPC_JAR}"
+CP="${CP}${CP_DELIM}${HTTP_CLIENT_JAR}"
+CP="${CP}${CP_DELIM}${HTTP_CORE_JAR}"
+CP="${CP}${CP_DELIM}${HTTP_MIME_JAR}"
 CP="${CP}${CP_DELIM}${IO_JAR}"
 CP="${CP}${CP_DELIM}${XCC_JAR}"
 CP="${CP}${CP_DELIM}${TAGSOUP_JAR}"
