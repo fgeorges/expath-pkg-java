@@ -15,10 +15,10 @@ rem # contain the following JAR files:
 rem #   - saxon9he.jar     - or any main Saxon JAR from 8.8 to 9.2
 rem #   - tools-java.jar   - generic tools for XML on Java
 rem #   - tools-saxon.jar  - tools for Saxon
-rem #   - pkg-repo.jar     - the EXPath repo manager
+rem #   - pkg-java.jar     - the EXPath repo manager
 rem #   - pkg-saxon.jar    - the EXPath pkg support for Saxon
 rem #
-rem # SET SAXON_CP=.../some.jar;.../saxon9he.jar;.../pkg-repo.jar;.../pkg-saxon.jar
+rem # SET SAXON_CP=.../some.jar;.../saxon9he.jar;.../pkg-java.jar;.../pkg-saxon.jar
 rem #
 rem # Set this variable in your environment or here, if you don't set SAXON_CP.
 rem # This is the directory where Saxon is installed.

@@ -1,5 +1,4 @@
 @echo off
-rem # -*- mode: dos -*-
 
 rem # is debug enabled?
 set DEBUG=false
@@ -7,4 +6,4 @@ set DEBUG=false
 rem # load the common definitions in expath-pkg-common.bat
 call %~dp0/expath-pkg-common.bat
 
-%JAVA% -jar %INSTALL_DIR%/expath/pkg-repo.jar %*
+%JAVA% -jar %INSTALL_DIR%/expath/pkg-java.jar %*
