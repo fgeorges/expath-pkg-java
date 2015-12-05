@@ -175,7 +175,10 @@ public class FileSystemStorage
         }
         // delete target (if it is a dir, it is empty after recursing)
         for ( int i = 3; i >= 0; --i ) {
-            shallowDelete(target, i);
+            boolean success = shallowDelete(target, i);
+            if ( success ) {
+                break;
+            }
         }
     }
 
@@ -195,6 +198,10 @@ public class FileSystemStorage
     private boolean shallowDelete(File target, int remain)
             throws PackageException
     {
+        if ( ! target.exists() ) {
+            // trying to delete a non-existing file or dir
+            return true;
+        }
         boolean success = target.delete();
         if ( success ) {
             return true;
