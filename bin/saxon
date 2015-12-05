@@ -71,7 +71,93 @@ usage () {
     echo "  --mem ...                 set the memory (shortcut for --java=-Xmx...)"
     echo "  --proxy [user:password@]host:port"
     echo "                            HTTP and HTTPS proxy information"
+    echo "  --show-cp                 display the classpath from packages, then exit"
     echo
+}
+
+set_saxon_cp() {
+    if test -z "$SAXON_CP"; then
+        # get the install dir
+        # TODO: Ask IzPack for substituing it directly at install time...?
+        INSTALL_DIR=`dirname $0`/..
+        if test \! -d "$INSTALL_DIR"; then
+            die "INTERNAL ERROR: The install directory is not a directory?!? ($INSTALL_DIR)"
+        fi
+        # Set SAXON_HOME in your environment or here, if you don't set SAXON_CP
+        if test -z "$SAXON_HOME"; then
+            # By default, try saxon/ as SAXON_HOME in the install dir
+            if test -d "$INSTALL_DIR/saxon"; then
+                SAXON_HOME="$INSTALL_DIR/saxon"
+            else
+                die "SAXON_CP and SAXON_HOME both not set, and $INSTALL_DIR/saxon/ does not exist!"
+            fi
+        fi
+        if test -f "${SAXON_HOME}/saxon9ee.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon9ee.jar";
+        elif test -f "${SAXON_HOME}/saxon9pe.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon9pe.jar";
+        elif test -f "${SAXON_HOME}/saxon9he.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon9he.jar";
+        elif test -f "${SAXON_HOME}/saxon9sa.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon9sa.jar";
+        elif test -f "${SAXON_HOME}/saxon9.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon9.jar";
+        elif test -f "${SAXON_HOME}/saxon8sa.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon8sa.jar";
+        elif test -f "${SAXON_HOME}/saxon8.jar"; then
+            SAXON_CP="${SAXON_HOME}/saxon8.jar";
+        else
+            die "Saxon JAR cannot be found in SAXON_HOME: $SAXON_HOME"
+        fi
+        # add the EXPath tools-java.jar to the classpath
+        if test -z "$EXPATH_TOOLS_JAVA_JAR"; then
+            if test \! -f "$INSTALL_DIR/expath/tools-java.jar"; then
+                die "INTERNAL ERROR: The install directory does not contain expath/tools-java.jar?!? ($INSTALL_DIR)"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-java.jar"
+        else
+            if test \! -f "$EXPATH_TOOLS_JAVA_JAR"; then
+                die "\$EXPATH_TOOLS_JAVA_JAR does not exist: $EXPATH_TOOLS_JAVA_JAR"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_JAVA_JAR"
+        fi
+        # add the EXPath tools-saxon.jar to the classpath
+        if test -z "$EXPATH_TOOLS_SAXON_JAR"; then
+            if test \! -f "$INSTALL_DIR/expath/tools-saxon.jar"; then
+                die "INTERNAL ERROR: The install directory does not contain expath/tools-saxon.jar?!? ($INSTALL_DIR)"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-saxon.jar"
+        else
+            if test \! -f "$EXPATH_TOOLS_SAXON_JAR"; then
+                die "\$EXPATH_TOOLS_SAXON_JAR does not exist: $EXPATH_TOOLS_SAXON_JAR"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_SAXON_JAR"
+        fi
+        # add the EXPath pkg-java.jar to the classpath
+        if test -z "$EXPATH_PKG_REPO_JAR"; then
+            if test \! -f "$INSTALL_DIR/expath/pkg-java.jar"; then
+                die "INTERNAL ERROR: The install directory does not contain expath/pkg-java.jar?!? ($INSTALL_DIR)"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-java.jar"
+        else
+            if test \! -f "$EXPATH_PKG_REPO_JAR"; then
+                die "\$EXPATH_PKG_REPO_JAR does not exist: $EXPATH_PKG_REPO_JAR"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_PKG_REPO_JAR"
+        fi
+        # add the EXPath pkg-saxon.jar to the classpath
+        if test -z "$EXPATH_PKG_SAXON_JAR"; then
+            if test \! -f "$INSTALL_DIR/expath/pkg-saxon.jar"; then
+                die "INTERNAL ERROR: The install directory does not contain expath/pkg-saxon.jar?!? ($INSTALL_DIR)"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-saxon.jar"
+        else
+            if test \! -f "$EXPATH_PKG_SAXON_JAR"; then
+                die "\$EXPATH_PKG_SAXON_JAR does not exist: $EXPATH_PKG_SAXON_JAR"
+            fi
+            SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_PKG_SAXON_JAR"
+        fi
+    fi
 }
 
 # ==================== useful values ====================
@@ -86,89 +172,6 @@ if uname | grep -i cygwin >/dev/null 2>&1; then
     CP_DELIM=";"
 else
     CP_DELIM=":"
-fi
-
-if test -z "$SAXON_CP"; then
-    # get the install dir
-    # TODO: Ask IzPack for substituing it directly at install time...?
-    INSTALL_DIR=`dirname $0`/..
-    if test \! -d "$INSTALL_DIR"; then
-        die "INTERNAL ERROR: The install directory is not a directory?!? ($INSTALL_DIR)"
-    fi
-    # Set SAXON_HOME in your environment or here, if you don't set SAXON_CP
-    if test -z "$SAXON_HOME"; then
-        # By default, try saxon/ as SAXON_HOME in the install dir
-        if test -d "$INSTALL_DIR/saxon"; then
-            SAXON_HOME="$INSTALL_DIR/saxon"
-        else
-            die "SAXON_CP and SAXON_HOME both not set, and $INSTALL_DIR/saxon/ does not exist!"
-        fi
-    fi
-    if test -f "${SAXON_HOME}/saxon9ee.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon9ee.jar";
-    elif test -f "${SAXON_HOME}/saxon9pe.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon9pe.jar";
-    elif test -f "${SAXON_HOME}/saxon9he.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon9he.jar";
-    elif test -f "${SAXON_HOME}/saxon9sa.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon9sa.jar";
-    elif test -f "${SAXON_HOME}/saxon9.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon9.jar";
-    elif test -f "${SAXON_HOME}/saxon8sa.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon8sa.jar";
-    elif test -f "${SAXON_HOME}/saxon8.jar"; then
-	SAXON_CP="${SAXON_HOME}/saxon8.jar";
-    else
-        die "Saxon JAR cannot be found in SAXON_HOME: $SAXON_HOME"
-    fi
-    # add the EXPath tools-java.jar to the classpath
-    if test -z "$EXPATH_TOOLS_JAVA_JAR"; then
-	if test \! -f "$INSTALL_DIR/expath/tools-java.jar"; then
-            die "INTERNAL ERROR: The install directory does not contain expath/tools-java.jar?!? ($INSTALL_DIR)"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-java.jar"
-    else
-	if test \! -f "$EXPATH_TOOLS_JAVA_JAR"; then
-            die "\$EXPATH_TOOLS_JAVA_JAR does not exist: $EXPATH_TOOLS_JAVA_JAR"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_JAVA_JAR"
-    fi
-    # add the EXPath tools-saxon.jar to the classpath
-    if test -z "$EXPATH_TOOLS_SAXON_JAR"; then
-	if test \! -f "$INSTALL_DIR/expath/tools-saxon.jar"; then
-            die "INTERNAL ERROR: The install directory does not contain expath/tools-saxon.jar?!? ($INSTALL_DIR)"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/tools-saxon.jar"
-    else
-	if test \! -f "$EXPATH_TOOLS_SAXON_JAR"; then
-            die "\$EXPATH_TOOLS_SAXON_JAR does not exist: $EXPATH_TOOLS_SAXON_JAR"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_TOOLS_SAXON_JAR"
-    fi
-    # add the EXPath pkg-java.jar to the classpath
-    if test -z "$EXPATH_PKG_REPO_JAR"; then
-	if test \! -f "$INSTALL_DIR/expath/pkg-java.jar"; then
-            die "INTERNAL ERROR: The install directory does not contain expath/pkg-java.jar?!? ($INSTALL_DIR)"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-java.jar"
-    else
-	if test \! -f "$EXPATH_PKG_REPO_JAR"; then
-            die "\$EXPATH_PKG_REPO_JAR does not exist: $EXPATH_PKG_REPO_JAR"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_PKG_REPO_JAR"
-    fi
-    # add the EXPath pkg-saxon.jar to the classpath
-    if test -z "$EXPATH_PKG_SAXON_JAR"; then
-	if test \! -f "$INSTALL_DIR/expath/pkg-saxon.jar"; then
-            die "INTERNAL ERROR: The install directory does not contain expath/pkg-saxon.jar?!? ($INSTALL_DIR)"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$INSTALL_DIR/expath/pkg-saxon.jar"
-    else
-	if test \! -f "$EXPATH_PKG_SAXON_JAR"; then
-            die "\$EXPATH_PKG_SAXON_JAR does not exist: $EXPATH_PKG_SAXON_JAR"
-	fi
-	SAXON_CP="$SAXON_CP$CP_DELIM$EXPATH_PKG_SAXON_JAR"
-    fi
 fi
 
 # by default 'xslt', can also be 'xquery'
@@ -188,6 +191,8 @@ SAXON_OPT=
 REPO=$EXPATH_REPO
 
 # ==================== the options ====================
+
+SHOW_CP=false
 
 while echo "$1" | grep -- ^-- >/dev/null 2>&1 && test "$1" != --; do
     case "$1" in
@@ -228,6 +233,8 @@ while echo "$1" | grep -- ^-- >/dev/null 2>&1 && test "$1" != --; do
         --help)
             usage
             exit 0;;
+        --show-cp)
+            SHOW_CP=true;;
         # Unknown option!
         --*)
             die "Unknown option: $1"
@@ -237,30 +244,33 @@ done
 
 # ==================== EXPath repo ====================
 
+REPO_CP=
+
 if test -n "$REPO"; then
 
     # the repo itself
     JAVA_OPT="$JAVA_OPT -Dorg.expath.pkg.saxon.repo=$REPO"
 
-    # add each line of {repo}/*/.saxon/classpath.txt to the classpath
-    cp_txt=`resolve "${REPO}"`/*/.saxon/classpath.txt
-    if test -f "$cp_txt"; then
-        oldIFS=$IFS
-        IFS=$'\n'
-        for cp in "$cp_txt"
-        do
-            # TODO: If no file corresponds to the glob, the glob is returned
-            # as is.  We need to check this is not the case (in this case we
-            # want to iterate zero times).
-            for jar in `cat "$cp"`
-            #while read jar
-            do
-                ADD_CP="${ADD_CP}${CP_DELIM}${jar}";
+    # loop over each package dir
+    for pkg in `resolve "${REPO}"`/*; do
+	cp_file="$pkg/.saxon/classpath.txt"
+        # if the package has a Saxon classpath file, add its content to REPO_CP
+        if test -f "$cp_file"; then
+            oldIFS=$IFS
+            IFS=$'\n'
+            for jar in `cat "$cp_file"`; do
+                REPO_CP="${REPO_CP}${CP_DELIM}${jar}";
             done
-        done
-        IFS=$oldIFS
-    fi
+            IFS=$oldIFS
+        fi
+    done
 
+fi
+
+if [ "$SHOW_CP" = "true" ]; then
+    # remove the first CP_DELIM at the beginning of REPO_CP
+    echo "$REPO_CP" | cut -c 2-;
+    exit 0;
 fi
 
 # ==================== proxy ====================
@@ -294,8 +304,8 @@ else
     SAXON_CLASS=net.sf.saxon.Query;
 fi
 
-# TODO: Error if SAXON_CP is not set...
-CP="${SAXON_CP}${ADD_CP}"
+set_saxon_cp
+CP="${SAXON_CP}${ADD_CP}${REPO_CP}"
 
 # TODO: Include the logging into the big picture...
 "$JAVA" "-Xmx$MEMORY" \
