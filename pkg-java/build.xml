@@ -71,4 +71,9 @@
     nbproject/build-impl.xml file. 
 
     -->
+
+    <target name="javadoc-build">
+       <!-- nothing -->
+    </target>
+
 </project>
