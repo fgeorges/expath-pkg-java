@@ -188,9 +188,21 @@ public class Repository
     }
 
     /**
-     * ...
+     * Install a XAR package into this repository, from a URI location.
      *
      * TODO: Anything to delegate to the storage?
+     * 
+     * @param pkg The package file (typically a {@code *.xar} or {@code *.xaw} file).
+     * 
+     * @param force If force is false, this is an error if the same package has
+     * already been installed in the repository.  If it is true, it is first
+     * deleted if existing.
+     * 
+     * @param interact How the repository interacts with the user.
+     *
+     * @return The freshly installed package.
+     * 
+     * @throws PackageException If any error occurs.
      */
     public Package installPackage(URI pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -243,13 +255,19 @@ public class Repository
     /**
      * Install a XAR package into this repository.
      *
-     * If force is false, this is an error if the same package has already
-     * been installed in the repository.  If it is true, it is first deleted
-     * if existing.
-     *
-     * Return the freshly installed package.
-     * 
      * TODO: In case of exception, the temporary dir is not removed, solve that.
+     * 
+     * @param xar_file  The package file (typically a {@code *.xar} or {@code *.xaw} file).
+     * 
+     * @param force If force is false, this is an error if the same package has
+     * already been installed in the repository.  If it is true, it is first
+     * deleted if existing.
+     * 
+     * @param interact How the repository interacts with the user.
+     *
+     * @return The freshly installed package.
+     * 
+     * @throws PackageException If any error occurs.
      */
     public Package installPackage(File xar_file, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -333,17 +351,35 @@ public class Repository
      * Remove a package from the repository, by name.
      * 
      * If a package with that name does not exist, or if there are several
-     * versions installed, this is an error.
+     * versions installed, this is an error (except if the package does not
+     * exist and {@code force} is {@code true}, then simply returns {@code
+     * false}).
+     * 
+     * @param pkg The package name.
+     * 
+     * @param force To silently ignore a non existing package (simply returns
+     * {@code false} in that case).
+     * 
+     * @param interact How the repository interacts with the user.
+     * 
+     * @return True if the package has been successfully removed, false if not
+     * (false is returned when the user canceled removing interactively, or if
+     * the package does not exist and {@code force} is true).
+     * 
+     * @throws PackageException If any error occurs during removal.
      */
-    public void removePackage(String pkg, boolean force, UserInteractionStrategy interact)
+    public boolean removePackage(String pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
         if ( ! interact.ask("Remove package " + pkg + "?", true) ) {
-            return;
+            return false;
         }
         // delete the package content
         Packages pp = myPackages.get(pkg);
         if ( pp == null ) {
+            if ( force ) {
+                return false;
+            }
             throw new PackageException("The package does not exist: " + pkg);
         }
         if ( pp.packages().size() != 1 ) {
@@ -354,27 +390,50 @@ public class Repository
         pp.remove(p);
         // remove the package from the list
         myPackages.remove(pkg);
+        return true;
     }
 
     /**
      * Remove a package from the repository, by name and version.
      * 
      * If a package with that name and that version does not exist, this is an
-     * error.
+     * error, except if the package does not exist and {@code force} is {@code
+     * true} (then it simply returns {@code false}).
+     * 
+     * @param pkg The package name.
+     * 
+     * @param version  The package version.
+     * 
+     * @param force To silently ignore a non existing package (simply returns
+     * {@code false} in that case).
+     * 
+     * @param interact How the repository interacts with the user.
+     * 
+     * @return True if the package has been successfully removed, false if not
+     * (false is returned when the user canceled removing interactively, or if
+     * the package does not exist and {@code force} is true).
+     * 
+     * @throws PackageException If any error occurs during removal.
      */
-    public void removePackage(String pkg, String version, boolean force, UserInteractionStrategy interact)
+    public boolean removePackage(String pkg, String version, boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
         if ( ! interact.ask("Remove package " + pkg + ", version " + version + "?", true) ) {
-            return;
+            return false;
         }
         // delete the package content
         Packages pp = myPackages.get(pkg);
         if ( pp == null ) {
+            if ( force ) {
+                return false;
+            }
             throw new PackageException("The package does not exist: " + pkg);
         }
         Package p = pp.version(version);
         if ( p == null ) {
+            if ( force ) {
+                return false;
+            }
             throw new PackageException("The version " + version + " does not exist for the package: " + pkg);
         }
         myStorage.remove(p);
@@ -383,6 +442,7 @@ public class Repository
         if ( pp.latest() == null ) {
             myPackages.remove(pkg);
         }
+        return true;
     }
 
     /**

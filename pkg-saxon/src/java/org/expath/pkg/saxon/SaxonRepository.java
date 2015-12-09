@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2010-05-11                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2010-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -58,7 +58,18 @@ public class SaxonRepository
     }
 
     /**
-     * ...
+     * Install a package from a file.
+     * 
+     * @param pkg The package file (typically a {@code *.xar} or {@code *.xaw} file).
+     * 
+     * @param force If false, an error is thrown if the package already exists.
+     * If true, the package is first deleted from the repository if it already exists.
+     * 
+     * @param interact How the repository interacts with the user.
+     * 
+     * @return The freshly installed package.
+     * 
+     * @throws PackageException If any error occurs.
      */
     public Package installPackage(File pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -67,7 +78,18 @@ public class SaxonRepository
     }
 
     /**
-     * ...
+     * Install a package from a URI location.
+     * 
+     * @param pkg The package file (typically a {@code *.xar} or {@code *.xaw} file).
+     * 
+     * @param force If false, an error is thrown if the package already exists.
+     * If true, the package is first deleted from the repository if it already exists.
+     * 
+     * @param interact How the repository interacts with the user.
+     * 
+     * @return The freshly installed package.
+     * 
+     * @throws PackageException If any error occurs.
      */
     public Package installPackage(URI pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
@@ -76,12 +98,30 @@ public class SaxonRepository
     }
 
     /**
-     * ...
+     * Remove a package from the repository, by name.
+     * 
+     * If a package with that name does not exist, or if there are several
+     * versions installed, this is an error (except if the package does not
+     * exist and {@code force} is {@code true}, then simply returns {@code
+     * false}).
+     * 
+     * @param pkg The package name.
+     * 
+     * @param force To silently ignore a non existing package (simply returns
+     * {@code false} in that case).
+     * 
+     * @param interact How the repository interacts with the user.
+     * 
+     * @return True if the package has been successfully removed, false if not
+     * (false is returned when the user canceled removing interactively, or if
+     * the package does not exist and {@code force} is true).
+     * 
+     * @throws PackageException If any error occurs during removal.
      */
-    public void removePackage(String pkg, boolean force, UserInteractionStrategy interact)
+    public boolean removePackage(String pkg, boolean force, UserInteractionStrategy interact)
             throws PackageException
     {
-        myParent.removePackage(pkg, force, interact);
+        return myParent.removePackage(pkg, force, interact);
     }
 
     /**
