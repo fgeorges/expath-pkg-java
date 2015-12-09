@@ -38,11 +38,11 @@ $(NAME).zip:
 	( cd $(pkg-calabash)/ && ant )
 	cp -r $(bin) $(NAME)
 	mkdir $(NAME)/expath
-	cp $(pkg-saxon)/dist/lib/tools-java.jar     $(NAME)/expath
-	cp $(pkg-saxon)/dist/lib/tools-saxon.jar    $(NAME)/expath
-	cp $(pkg-java)/dist/pkg-java.jar            $(NAME)/expath
-	cp $(pkg-saxon)/dist/pkg-saxon.jar          $(NAME)/expath
-	cp $(pkg-calabash)/dist/pkg-calabash.jar    $(NAME)/expath
+	cp $(pkg-saxon)/dist/lib/expath-tools-java-0.1.0.jar  $(NAME)/expath/tools-java.jar
+	cp $(pkg-saxon)/dist/lib/expath-tools-saxon-0.1.0.jar $(NAME)/expath/tools-saxon.jar
+	cp $(pkg-java)/dist/pkg-java.jar                      $(NAME)/expath
+	cp $(pkg-saxon)/dist/pkg-saxon.jar                    $(NAME)/expath
+	cp $(pkg-calabash)/dist/pkg-calabash.jar              $(NAME)/expath
 	mkdir $(NAME)/sample
 	cp $(samples)/hello-pkg/hello-1.2.xar       $(NAME)/sample
 	cp $(samples)/hello-pkg/test/test-hello.xq  $(NAME)/sample

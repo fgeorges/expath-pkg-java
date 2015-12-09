@@ -2,7 +2,7 @@
 <installation version="1.0">
    <info>
       <appname>EXPath Packaging: Repo, Saxon and Calabash</appname>
-      <appversion>0.13.0</appversion>
+      <appversion>0.13.1</appversion>
       <appsubpath>expath/pkg</appsubpath>
       <authors>
          <author email="fgeorges@expath.org" name="Florent Georges"/>
@@ -75,9 +75,9 @@
       </pack>
       <pack name="Packaging for Saxon" preselected="yes" required="no">
          <description>EXPath Packaging support and scripts for Saxon.</description>
-         <file src="../pkg-saxon/dist/pkg-saxon.jar"       targetdir="$INSTALL_PATH/expath/"/>
-         <file src="../pkg-saxon/dist/lib/tools-java.jar"  targetdir="$INSTALL_PATH/expath/"/>
-         <file src="../pkg-saxon/dist/lib/tools-saxon.jar" targetdir="$INSTALL_PATH/expath/"/>
+         <file src="../pkg-saxon/dist/pkg-saxon.jar"                          targetdir="$INSTALL_PATH/expath/"/>
+         <singlefile src="../pkg-saxon/dist/lib/expath-tools-java-0.1.0.jar"  target="$INSTALL_PATH/expath/tools-java.jar"/>
+         <singlefile src="../pkg-saxon/dist/lib/expath-tools-saxon-0.1.0.jar" target="$INSTALL_PATH/expath/tools-saxon.jar"/>
          <file src="../bin/saxon"                    targetdir="$INSTALL_PATH/bin/">
             <os family="Mac"/>
          </file>
