@@ -199,4 +199,8 @@
       <echo message="SAXON 92 NOT CONFIGURED!  Support for Saxon 92 was not compiled..."/>
    </target-->
 
+   <target name="javadoc-build">
+      <!-- nothing -->
+   </target>
+
 </project>

@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2010-05-02                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2010-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -73,13 +73,13 @@ public class PkgURIResolver
     }
 
     /** The overrides (take precedence over the catalog resolver). */
-    private Map<String, String> myOverrides;
+    private final Map<String, String> myOverrides;
     /** The Saxon repo used to resolve Saxon-specific stuff. */
-    private SaxonRepository myRepo;
+    private final SaxonRepository myRepo;
     /** The parent resolver, from pkg-repo. */
-    private URIResolver myParent;
+    private final URIResolver myParent;
     /** ... */
-    private URISpace mySpace;
+    private final URISpace mySpace;
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(PkgURIResolver.class);
 }

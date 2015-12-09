@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2009-10-29                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2009-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -94,11 +94,11 @@ public class PkgModuleResolver
     }
 
     /** The overrides (take precedence over the catalog resolver). */
-    private Map<String, String> myOverrides;
+    private final Map<String, String> myOverrides;
     /** The Saxon repo used to resolve Saxon-specific stuff. */
-    private SaxonRepository myRepo;
+    private final SaxonRepository myRepo;
     /** The pkg-repo's repository, to delegate everything else to. */
-    private Repository myParent;
+    private final Repository myParent;
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(PkgModuleResolver.class);
 }

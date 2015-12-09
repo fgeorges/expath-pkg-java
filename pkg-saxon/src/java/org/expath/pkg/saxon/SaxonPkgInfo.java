@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2010-09-19                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2010-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2010-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 

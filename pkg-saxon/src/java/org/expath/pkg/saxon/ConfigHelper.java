@@ -4,7 +4,7 @@
 /*  Company:    H2O Consulting                                              */
 /*  Date:       2009-07-28                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2009-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2009-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -49,7 +49,7 @@ public class ConfigHelper
     }
 
     /** The repo. */
-    private SaxonRepository myRepo;
+    private final SaxonRepository myRepo;
 }
 
 
