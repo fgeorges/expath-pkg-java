@@ -3,7 +3,7 @@
 /*  Author:     F. Georges - H2O Consulting                                 */
 /*  Date:       2011-08-24                                                  */
 /*  Tags:                                                                   */
-/*      Copyright (c) 2011-2013 Florent Georges (see end of file.)          */
+/*      Copyright (c) 2011-2015 Florent Georges (see end of file.)          */
 /* ------------------------------------------------------------------------ */
 
 
@@ -30,11 +30,11 @@ public class PkgInitializer
     @Override
     public void initialize(Configuration c)
     {
-        String expath_repo_name = System.getProperty("org.expath.pkg.saxon.repo");
-        File expath_repo = expath_repo_name == null ? null : new File(expath_repo_name);
-        if ( expath_repo != null ) {
+        String prop = System.getProperty("org.expath.pkg.saxon.repo");
+        if ( prop != null ) {
             try {
-                Storage storage = new FileSystemStorage(expath_repo);
+                File dir = new File(prop);
+                Storage storage = new FileSystemStorage(dir);
                 SaxonRepository repo = new SaxonRepository(storage);
                 ConfigHelper expath_helper = new ConfigHelper(repo);
                 expath_helper.config(c);
