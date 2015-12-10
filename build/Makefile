@@ -5,7 +5,7 @@
 include Makefile.local
 
 VERSION=0.14.0dev
-REVISION=$(shell git describe --always)
+REVISION=$(shell git show-ref --hash --abbrev HEAD)
 NAME=expath-repo-$(VERSION)
 INSTALLER=expath-repo-installer-$(VERSION).jar
 
@@ -54,6 +54,11 @@ $(NAME).zip:
 $(INSTALLER):
 	perl -e "s|<appversion>([-.0-9a-z]+)</appversion>|<appversion>$(VERSION)</appversion>|g;" \
 	    -pi izpack-config.xml
-	"$(IZPACK)" izpack-config.xml -o "$@"
+	# TODO: IzPack outputs a lot of helpless warnings, hope it will be fixed
+	# in a future version...
+	"$(IZPACK)" izpack-config.xml -o "$@" 2>&1                               \
+	    | grep -v 'com.sun.java.util.jar.pack.Utils$$Pack200Logger warning'  \
+	    | grep -v "bytes of LocalVariableTable attribute in"                 \
+	    | grep -v "bytes of LineNumberTable attribute in"
 
 .PHONY: all $(NAME).zip $(INSTALLER)
