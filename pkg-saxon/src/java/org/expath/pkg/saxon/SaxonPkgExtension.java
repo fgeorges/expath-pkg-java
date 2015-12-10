@@ -12,11 +12,9 @@ package org.expath.pkg.saxon;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
 import org.expath.pkg.repo.DescriptorExtension;
 import org.expath.pkg.repo.FileSystemStorage.FileSystemResolver;
 import org.expath.pkg.repo.Package;
@@ -193,17 +191,18 @@ public class SaxonPkgExtension
         try {
             FileWriter out = new FileWriter(classpath);
             for ( String jar : info.getJars() ) {
-                Source jar_src = res.resolveComponent(jar);
-                String sysid = jar_src.getSystemId();
-                URI uri = URI.create(sysid);
-                File file = new File(uri);
-                out.write(file.getCanonicalPath());
+                try {
+                    // ignore the result, just to check if it exists
+                    res.resolveComponent(jar);
+                }
+                catch ( Storage.NotExistException ex ) {
+                    throw new PackageException("The Saxon descriptor refers to a JAR file that does not exist: " + jar, ex);
+                }
+                // add it to classpath.txt
+                out.write(jar);
                 out.write("\n");
             }
             out.close();
-        }
-        catch ( Storage.NotExistException ex ) {
-            throw new PackageException("The Saxon descriptor refers to an inexistent JAR", ex);
         }
         catch ( IOException ex ) {
             throw new PackageException("Error writing the Saxon classpath file: " + classpath, ex);

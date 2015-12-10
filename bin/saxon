@@ -259,7 +259,15 @@ if test -n "$REPO"; then
             oldIFS=$IFS
             IFS=$'\n'
             for jar in `cat "$cp_file"`; do
-                REPO_CP="${REPO_CP}${CP_DELIM}${jar}";
+                # if relative, resolve it against the package content dir
+                # TODO: Most likely to adapt to Cygwin's definition of "absolute".
+                case "$jar" in
+                    # absolute $jar
+                    /*) jar_abs="$jar";;
+                    # relative $jar
+                    *)  jar_abs="$pkg/content/$jar";;
+                esac
+                REPO_CP="${REPO_CP}${CP_DELIM}${jar_abs}";
             done
             IFS=$oldIFS
         fi
