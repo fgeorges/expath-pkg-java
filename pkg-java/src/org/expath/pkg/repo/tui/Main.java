@@ -33,8 +33,6 @@ import org.expath.pkg.repo.Version;
  *   <li>the environment variable {@code $EXPATH_REPO}</li>
  * </ul>
  *
- * TODO: Add a {@code remove} command...
- * 
  * @author Florent Georges
  */
 public class Main
@@ -214,8 +212,9 @@ public class Main
         catch ( PackageException ex ) {
             System.err.println("Error installing the package: " + ex.getMessage());
             if ( myVerbose ) {
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
             }
+            System.exit(1);
         }
     }
 
@@ -256,8 +255,9 @@ public class Main
         catch ( PackageException ex ) {
             System.err.println("Error removing the package: " + ex.getMessage());
             if ( myVerbose ) {
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
             }
+            System.exit(1);
         }
     }
 
@@ -271,8 +271,9 @@ public class Main
         catch ( PackageException ex ) {
             System.err.println("Error creating the repository: " + ex.getMessage());
             if ( myVerbose ) {
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
             }
+            System.exit(1);
         }
     }
 
@@ -295,8 +296,9 @@ public class Main
         catch ( PackageException ex ) {
             System.err.println("Error configuring the repository: " + ex.getMessage());
             if ( myVerbose ) {
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
             }
+            System.exit(1);
         }
     }
 
