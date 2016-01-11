@@ -68,6 +68,11 @@ public class PkgReadableDocument
     }
 
     @Override
+    public void setNames(String stepName, String portName) {
+        // nop;
+    }
+
+    @Override
     public boolean closed()
     {
         return true;

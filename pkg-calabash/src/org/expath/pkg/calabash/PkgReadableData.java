@@ -227,6 +227,11 @@ public class PkgReadableData
     }
 
     @Override
+    public void setNames(String stepName, String portName) {
+        // nop;
+    }
+
+    @Override
     public boolean moreDocuments()
     {
         return myPos < myDocs.size();
