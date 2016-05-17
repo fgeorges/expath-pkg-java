@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="US-ASCII" standalone="yes"?>
-<installation version="1.0">
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="
+                         http://izpack.org/schema/installation
+                         http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+
    <info>
       <appname>EXPath Packaging: Repo, Saxon and Calabash</appname>
-      <appversion>0.13.1</appversion>
+      <appversion>0.14.0dev</appversion>
       <appsubpath>expath/pkg</appsubpath>
+      <javaversion>1.8</javaversion>
       <authors>
          <author email="fgeorges@expath.org" name="Florent Georges"/>
       </authors>
@@ -14,41 +21,45 @@
       <pack200/>
       <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
    </info>
+
+   <locale>
+      <langpack iso3="eng"/>
+   </locale>
+
    <guiprefs height="480" resizable="no" width="640">
       <modifier key="useFlags" value="yes"/>
       <modifier key="langDisplayType" value="default"/>
    </guiprefs>
-   <locale>
-      <langpack iso3="eng"/>
-   </locale>
+
    <panels>
       <panel classname="CheckedHelloPanel"/>
-      <panel classname="PacksPanel"/>
       <panel classname="TargetPanel"/>
+      <panel classname="PacksPanel"/>
       <panel classname="InstallPanel"/>
-      <panel classname="SimpleFinishPanel"/>
+      <panel classname="FinishPanel"/>
    </panels>
+
    <packs>
       <pack name="Packaging core &amp; repo manager" preselected="yes" required="yes">
          <description>Core EXPath Packaging and on-disk repository manager support and scripts.</description>
          <file src="../pkg-java/dist/pkg-java.jar" targetdir="$INSTALL_PATH/expath/"/>
          <file src="../bin/xrepo"                  targetdir="$INSTALL_PATH/bin/">
-            <os family="Mac"/>
+            <os family="mac"/>
          </file>
          <file src="../bin/xrepo"                  targetdir="$INSTALL_PATH/bin/">
-            <os family="Unix"/>
+            <os family="unix"/>
          </file>
          <file src="../bin/xrepo.bat"              targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <executable targetfile="$INSTALL_PATH/bin/xrepo">
-            <os family="Mac"/>
+            <os family="mac"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/xrepo">
-            <os family="Unix"/>
+            <os family="unix"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/xrepo.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
          <file src="notices/APACHE-ANT.txt"        targetdir="$INSTALL_PATH/notices/"/>
          <file src="notices/APACHE-CODEC.txt"      targetdir="$INSTALL_PATH/notices/"/>
@@ -79,34 +90,34 @@
          <singlefile src="../pkg-saxon/dist/lib/expath-tools-java-0.1.0.jar"  target="$INSTALL_PATH/expath/tools-java.jar"/>
          <singlefile src="../pkg-saxon/dist/lib/expath-tools-saxon-0.1.0.jar" target="$INSTALL_PATH/expath/tools-saxon.jar"/>
          <file src="../bin/saxon"                    targetdir="$INSTALL_PATH/bin/">
-            <os family="Mac"/>
+            <os family="mac"/>
          </file>
          <file src="../bin/saxon"                    targetdir="$INSTALL_PATH/bin/">
-            <os family="Unix"/>
+            <os family="unix"/>
          </file>
          <file src="../bin/saxon.bat"                targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <file src="../bin/saxon_addenv.bat"         targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <file src="../bin/expath-pkg-common.bat"    targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <executable targetfile="$INSTALL_PATH/bin/saxon">
-            <os family="Mac"/>
+            <os family="mac"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/saxon">
-            <os family="Unix"/>
+            <os family="unix"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/saxon.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/saxon_addenv.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/expath-pkg-common.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
       </pack>
       <pack name="Saxon" preselected="yes" required="no">
@@ -119,28 +130,28 @@
          <description>EXPath Packaging support and scripts for Calabash.</description>
          <file src="../pkg-calabash/dist/pkg-calabash.jar" targetdir="$INSTALL_PATH/expath/"/>
          <file src="../bin/calabash"                       targetdir="$INSTALL_PATH/bin/">
-            <os family="Mac"/>
+            <os family="mac"/>
          </file>
          <file src="../bin/calabash"                       targetdir="$INSTALL_PATH/bin/">
-            <os family="Unix"/>
+            <os family="unix"/>
          </file>
          <file src="../bin/calabash.bat"                   targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <file src="../bin/expath-pkg-common.bat"          targetdir="$INSTALL_PATH/bin/">
-            <os family="Windows"/>
+            <os family="windows"/>
          </file>
          <executable targetfile="$INSTALL_PATH/bin/calabash">
-            <os family="Mac"/>
+            <os family="mac"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/calabash">
-            <os family="Unix"/>
+            <os family="unix"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/calabash.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
          <executable targetfile="$INSTALL_PATH/bin/expath-pkg-common.bat">
-            <os family="Windows"/>
+            <os family="windows"/>
          </executable>
       </pack>
       <pack name="Calabash" preselected="yes" required="no">
@@ -165,4 +176,5 @@
          <file src="../pkg-calabash/lib/xmlresolver.jar"            targetdir="$INSTALL_PATH/calabash/lib/"/>
       </pack>
    </packs>
-</installation>
+
+</izpack:installation>
