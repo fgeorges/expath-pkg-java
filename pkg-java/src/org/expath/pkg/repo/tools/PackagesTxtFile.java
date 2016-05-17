@@ -29,7 +29,6 @@ import org.expath.pkg.repo.PackageException;
  * Represent the file [repo]/.expath-pkg/packages.txt.
  *
  * @author Florent Georges
- * @date   2013-09-17
  */
 public class PackagesTxtFile
         extends UpdatableFile

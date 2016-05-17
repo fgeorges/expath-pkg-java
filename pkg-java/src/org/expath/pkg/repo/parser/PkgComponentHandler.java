@@ -25,7 +25,7 @@ public interface PkgComponentHandler
      * Handle an element in the package descriptor.
      * 
      * This handler has to have been registered for the element it handles in
-     * the {@link Repository}.
+     * the {@code Repository}.
      */
     public void handleDescription(XMLStreamReader parser, Package pkg, XMLStreamHelper helper)
             throws PackageException;

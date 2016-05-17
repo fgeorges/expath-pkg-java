@@ -35,9 +35,6 @@ class ZipHelper
     /**
      * Unzip a ZIP archive file to a temporary directory.
      *
-     * @param archive
-     *         The ZIP file to unzip.
-     *
      * @return
      *         The temporary directory that has been created, as a File object.
      */
@@ -54,9 +51,6 @@ class ZipHelper
 
     /**
      * Unzip a ZIP archive file to a destination directory.
-     *
-     * @param archive
-     *         The ZIP file to unzip.
      *
      * @param dest_dir
      *         The destination directory for the ZIP content.  It is created if

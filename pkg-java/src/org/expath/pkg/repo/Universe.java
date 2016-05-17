@@ -18,7 +18,7 @@ import javax.xml.transform.Source;
  * concept is similar to Java's classpath, Perl's {@code INC} list or Python's
  * module search path.
  *
- * TODO: Returning a {@link Source} in return of {@link #resolve()} is probably
+ * TODO: Returning a {@link Source} in return of {@code #resolve()} is probably
  * not what we want.  What for instance if the matched component is an extension
  * written in, say, Java. It makes not sense to return a stream source then.
  * We should rather use a listener mechanism.

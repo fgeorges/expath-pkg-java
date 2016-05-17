@@ -50,7 +50,7 @@ public abstract class Extension
      * When loading a package from the repository, an extension has a chance to
      * initialize it.  For instance by parsing an extension-specific descriptor.
      * This function is not supposed to modify the state of the repository, like
-     * {@link install()} does.
+     * {@code install()} does.
      */
     public abstract void init(Repository repo, Package pkg)
             throws PackageException;
@@ -63,7 +63,7 @@ public abstract class Extension
      * management information in extension-specific files in the repository.
      * 
      * This function is supposed to initialize the {@link Package} object as
-     * well, like {@link init()} does.
+     * well, like {@code init()} does.
      */
     public abstract void install(Repository repo, Package pkg)
             throws PackageException;

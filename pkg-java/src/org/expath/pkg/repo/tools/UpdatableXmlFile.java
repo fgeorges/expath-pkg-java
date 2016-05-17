@@ -27,7 +27,6 @@ import org.expath.pkg.repo.PackageException;
  * An XML file, that can be updated with XSLT stylesheets.
  *
  * @author Florent Georges
- * @date   2013-09-17
  */
 public abstract class UpdatableXmlFile
         extends UpdatableFile

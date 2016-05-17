@@ -23,7 +23,6 @@ import org.expath.pkg.repo.PackageException;
  * A file that can be updated.
  *
  * @author Florent Georges
- * @date   2013-09-17
  */
 public abstract class UpdatableFile
 {

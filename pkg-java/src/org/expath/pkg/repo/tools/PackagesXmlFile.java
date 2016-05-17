@@ -20,7 +20,6 @@ import org.expath.pkg.repo.PackageException;
  * Represent the file [repo]/.expath-pkg/packages.xml.
  *
  * @author Florent Georges
- * @date   2013-09-17
  */
 public class PackagesXmlFile
         extends UpdatableXmlFile

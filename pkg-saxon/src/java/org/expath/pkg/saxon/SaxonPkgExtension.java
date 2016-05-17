@@ -31,18 +31,18 @@ import org.expath.pkg.repo.parser.XMLStreamHelper;
  * format is as following:
  * 
  * <pre>
- * &lt;package xmlns="http://saxon.sf.net/ns/expath-pkg">
- *    &lt;jar>dir/file.jar&lt;/jar>
- *    &lt;function>org.example.extension.MyFunction&lt;/function>
- *    &lt;xslt>
- *       &lt;import-uri>http://example.org/ns/project/style.xsl&lt;/import-uri>
- *       &lt;file>stylesheet.xsl&lt;/file>
- *    &lt;/xslt>
- *    &lt;xquery>
- *       &lt;namespace>http://example.org/ns/project/lib&lt;/namespace>
- *       &lt;file>query-lib.xql&lt;/file>
- *    &lt;/xquery>
- * &lt;/package>
+ * &lt;package xmlns="http://saxon.sf.net/ns/expath-pkg"&gt;
+ *    &lt;jar&gt;dir/file.jar&lt;/jar&gt;
+ *    &lt;function&gt;org.example.extension.MyFunction&lt;/function&gt;
+ *    &lt;xslt&gt;
+ *       &lt;import-uri&gt;http://example.org/ns/project/style.xsl&lt;/import-uri&gt;
+ *       &lt;file&gt;stylesheet.xsl&lt;/file&gt;
+ *    &lt;/xslt&gt;
+ *    &lt;xquery&gt;
+ *       &lt;namespace&gt;http://example.org/ns/project/lib&lt;/namespace&gt;
+ *       &lt;file&gt;query-lib.xql&lt;/file
+ *    &lt;/xquery&gt;
+ * &lt;/package&gt;
  * </pre>
  * 
  * The elements "jar", "function", "xslt" and "xquery" are optional, repeatable,
