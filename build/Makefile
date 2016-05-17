@@ -1,4 +1,4 @@
-# Makefile.local is commited, it must define the variable IZPACK, to
+# Makefile.local is not commited, it must define the variable IZPACK, to
 # point to Izpack's compile program, for instance:
 #     IZPACK=/Applications/IzPack/bin/compile
 #     IZPACK=c:/apps/izpack/bin/compile
@@ -54,8 +54,8 @@ $(NAME).zip:
 $(INSTALLER):
 	perl -e "s|<appversion>([-.0-9a-z]+)</appversion>|<appversion>$(VERSION)</appversion>|g;" \
 	    -pi izpack-config.xml
-	# TODO: IzPack outputs a lot of helpless warnings, hope it will be fixed
-	# in a future version...
+#       # TODO: IzPack outputs a lot of helpless warnings, hope it will be fixed
+#       # in a future version...
 	"$(IZPACK)" izpack-config.xml -o "$@" 2>&1                               \
 	    | grep -v 'com.sun.java.util.jar.pack.Utils$$Pack200Logger warning'  \
 	    | grep -v "bytes of LocalVariableTable attribute in"                 \
