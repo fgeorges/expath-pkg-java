@@ -8,7 +8,7 @@
 
    <info>
       <appname>EXPath Packaging: Repo, Saxon and Calabash</appname>
-      <appversion>0.14.0dev</appversion>
+      <appversion>0.15.0</appversion>
       <appsubpath>expath/pkg</appsubpath>
       <javaversion>1.8</javaversion>
       <authors>
