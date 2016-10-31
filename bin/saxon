@@ -72,6 +72,7 @@ usage () {
     echo "  --proxy [user:password@]host:port"
     echo "                            HTTP and HTTPS proxy information"
     echo "  --show-cp                 display the classpath from packages, then exit"
+    echo "  --version                 display the Saxon version number"
     echo
 }
 
@@ -196,16 +197,19 @@ SHOW_CP=false
 
 while echo "$1" | grep -- ^-- >/dev/null 2>&1 && test "$1" != --; do
     case "$1" in
-        # XSLT engine.
+        # XSLT engine
         --xsl)
             SAXON_KIND=xslt;;
         --xslt)
             SAXON_KIND=xslt;;
-        # XQuery engine.
+        # XQuery engine
         --xq)
             SAXON_KIND=xquery;;
         --xquery)
             SAXON_KIND=xquery;;
+        # Saxon version
+        --version)
+            SAXON_KIND=version;;
         # The EXPath Packaging repository
         --repo)
             shift
@@ -306,7 +310,9 @@ fi
 
 # TODO: Add logging configuration facility
 
-if test "$SAXON_KIND" = xslt; then
+if test "$SAXON_KIND" = version; then
+    SAXON_CLASS=net.sf.saxon.Version;
+elif test "$SAXON_KIND" = xslt; then
     SAXON_CLASS=net.sf.saxon.Transform;
 else
     SAXON_CLASS=net.sf.saxon.Query;
