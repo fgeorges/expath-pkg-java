@@ -86,9 +86,9 @@
       </pack>
       <pack name="Packaging for Saxon" preselected="yes" required="no">
          <description>EXPath Packaging support and scripts for Saxon.</description>
-         <file src="../pkg-saxon/dist/pkg-saxon.jar"                          targetdir="$INSTALL_PATH/expath/"/>
-         <singlefile src="../pkg-saxon/dist/lib/expath-tools-java-0.1.0.jar"  target="$INSTALL_PATH/expath/tools-java.jar"/>
-         <singlefile src="../pkg-saxon/dist/lib/expath-tools-saxon-0.1.0.jar" target="$INSTALL_PATH/expath/tools-saxon.jar"/>
+         <file src="../pkg-saxon/dist/pkg-saxon.jar"                     targetdir="$INSTALL_PATH/expath/"/>
+         <singlefile src="../pkg-saxon/lib/expath-tools-java-0.2.0.jar"  target="$INSTALL_PATH/expath/tools-java.jar"/>
+         <singlefile src="../pkg-saxon/lib/expath-tools-saxon-0.3.0.jar" target="$INSTALL_PATH/expath/tools-saxon.jar"/>
          <file src="../bin/saxon"                    targetdir="$INSTALL_PATH/bin/">
             <os family="mac"/>
          </file>
