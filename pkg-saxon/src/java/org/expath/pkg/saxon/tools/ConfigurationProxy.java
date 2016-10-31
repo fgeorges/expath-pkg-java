@@ -32,6 +32,7 @@ import net.sf.saxon.expr.instruct.DocumentInstr;
 import net.sf.saxon.expr.instruct.ElementCreator;
 import net.sf.saxon.expr.instruct.SlotManager;
 import net.sf.saxon.expr.instruct.UserFunction;
+import net.sf.saxon.expr.parser.Location;
 import net.sf.saxon.expr.parser.PathMap.PathMapRoot;
 import net.sf.saxon.functions.FunctionLibraryList;
 import net.sf.saxon.functions.IntegratedFunctionLibrary;
@@ -45,6 +46,7 @@ import net.sf.saxon.trans.DynamicLoader;
 import net.sf.saxon.trans.Mode;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.tree.util.DocumentNumberAllocator;
+import net.sf.saxon.type.MissingComponentException;
 import net.sf.saxon.type.SchemaDeclaration;
 import net.sf.saxon.type.SchemaException;
 import net.sf.saxon.type.SchemaType;
@@ -91,11 +93,11 @@ public class ConfigurationProxy
     }
 
     @Override
-    public SimpleType validateAttribute(int nameCode, CharSequence value, int validation) throws ValidationException {
+    public SimpleType validateAttribute(StructuredQName name, CharSequence value, int validation) throws ValidationException, MissingComponentException {
         if ( myConfig == null ) {
-            return super.validateAttribute(nameCode, value, validation);
+            return super.validateAttribute(name, value, validation);
         }
-        return myConfig.validateAttribute(nameCode, value, validation);
+        return myConfig.validateAttribute(name, value, validation);
     }
 
     @Override
@@ -577,7 +579,7 @@ public class ConfigurationProxy
     }
 
     @Override
-    public DocumentInfo makeUnconstructedDocument(DocumentInstr instr, XPathContext context) throws XPathException {
+    public NodeInfo makeUnconstructedDocument(DocumentInstr instr, XPathContext context) throws XPathException {
         if ( myConfig == null ) {
             return super.makeUnconstructedDocument(instr, context);
         }
@@ -899,11 +901,11 @@ public class ConfigurationProxy
     }
 
     @Override
-    public SchemaType getSchemaType(int fingerprint) {
+    public SchemaType getSchemaType(StructuredQName name) {
         if ( myConfig == null ) {
-            return super.getSchemaType(fingerprint);
+            return super.getSchemaType(name);
         }
-        return myConfig.getSchemaType(fingerprint);
+        return myConfig.getSchemaType(name);
     }
 
     @Override
@@ -1043,11 +1045,11 @@ public class ConfigurationProxy
     }
 
     @Override
-    public SequenceReceiver getElementValidator(SequenceReceiver receiver, ParseOptions validationOptions, int locationId) throws XPathException {
+    public SequenceReceiver getElementValidator(SequenceReceiver receiver, ParseOptions validationOptions, Location location) throws XPathException {
         if ( myConfig == null ) {
-            return super.getElementValidator(receiver, validationOptions, locationId);
+            return super.getElementValidator(receiver, validationOptions, location);
         }
-        return myConfig.getElementValidator(receiver, validationOptions, locationId);
+        return myConfig.getElementValidator(receiver, validationOptions, location);
     }
 
     @Override
