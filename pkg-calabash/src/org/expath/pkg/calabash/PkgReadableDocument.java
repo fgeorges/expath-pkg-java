@@ -101,6 +101,12 @@ public class PkgReadableDocument
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public void setNames(String step, String port)
+    {
+        // nop
+    }
+
     private void doRead()
     {
         Source src;

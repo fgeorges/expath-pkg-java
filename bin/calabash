@@ -118,6 +118,11 @@ else
 fi
 
 # Libraries
+if test -z "$CLASSINDEX_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/classindex-3.3.jar"; then
+        CLASSINDEX_JAR="${CALABASH_HOME}/lib/classindex-3.3.jar"
+    fi
+fi
 if test -z "$CODEC_JAR"; then
     if test -f "${CALABASH_HOME}/lib/commons-codec-1.6.jar"; then
         CODEC_JAR="${CALABASH_HOME}/lib/commons-codec-1.6.jar"
@@ -148,6 +153,11 @@ if test -z "$IO_JAR"; then
         IO_JAR="${CALABASH_HOME}/lib/commons-io-2.1.jar"
     fi
 fi
+if test -z "$ANNOT_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/nwalsh-annotations-1.0.0.jar"; then
+        ANNOT_JAR="${CALABASH_HOME}/lib/nwalsh-annotations-1.0.0.jar"
+    fi
+fi
 if test -z "$XCC_JAR"; then
     if test -f "${CALABASH_HOME}/lib/xcc.jar"; then
         XCC_JAR="${CALABASH_HOME}/lib/xcc.jar"
@@ -156,6 +166,11 @@ fi
 if test -z "$TAGSOUP_JAR"; then
     if test -f "${CALABASH_HOME}/lib/tagsoup-1.2.jar"; then
         TAGSOUP_JAR="${CALABASH_HOME}/lib/tagsoup-1.2.jar"
+    fi
+fi
+if test -z "$RESOLVER_JAR"; then
+    if test -f "${CALABASH_HOME}/lib/xmlresolver-0.12.3.jar"; then
+        RESOLVER_JAR="${CALABASH_HOME}/lib/xmlresolver-0.12.3.jar"
     fi
 fi
 if test -z "$ISORELAX_JAR"; then
@@ -241,12 +256,15 @@ REPO=$EXPATH_REPO
 
 CP="${CALABASH_JAR}"
 CP="${CP}${CP_DELIM}${SAXON_JAR}"
+CP="${CP}${CP_DELIM}${CLASSINDEX_JAR}"
 CP="${CP}${CP_DELIM}${CODEC_JAR}"
 CP="${CP}${CP_DELIM}${LOGGING_JAR}"
 CP="${CP}${CP_DELIM}${HTTP_CLIENT_JAR}"
 CP="${CP}${CP_DELIM}${HTTP_CORE_JAR}"
 CP="${CP}${CP_DELIM}${HTTP_MIME_JAR}"
 CP="${CP}${CP_DELIM}${IO_JAR}"
+CP="${CP}${CP_DELIM}${ANNOT_JAR}"
+CP="${CP}${CP_DELIM}${RESOLVER_JAR}"
 CP="${CP}${CP_DELIM}${XCC_JAR}"
 CP="${CP}${CP_DELIM}${TAGSOUP_JAR}"
 CP="${CP}${CP_DELIM}${ISORELAX_JAR}"

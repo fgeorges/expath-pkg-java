@@ -211,7 +211,7 @@ public class PkgReadableData
     @Override
     public void canReadSequence(boolean sequence)
     {
-        // nop; always falkse
+        // nop; always false
     }
 
     @Override
@@ -261,6 +261,12 @@ public class PkgReadableData
     public boolean readSequence()
     {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setNames(String step, String port)
+    {
+        // nop
     }
 
     // TODO: Copied from ReadableData, adapt following RFC 3023.  See also what
