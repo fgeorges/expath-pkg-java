@@ -1,10 +1,11 @@
 # Makefile.local is not commited, it must define the variable IZPACK, to
 # point to Izpack's compile program, for instance:
 #     IZPACK=/Applications/IzPack/bin/compile
+#     IZPACK=/usr/local/izpack/bin/compile
 #     IZPACK=c:/apps/izpack/bin/compile
 include Makefile.local
 
-VERSION=0.15.0
+VERSION=0.15.1
 REVISION=$(shell git show-ref --hash --abbrev HEAD)
 NAME=expath-repo-$(VERSION)
 INSTALLER=expath-repo-installer-$(VERSION).jar
@@ -26,7 +27,7 @@ $(NAME).zip:
 	mkdir $(NAME)
 	cp README $(NAME)
 	echo "Version: $(VERSION)"                          >  $(NAME)/VERSION
-	echo "Subversion revision: $(REVISION)"             >> $(NAME)/VERSION
+	echo "Git commit: $(REVISION)"                      >> $(NAME)/VERSION
 	echo "org.expath.pkg.repo.version=$(VERSION)"       >  $(prop-java)
 	echo "org.expath.pkg.repo.revision=$(REVISION)"     >> $(prop-java)
 	echo "org.expath.pkg.saxon.version=$(VERSION)"      >  $(prop-saxon)
