@@ -6,7 +6,7 @@
 
    <xsl:output indent="yes"/>
 
-   <xsl:param name="dir" select="/.."/>
+   <xsl:param name="dir"/>
 
    <xsl:template match="node()" priority="-1">
       <xsl:copy>
