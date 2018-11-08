@@ -17,7 +17,7 @@ import java.util.Properties;
  * Version of this project.
  *
  * @author Florent Georges
- * @date   2013-09-10
+ * Created 2013-09-10
  */
 public class Version
 {

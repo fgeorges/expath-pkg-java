@@ -33,15 +33,15 @@ import org.expath.pkg.repo.parser.XMLStreamHelper;
  * The extension descriptor "calabash.xml" must be at the root of the package.
  * Its format is as following:
  * 
- * <pre>
- * &lt;package xmlns="http://saxon.sf.net/ns/expath-pkg">
- *    &lt;jar>dir/file.jar&lt;/jar>
- *    &lt;step>
- *       &lt;type>{http://example.org/ns/project}my-step-type&lt;/type>
- *       &lt;class>org.example.extension.MyStep&lt;/class>
- *    &lt;/step>
- * &lt;/package>
- * </pre>
+ * <pre>{@code
+ * <package xmlns="http://saxon.sf.net/ns/expath-pkg">
+ *    <jar>dir/file.jar</jar>
+ *    <step>
+ *       <type>{http://example.org/ns/project}my-step-type</type>
+ *       <class>org.example.extension.MyStep</class>
+ *    </step>
+ * </package>
+ * }</pre>
  *
  * The elements "jar" and "step" are optional, repeatable, and can appear in any
  * order.  The element "jar" links to the JAR files, in the content directory,

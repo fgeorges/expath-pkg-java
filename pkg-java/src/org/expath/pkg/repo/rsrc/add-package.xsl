@@ -6,9 +6,9 @@
 
    <xsl:output indent="yes"/>
 
-   <xsl:param name="name"    select="/.."/>
-   <xsl:param name="dir"     select="/.."/>
-   <xsl:param name="version" select="/.."/>
+   <xsl:param name="name"/>
+   <xsl:param name="dir"/>
+   <xsl:param name="version"/>
 
    <xsl:template match="node()">
       <xsl:copy>
