@@ -150,7 +150,7 @@ public class PkgCalabashConfigurer
         return URISpace.valueOf(kind.toUpperCase());
     }
 
-    private Repository myRepo;
+    private final Repository myRepo;
     private final static QName  KIND    = new QName("pkg", "http://expath.org/ns/pkg", "kind");
     private final static QName  HREF    = new QName("href");
     private final static QName  DTD_VAL = new QName("dtd-validate");

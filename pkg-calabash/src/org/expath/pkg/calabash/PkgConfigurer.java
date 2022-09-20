@@ -17,6 +17,10 @@ import com.xmlcalabash.config.JingConfigurer;
 import com.xmlcalabash.config.SaxonConfigurer;
 import com.xmlcalabash.config.XProcConfigurer;
 import com.xmlcalabash.core.XProcException;
+import com.xmlcalabash.util.DefaultJaxpConfigurer;
+import com.xmlcalabash.util.DefaultJingConfigurer;
+import com.xmlcalabash.util.DefaultSaxonConfigurer;
+import com.xmlcalabash.util.DefaultXMLCalabashConfigurer;
 import java.io.File;
 import org.expath.pkg.repo.FileSystemStorage;
 import org.expath.pkg.repo.PackageException;
@@ -45,17 +49,18 @@ public class PkgConfigurer
             // TODO: Detect if --debug is enabled, and then display a message
             // properly formatted for humans (not through logs), including basic
             // doc and links to reference material.
-            LOG.severe("Unable to locate the EXPath repository, cannot set up packaging");
-            LOG.severe("Use ++repo, org.expath.pkg.calabash.repo, or $EXPATH_REPO to enable it");
-            return;
+            LOG.info("Unable to locate the EXPath repository, cannot set up packaging");
+            LOG.info("Use ++repo, org.expath.pkg.calabash.repo, or $EXPATH_REPO to enable it");
         }
-        LOG.info("Initialize EXPath Packaging with: {0}", repo_value);
-        try {
-            Storage storage = new FileSystemStorage(new File(repo_value));
-            myRepo = new Repository(storage);
-        }
-        catch ( PackageException ex ) {
-            throw new XProcException("Error instantiating the EXPath repository on " + repo_value, ex);
+        else {
+            LOG.info("Initialize EXPath Packaging with: {0}", repo_value);
+            try {
+                Storage storage = new FileSystemStorage(new File(repo_value));
+                myRepo = new Repository(storage);
+            }
+            catch ( PackageException ex ) {
+                throw new XProcException("Error instantiating the EXPath repository on " + repo_value, ex);
+            }
         }
     }
 
@@ -69,7 +74,9 @@ public class PkgConfigurer
     public XMLCalabashConfigurer getXMLCalabashConfigurer()
     {
         if ( myCalabash == null ) {
-            myCalabash = new PkgCalabashConfigurer(myRuntime, myRepo);
+            myCalabash = myRepo == null
+                    ? new DefaultXMLCalabashConfigurer(myRuntime)
+                    : new PkgCalabashConfigurer(myRuntime, myRepo);
         }
         return myCalabash;
     }
@@ -78,7 +85,9 @@ public class PkgConfigurer
     public JaxpConfigurer getJaxpConfigurer()
     {
         if ( myJaxp == null ) {
-            myJaxp = new PkgJaxpConfigurer(myRepo);
+            myJaxp = myRepo == null
+                    ? new DefaultJaxpConfigurer()
+                    : new PkgJaxpConfigurer(myRepo);
         }
         return myJaxp;
     }
@@ -87,7 +96,9 @@ public class PkgConfigurer
     public JingConfigurer getJingConfigurer()
     {
         if ( myJing == null ) {
-            myJing = new PkgJingConfigurer(myRepo);
+            myJing = myRepo == null
+                    ? new DefaultJingConfigurer()
+                    : new PkgJingConfigurer(myRepo);
         }
         return myJing;
     }
@@ -97,7 +108,9 @@ public class PkgConfigurer
     {
         if ( mySaxon == null ) {
             try {
-                mySaxon = new PkgSaxonConfigurer(myRepo);
+                mySaxon = myRepo == null
+                        ? new DefaultSaxonConfigurer()
+                        : new PkgSaxonConfigurer(myRepo);
             }
             catch ( PackageException ex ) {
                 // TODO:
